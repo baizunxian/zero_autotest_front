@@ -2,9 +2,9 @@ import { nextTick } from 'vue';
 import type { App } from 'vue';
 import * as svg from '@element-plus/icons-vue';
 import router from '/@/router/index';
-import { store } from '/@/store/index';
+import { store } from '/@/store';
 import { Local } from '/@/utils/storage';
-import SvgIcon from '/@/components/svgIcon/index.vue';
+import svgIcon from '/@/components/svgIcon/index.vue';
 
 /**
  * 导出全局注册 element plus svg 图标
@@ -16,7 +16,7 @@ export function elSvg(app: App) {
 	for (const i in icons) {
 		app.component(`ele-${icons[i].name}`, icons[i]);
 	}
-	app.component('SvgIcon', SvgIcon);
+	app.component('SvgIcon', svgIcon);
 }
 
 /**

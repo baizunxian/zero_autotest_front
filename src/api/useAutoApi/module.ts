@@ -7,26 +7,26 @@ import request from '/@/utils/request';
  */
 export function useModuleApi() {
   return {
-    getModuleList: (data?: object) => {
+    getList: (data?: object) => {
       return request({
-        url: '/project/list',
+        url: '/module/list',
         method: 'POST',
         data,
       });
     },
-    allMenu: (params?: object) => {
+    saveOrUpdate(data?: object) {
       return request({
-        url: '/menu/allMenu',
+        url: '/module/saveOrUpdateModule',
+        method: 'post',
+        data
+      })
+    },
+    deleted: (params?: object) => {
+      return request({
+        url: '/module/deleteModule',
         method: 'post',
         params,
       });
     },
-    saveOrUpdateMenu(data?: object) {
-      return request({
-        url: '/menu/saveOrUpdateMenu',
-        method: 'post',
-        data
-      })
-    }
   };
 }

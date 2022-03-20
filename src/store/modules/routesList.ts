@@ -1,5 +1,5 @@
 import { Module } from 'vuex';
-import { RoutesListState, RootStateTypes } from '/@/store/interface/index';
+import { RoutesListState, RootStateTypes } from '/@/store/interface';
 
 const routesListModule: Module<RoutesListState, RootStateTypes> = {
 	namespaced: true,

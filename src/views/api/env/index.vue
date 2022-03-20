@@ -1,8 +1,8 @@
 <template>
-  <div class="system-role-container">
+  <div>
     <el-card shadow="hover">
-      <div class="system-user-search mb15">
-        <el-input v-model="listQuery.name" placeholder="请输入角色名称" style="max-width: 180px"></el-input>
+      <div class="mb15">
+        <el-input v-model="listQuery.name" :placeholder="`请输入环境名称`" style="max-width: 180px"></el-input>
         <el-button type="primary" class="ml10" @click="getList">
           <el-icon>
             <ele-Search/>
@@ -13,25 +13,20 @@
           <el-icon>
             <ele-FolderAdd/>
           </el-icon>
-          新增角色
+          新增
         </el-button>
       </div>
       <el-table
           v-loading="tableLoading"
           :data="listData"
           style="width: 100%">
-        <el-table-column type="index" label="序号" width="60"/>
-        <el-table-column prop="name" label="角色名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="role_type" label="权限类型" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="status" label="角色状态" show-overflow-tooltip>
-          <template #default="scope">
-            <el-tag type="success" v-if="scope.row.status === 10">启用</el-tag>
-            <el-tag type="info" v-else>禁用</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="description" label="角色描述" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="updation_date" label="更新时间" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="creation_date" label="创建时间" show-overflow-tooltip></el-table-column>
+        <el-table-column label="环境名称" show-overflow-tooltip prop="name"></el-table-column>
+        <el-table-column label="URL" show-overflow-tooltip prop="url"></el-table-column>
+        <el-table-column label="备注" show-overflow-tooltip prop="remarks"></el-table-column>
+        <el-table-column label="更新时间" show-overflow-tooltip prop="updation_date"></el-table-column>
+        <el-table-column label="更新人" show-overflow-tooltip prop="created_by"></el-table-column>
+        <el-table-column label="创建时间" show-overflow-tooltip prop="creation_date"></el-table-column>
+        <el-table-column label="创建人" show-overflow-tooltip prop="created_by"></el-table-column>
         <el-table-column label="操作" width="100">
           <template #default="scope">
             <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"
@@ -50,35 +45,34 @@
           :limit="listQuery.pageSize"
           @pagination="getList"/>
     </el-card>
-    <save-or-update :moduleName="moduleName" ref="saveOrUpdateRef" @getList="getList"/>
+    <save-or-update ref="saveOrUpdateRef"  @getList="getList"/>
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import saveOrUpdate from '/@/views/system/role/component/saveOrUpdate.vue';
+import saveOrUpdate from '/@/views/api/env/component/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
-import {useRolesApi} from "/@/api/useSystemApi/roles";
+import {useEnvApi} from "/@/api/useAutoApi/env";
 
 // 定义接口来定义对象的类型
-interface TableData {
-  roleName: string;
-  roleSign: string;
-  describe: string;
-  sort: number;
-  status: boolean;
-  createTime: string;
-}
+// interface TableData {
+//   roleName: string;
+//   roleSign: string;
+//   describe: string;
+//   sort: number;
+//   status: boolean;
+//   createTime: string;
+// }
 
 
 export default defineComponent({
-  name: 'systemRole',
+  name: 'apiEnv',
   components: {saveOrUpdate, Pagination},
   setup() {
     const saveOrUpdateRef = ref();
     const state = reactive({
-      moduleName: '角色', // 模块名称
       listData: [],
       tableLoading: false,
       total: 0,
@@ -91,7 +85,7 @@ export default defineComponent({
     // 初始化表格数据
     const getList = () => {
       state.tableLoading = true
-      useRolesApi().getList(state.listQuery)
+      useEnvApi().getList(state.listQuery)
           .then(res => {
             state.listData = res.data.rows
             state.total = res.data.rowTotal
@@ -112,7 +106,7 @@ export default defineComponent({
         type: 'warning',
       })
           .then(() => {
-            useRolesApi().deleted({id: row.id})
+            useEnvApi().deleted({id: row.id})
                 .then(() => {
                   ElMessage.success('删除成功');
                   getList()
@@ -121,7 +115,6 @@ export default defineComponent({
           .catch(() => {
           });
     };
-
     // 页面加载时
     onMounted(() => {
       getList();

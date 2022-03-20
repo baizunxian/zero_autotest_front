@@ -1,25 +1,25 @@
 <template>
   <div class="system-edit-user-container">
-    <el-dialog title="修改用户" v-model="isShowDialog" width="769px">
-      <el-form :model="userForm" :rules="rules" ref="userFormRef" size="default" label-width="90px">
+    <el-dialog :title="editType === 'save'? `新增${moduleName}` : `修改${moduleName}`" v-model="isShowDialog" width="769px">
+      <el-form :model="form" :rules="rules" ref="userFormRef" size="default" label-width="90px">
         <el-row :gutter="35">
 
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="账户名称" prop="username">
-              <el-input :disabled="editType==='update'" v-model="userForm.username" placeholder="请输入账户名称"
+              <el-input :disabled="editType==='update'" v-model="form.username" placeholder="请输入账户名称"
                         clearable></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="用户昵称" prop="nickname">
-              <el-input v-model="userForm.nickname" placeholder="请输入用户昵称" clearable></el-input>
+              <el-input v-model="form.nickname" placeholder="请输入用户昵称" clearable></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="关联角色" prop="roles">
-              <el-select v-model="userForm.roles" placeholder="请选择" clearable class="w100">
+              <el-select v-model="form.roles" placeholder="请选择" clearable class="w100">
                 <el-option label="超级管理员" value="admin"></el-option>
                 <el-option label="普通用户" value="common"></el-option>
               </el-select>
@@ -28,13 +28,13 @@
 
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="邮箱" prop="email">
-              <el-input v-model="userForm.email" placeholder="请输入" clearable></el-input>
+              <el-input v-model="form.email" placeholder="请输入" clearable></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="用户状态">
-              <el-switch v-model="userForm.status"
+              <el-switch v-model="form.status"
                          :active-value="1"
                          :inactive-value="0"
                          inline-prompt
@@ -45,7 +45,7 @@
 
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="用户类型">
-              <el-select v-model="userForm.user_type" placeholder="请选择" clearable class="w100">
+              <el-select v-model="form.user_type" placeholder="请选择" clearable class="w100">
                 <el-option label="超级管理员" :value="10"></el-option>
                 <el-option label="普通用户" :value="20"></el-option>
               </el-select>
@@ -54,7 +54,7 @@
 
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="用户备注">
-              <el-input v-model="userForm.remarks" type="textarea" placeholder="请输入用户描述" maxlength="150"></el-input>
+              <el-input v-model="form.remarks" type="textarea" placeholder="请输入用户描述" maxlength="150"></el-input>
             </el-form-item>
           </el-col>
 
@@ -91,12 +91,13 @@ const createForm = () => {
 
 export default defineComponent({
   name: 'systemEditUser',
+  props: ['moduleName'],
   setup(props, {emit}) {
     const userFormRef = ref()
     const state = reactive({
       isShowDialog: false,
       editType: 'save',
-      userForm: createForm(),
+      form: createForm(),
       rules: {
         username: [{required: true, message: '请输入用户名称', trigger: 'blur'},],
         nickname: [{required: true, message: '请输入用户昵称', trigger: 'blur'},],
@@ -108,9 +109,9 @@ export default defineComponent({
       state.editType = editType
       if (row) {
         console.log(row)
-        state.userForm = JSON.parse(JSON.stringify(row));
+        state.form = JSON.parse(JSON.stringify(row));
       } else {
-        state.userForm = createForm()
+        state.form = createForm()
       }
       state.isShowDialog = true;
     };
@@ -127,10 +128,10 @@ export default defineComponent({
     const saveOrUpdate = () => {
       userFormRef.value.validate((valid: any) => {
         if (valid) {
-          useUserApi().saveOrUpdateUser(state.userForm)
+          useUserApi().saveOrUpdate(state.form)
               .then(() => {
                 ElMessage.success('操作成功');
-                emit('getUserList')
+                emit('getList')
                 closeDialog(); // 关闭弹窗
               })
         }

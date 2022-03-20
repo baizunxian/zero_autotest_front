@@ -8,21 +8,21 @@ import request from '/@/utils/request';
  */
 export function useRolesApi() {
   return {
-    getRoleList: (data?: object) => {
+    getList: (data?: object) => {
       return request({
         url: '/roles/list',
         method: 'POST',
         data,
       });
     },
-    saveOrUpdateRole(data?: object) {
+    saveOrUpdate(data?: object) {
       return request({
         url: '/roles/saveOrUpdateRole',
         method: 'post',
         data
       })
     },
-    deleteRole(data?: object) {
+    deleted(data?: object) {
       return request({
         url: '/roles/deleteRole',
         method: 'post',

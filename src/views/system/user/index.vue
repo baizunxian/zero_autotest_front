@@ -3,7 +3,7 @@
     <el-card shadow="hover">
       <div class="system-user-search mb15">
         <el-input v-model="listQuery.username" placeholder="请输入用户名称" style="max-width: 180px"></el-input>
-        <el-button type="primary" class="ml10" @click="getUserList">
+        <el-button type="primary" class="ml10" @click="getList">
           <el-icon>
             <ele-Search/>
           </el-icon>
@@ -47,7 +47,7 @@
                 :disabled="userInfos.user_type !== 10"
                 size="small"
                 type="text"
-                @click="onDelUser(scope.row)">
+                @click="deleted(scope.row)">
               删除
             </el-button>
           </template>
@@ -58,16 +58,16 @@
           :total="total"
           :page="listQuery.page"
           :limit="listQuery.pageSize"
-          @pagination="getUserList"/>
+          @pagination="getList"/>
     </el-card>
-    <save-or-update-user @getUserList="getUserList" ref="saveOrUpdateUserRef"/>
+    <save-or-update @getList="getList" :moduleName="moduleName" ref="saveOrUpdateRef"/>
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import saveOrUpdateUser from '/@/views/system/user/component/saveOrUpdateUser.vue';
+import saveOrUpdate from '/@/views/system/user/component/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useUserApi} from '/@/api/useSystemApi/user';
 import {useStore} from "/@/store";
@@ -90,12 +90,13 @@ interface TableDataRow {
 
 export default defineComponent({
   name: 'systemUser',
-  components: {saveOrUpdateUser, Pagination},
+  components: {saveOrUpdate, Pagination},
   setup() {
-    const saveOrUpdateUserRef = ref();
+    const saveOrUpdateRef = ref();
     const store = useStore();
     const userInfos = store.state.userInfos.userInfos;
     const state = reactive({
+      moduleName: '用户', // 模块名称
       listData: [],
       tableLoading: false,
       total: 0,
@@ -106,9 +107,9 @@ export default defineComponent({
       },
     });
     // 获取用户数据
-    const getUserList = () => {
+    const getList = () => {
       state.tableLoading = true
-      useUserApi().getUserList(state.listQuery)
+      useUserApi().getList(state.listQuery)
           .then(res => {
             state.listData = res.data.rows
             state.total = res.data.rowTotal
@@ -118,21 +119,21 @@ export default defineComponent({
 
     // 新增或修改用户
     const onOpenSaveOrUpdate = (editType: string, row?: TableDataRow) => {
-      saveOrUpdateUserRef.value.openDialog(editType, row);
+      saveOrUpdateRef.value.openDialog(editType, row);
     };
 
     // 删除用户
-    const onDelUser = (row: TableDataRow) => {
+    const deleted = (row: TableDataRow) => {
       ElMessageBox.confirm(`此操作将删除账户名称：“${row.username}”，是否继续?`, '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',
       })
           .then(() => {
-            useUserApi().delUser({id: row.id})
+            useUserApi().deleted({id: row.id})
                 .then(() => {
                   ElMessage.success('删除成功');
-                  getUserList()
+                  getList()
                 })
           })
           .catch(() => {
@@ -140,13 +141,13 @@ export default defineComponent({
     };
     // 页面加载时
     onMounted(() => {
-      getUserList();
+      getList();
     });
     return {
-      getUserList,
-      saveOrUpdateUserRef,
+      getList,
+      saveOrUpdateRef,
       onOpenSaveOrUpdate,
-      onDelUser,
+      deleted,
       store,
       userInfos,
       ...toRefs(state),

@@ -1,33 +1,32 @@
 import request from '/@/utils/request';
 
 /**
- * 用户接口
- * @method getUserList 获取用户列表
- * @method allMenu 获取菜单接口，平铺
- * @method saveOrUpdateMenu 更新保存菜单
+ * 项目使用接口
+ * @method getProjectList 获取项目列表
+ * @method getMenuTest 获取后端动态路由菜单(test)
  */
-export function useUserApi() {
+export function useEnvApi() {
   return {
     getList: (data?: object) => {
       return request({
-        url: '/user/list',
+        url: '/env/list',
         method: 'POST',
         data,
       });
     },
     saveOrUpdate(data?: object) {
       return request({
-        url: '/user/saveOrUpdateUser',
+        url: '/env/saveOrUpdate',
         method: 'post',
         data
       })
     },
-    deleted(data?: object) {
+    deleted: (data?: object) => {
       return request({
-        url: '/user/delUser',
+        url: '/env/deleted',
         method: 'post',
-        data
-      })
-    }
+        data,
+      });
+    },
   };
 }

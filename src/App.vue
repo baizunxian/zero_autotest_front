@@ -10,7 +10,7 @@
 <script lang="ts">
 import {computed, defineComponent, getCurrentInstance, nextTick, onBeforeMount, onMounted, ref, watch} from 'vue';
 import {useRoute} from 'vue-router';
-import {useStore} from '/@/store/index';
+import {useStore} from '/@/store';
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
 import other from '/@/utils/other';
 import {Local, Session} from '/@/utils/storage';

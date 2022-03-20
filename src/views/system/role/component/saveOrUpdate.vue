@@ -1,21 +1,30 @@
 <template>
   <div class="system-edit-role-container">
-    <el-dialog title="修改角色" v-model="isShowDialog" width="769px">
-      <el-form :model="ruleForm" label-width="90px" ref="ruleFormRef">
+    <el-dialog :title="editType === 'save'? `新增${moduleName}` : `修改${moduleName}`" v-model="isShowDialog" width="769px">
+      <el-form :model="form" :rules="rules" label-width="90px" ref="formRef">
         <el-row :gutter="35">
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
-            <el-form-item label="角色名称">
-              <el-input v-model="ruleForm.name" placeholder="请输入角色名称" clearable></el-input>
+            <el-form-item label="角色名称" prop="name">
+              <el-input v-model="form.name" placeholder="请输入角色名称" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
-            <el-form-item label="角色标识">
+            <el-form-item label="角色标识" prop="role_type">
               <template #label>
                 <el-tooltip effect="dark" content="用于 `router/route.ts` meta.roles" placement="top-start">
                   <span>角色标识</span>
                 </el-tooltip>
               </template>
-              <el-input v-model="ruleForm.role_type" placeholder="请输入角色标识" clearable></el-input>
+              <el-select v-model="form.role_type" clearable placeholder="角色标识">
+                <el-option
+                    v-for="item in [{role_type: 10, label:'菜单权限'}]"
+                    :key="item.role_type"
+                    :label="item.label"
+                    :value="item.role_type"
+                >
+                </el-option>
+              </el-select>
+<!--              <el-input v-model="form.role_type" placeholder="请输入角色标识" clearable></el-input>-->
             </el-form-item>
           </el-col>
           <!--          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">-->
@@ -26,13 +35,13 @@
           <!--          </el-col>-->
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="角色状态">
-              <el-switch v-model="ruleForm.status" :active-value="10" :inactive-value="20" inline-prompt active-text="启"
+              <el-switch v-model="form.status" :active-value="10" :inactive-value="20" inline-prompt active-text="启"
                          inactive-text="禁"></el-switch>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="角色描述">
-              <el-input v-model="ruleForm.description" type="textarea" placeholder="请输入角色描述" maxlength="150"></el-input>
+              <el-input v-model="form.description" type="textarea" placeholder="请输入角色描述" maxlength="150"></el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
@@ -41,7 +50,7 @@
                        :data="menuData"
                        :props="menuProps"
                        @check-change="roleTreeChange"
-                       :default-checked-keys="ruleForm.menus"
+                       :default-checked-keys="form.menus"
                        node-key="id"
                        show-checkbox class="menu-data-tree"/>
             </el-form-item>
@@ -81,7 +90,9 @@ interface RoleData {
 
 interface RoleState {
   isShowDialog: boolean;
-  ruleForm: RoleData;
+  editType: any;
+  form: RoleData;
+  rules: Object;
   menuData: Array<MenuDataTree>;
   menuProps: {
     children: string;
@@ -91,6 +102,7 @@ interface RoleState {
 
 export default defineComponent({
   name: 'editRole',
+  props: ['moduleName'],
   setup(props, {emit}) {
     let createForm = () => {
       return {
@@ -101,13 +113,17 @@ export default defineComponent({
         status: 10,   // 角色状态 10 启用，20 禁用
       }
     }
-    const ruleFormRef = ref()
+    const formRef = ref()
     const roleTreeRef = ref()
     const state = reactive<RoleState>({
       editType: null,
       isShowDialog: false,
-      ruleForm: createForm(),
+      form: createForm(),
       menuData: [],
+      rules: {
+        name: [{required: true, message: '请输入角色名称', trigger: 'blur'},],
+        role_type: [{required: true, message: '请选择角色类型', trigger: 'blur'},],
+      },
       menuProps: {
         children: 'children',
         label: 'title',
@@ -118,9 +134,9 @@ export default defineComponent({
       getMenuData()
       state.editType = editType
       if (row) {
-        state.ruleForm = JSON.parse(JSON.stringify(row));
+        state.form = JSON.parse(JSON.stringify(row));
       } else {
-        state.ruleForm = createForm()
+        state.form = createForm()
       }
       state.isShowDialog = true;
     };
@@ -134,12 +150,12 @@ export default defineComponent({
     };
     // 更新-新增
     const saveOrUpdate = () => {
-      ruleFormRef.value.validate((valid: any) => {
+      formRef.value.validate((valid: any) => {
         if (valid) {
-          useRolesApi().saveOrUpdateRole(state.ruleForm)
+          useRolesApi().saveOrUpdate(state.form)
               .then(() => {
                 ElMessage.success('操作成功');
-                emit('getRolesList')
+                emit('getList')
                 closeDialog(); // 关闭弹窗
               })
         }
@@ -154,14 +170,14 @@ export default defineComponent({
           });
     };
     const roleTreeChange = () => {
-      state.ruleForm.menus = roleTreeRef.value.getCheckedKeys()
+      state.form.menus = roleTreeRef.value.getCheckedKeys()
     }
     return {
       openDialog,
       closeDialog,
       onCancel,
       saveOrUpdate,
-      ruleFormRef,
+      formRef,
       roleTreeRef,
       roleTreeChange,
       ...toRefs(state),

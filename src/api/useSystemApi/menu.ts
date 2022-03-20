@@ -25,7 +25,7 @@ export function useMenuApi() {
       });
     },
     // 新增修改
-    saveOrUpdateMenu(data?: object) {
+    saveOrUpdate(data?: object) {
       return request({
         url: '/menu/saveOrUpdateMenu',
         method: 'post',

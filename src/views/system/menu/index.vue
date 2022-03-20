@@ -3,7 +3,7 @@
     <el-card shadow="hover">
       <div class="system-menu-search mb15">
         <el-input v-model="listQuery.name" placeholder="请输入菜单名称" style="max-width: 180px"></el-input>
-        <el-button type="primary" class="ml10" @click="getMenuList">
+        <el-button type="primary" class="ml10" @click="getList">
           <el-icon>
             <ele-Search/>
           </el-icon>
@@ -46,18 +46,19 @@
         </el-table-column>
         <el-table-column label="类型" show-overflow-tooltip width="80">
           <template #default="scope">
-            <el-tag type="success" size="small">{{ scope.row.xx }}菜单</el-tag>
+            <el-tag type="success" size="small">{{ scope.row.menu_type === 10 ? '菜单' : '按钮' }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" show-overflow-tooltip width="140">
           <template #default="scope">
             <el-button size="small" type="text" @click="onOpenSaveOrUpdate('update', scope.row)">修改</el-button>
-            <el-button size="small" type="text" @click="onTabelRowDel(scope.row)">删除</el-button>
+            <el-button size="small" type="text" @click="deleted(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
-    <save-or-update-menu :menuList="menuList" :allMenuList="allMenuList" @getMenuList="getMenuList" ref="saveOrUpdateMenuRef"/>
+    <save-or-update :moduleName="moduleName" :menuList="menuList" :allMenuList="allMenuList" @getList="getList"
+                    ref="saveOrUpdateRef"/>
   </div>
 </template>
 
@@ -67,15 +68,16 @@ import {useMenuApi} from '/@/api/useSystemApi/menu';
 import {useStore} from '/@/store';
 import {RouteRecordRaw} from 'vue-router';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import saveOrUpdateMenu from '/@/views/system/menu/component/saveOrUpdateMenu.vue';
+import saveOrUpdate from '/@/views/system/menu/component/saveOrUpdate.vue';
 
 export default defineComponent({
   name: 'systemMenu',
-  components: {saveOrUpdateMenu},
+  components: {saveOrUpdate},
   setup() {
     const store = useStore();
-    const saveOrUpdateMenuRef = ref();
+    const saveOrUpdateRef = ref();
     const state = reactive({
+      moduleName: '菜单', // 模块名称
       menuList: null,
       allMenuList: null,
       menuTableLoading: false,
@@ -101,7 +103,7 @@ export default defineComponent({
     };
 
     // 获取菜单列表
-    const getMenuList = async () => {
+    const getList = async () => {
       state.menuTableLoading = true
       let res = await useMenuApi().allMenu()
       state.allMenuList = res.data
@@ -112,7 +114,7 @@ export default defineComponent({
         }
       })
       menuAssembly(parent_menu, res.data)
-     state.menuTableLoading = false
+      state.menuTableLoading = false
     };
     // 打开新增菜单弹窗
     // const onOpenAddMenu = () => {
@@ -120,10 +122,10 @@ export default defineComponent({
     // };
     // 打开编辑菜单弹窗
     const onOpenSaveOrUpdate = (editType: string, row: RouteRecordRaw) => {
-      saveOrUpdateMenuRef.value.openDialog(editType, row);
+      saveOrUpdateRef.value.openDialog(editType, row);
     };
     // 删除当前行
-    const onTabelRowDel = (row: RouteRecordRaw) => {
+    const deleted = (row: RouteRecordRaw) => {
       ElMessageBox.confirm(`此操作将永久删除路由：${row.path}, 是否继续?`, '提示', {
         confirmButtonText: '删除',
         cancelButtonText: '取消',
@@ -136,16 +138,16 @@ export default defineComponent({
           });
     };
     onMounted(() => {
-      getMenuList()
+      getList()
     })
 
     return {
       // addMenuRef,
-      saveOrUpdateMenuRef,
+      saveOrUpdateRef,
       // onOpenAddMenu,
       onOpenSaveOrUpdate,
-      onTabelRowDel,
-      getMenuList,
+      deleted,
+      getList,
       ...toRefs(state),
     };
   },

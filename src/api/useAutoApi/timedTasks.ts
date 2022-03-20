@@ -5,25 +5,25 @@ import request from '/@/utils/request';
  * @method getProjectList 获取项目列表
  * @method getMenuTest 获取后端动态路由菜单(test)
  */
-export function useProjectApi() {
+export function useTimedTasksApi() {
   return {
     getList: (data?: object) => {
       return request({
-        url: '/project/list',
+        url: '/timedTasks/list',
         method: 'POST',
         data,
       });
     },
     saveOrUpdate(data?: object) {
       return request({
-        url: '/project/saveOrUpdateProject',
+        url: '/timedTasks/saveOrUpdate',
         method: 'post',
         data
       })
     },
     deleted: (data?: object) => {
       return request({
-        url: '/project/deleteProject',
+        url: '/timedTasks/deleted',
         method: 'post',
         data,
       });
