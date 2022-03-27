@@ -69,7 +69,7 @@ import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
 
 
 export default defineComponent({
-  name: 'apiModule',
+  name: 'apiTimedTask',
   components: {saveOrUpdate, Pagination},
   setup() {
     const saveOrUpdateRef = ref();
