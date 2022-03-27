@@ -39,6 +39,11 @@
             <span>{{ scope.row.roles }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="路由名称" show-overflow-tooltip>
+          <template #default="scope">
+            <span>{{ scope.row.name }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="排序" show-overflow-tooltip width="80">
           <template #default="scope">
             {{ scope.row.sort }}
