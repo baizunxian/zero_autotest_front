@@ -35,7 +35,7 @@ export async function initBackEndControlRoutes() {
   const res = await getBackEndControlRoutes();
   // 存储接口原始路由（未处理component），根据需求选择使用
   store.dispatch('requestOldRoutes/setBackEndControlRoutes', JSON.parse(JSON.stringify(res)));
-  // 处理路由（component），替换 dynamicRoutes（/@/router/route）第一个顶级 children 的路由
+  // 处理路由（components），替换 dynamicRoutes（/@/router/route）第一个顶级 children 的路由
   dynamicRoutes[0].children = await backEndComponent(res);
   // 添加动态路由
   await setAddRoute();
@@ -62,16 +62,16 @@ export function getBackEndControlRoutes() {
 /**
  * 重新请求后端路由菜单接口
  * @description 用于菜单管理界面刷新菜单（未进行测试）
- * @description 路径：/src/views/system/menu/component/addMenu.vue
+ * @description 路径：/src/views/system/menu/components/addMenu.vue
  */
 export function setBackEndControlRefreshRoutes() {
   getBackEndControlRoutes();
 }
 
 /**
- * 后端路由 component 转换
+ * 后端路由 components 转换
  * @param routes 后端返回的路由表数组
- * @returns 返回处理成函数后的 component
+ * @returns 返回处理成函数后的 components
  */
 export function backEndComponent(routes: any) {
   if (!routes) return;
@@ -83,10 +83,10 @@ export function backEndComponent(routes: any) {
 }
 
 /**
- * 后端路由 component 转换函数
+ * 后端路由 components 转换函数
  * @param dynamicViewsModules 获取目录下的 .vue、.tsx 全部文件
- * @param component 当前要处理项 component
- * @returns 返回处理成函数后的 component
+ * @param component 当前要处理项 components
+ * @returns 返回处理成函数后的 components
  */
 export function dynamicImport(dynamicViewsModules: Record<string, Function>, component: string) {
   const keys = Object.keys(dynamicViewsModules);

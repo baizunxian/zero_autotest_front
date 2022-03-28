@@ -53,7 +53,7 @@
 <script lang="ts">
 import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import saveOrUpdate from '/@/views/api/module/component/saveOrUpdate.vue';
+import saveOrUpdate from '/@/views/api/module/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
 

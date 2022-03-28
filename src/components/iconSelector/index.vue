@@ -183,7 +183,7 @@ export default defineComponent({
 			state.fontIconPlaceholder = props.placeholder;
 			// 初始化双向绑定回显
 			initModeValueEcho();
-			// 切换时，滚动条置顶。感兴趣可以使用 keep-alive <component :is="xxx"/> 进行缓存
+			// 切换时，滚动条置顶。感兴趣可以使用 keep-alive <components :is="xxx"/> 进行缓存
 			selectorScrollbarRef.value.wrap$.scrollTop = 0;
 		};
 		// 图标点击切换

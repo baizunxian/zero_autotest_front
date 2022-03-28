@@ -83,7 +83,7 @@ export default defineComponent({
     const saveOrUpdateRef = ref();
     const state = reactive({
       moduleName: '菜单', // 模块名称
-      menuList: null,
+      menuList: [],
       allMenuList: null,
       menuTableLoading: false,
       listQuery: {
