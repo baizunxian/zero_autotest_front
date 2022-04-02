@@ -29,7 +29,7 @@ export default defineComponent({
     });
 
     // 初始化Editor
-    const initEditor= (data: any) => {
+    const initEditor= (data: any = '') => {
       console.log('editorRef.value', debugTalkRef.value)
       console.log('editorRef.value', data)
       state.editor = ace.edit(debugTalkRef.value, {
