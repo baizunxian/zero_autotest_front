@@ -1,5 +1,5 @@
 <template>
-  <div ref="debugTalkRef" id="test1" style="height: 300px"></div>
+  <div ref="debugTalkRef" style="height: 100vh"></div>
 </template>
 
 <script lang="ts">
@@ -8,6 +8,7 @@ import {useRoute} from 'vue-router'
 import {useDebugTalkApi} from "/@/api/useAutoApi/debugTalk";
 import ace from 'ace-builds'
 import 'ace-builds/src-noconflict/theme-chrome';
+import 'ace-builds/src-noconflict/ext-searchbox';
 import workerJsonUrl from 'ace-builds/src-noconflict/worker-json?url';
 import workerPythonUrl from 'ace-builds/src-noconflict/mode-python?url';
 import 'ace-builds/src-noconflict/theme-monokai'
