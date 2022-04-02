@@ -1,156 +1,176 @@
 <template>
-  <div class="system-edit-menu-container">
-    <el-dialog :title="editType === 'save'? '新增' : '修改'" v-model="isShowDialog" width="40%">
-      <el-form :model="form" :rules="rules" ref="formRef" size="default" label-width="80px">
-        <el-row :gutter="35">
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="模块名称" prop="name">
-              <el-input v-model="form.name" placeholder="模块名称" clearable></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="所属项目" prop="project_id">
-              <el-select v-model="form.project_id" clearable placeholder="选择所属项目" style="width: 100%">
-                <el-option
-                    v-for="item in projectList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="负责人" prop="leader_user">
-              <el-input v-model="form.leader_user" placeholder="负责人" clearable></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="测试人员" prop="test_user">
-              <el-input v-model="form.test_user" placeholder="测试人员" clearable></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="开发人员">
-              <el-input v-model="form.dev_user" placeholder="开发人员" clearable></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="关联应用">
-              <el-input v-model="form.publish_app" placeholder="关联应用" clearable></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="简要描述">
-              <el-input v-model="form.simple_desc" placeholder="简要描述" clearable></el-input>
-            </el-form-item>
-          </el-col>
-
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="关联配置">
-              <el-input v-model="form.config_id" placeholder="关联配置" clearable></el-input>
-            </el-form-item>
-          </el-col>
-
-        </el-row>
-      </el-form>
-      <template #footer>
-				<span class="dialog-footer">
-					<el-button @click="onDialog" size="default">取 消</el-button>
-					<el-button type="primary" @click="saveOrUpdate" size="default">保 存</el-button>
-				</span>
-      </template>
-    </el-dialog>
-  </div>
+  <div ref="debugTalkRef" id="test1" style="height: 300px"></div>
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, toRefs, ref} from 'vue';
-import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
-import {ElMessage} from "element-plus";
+import {defineComponent, onMounted, reactive, ref, toRefs} from "vue";
+import {useRoute} from 'vue-router'
+import {useDebugTalkApi} from "/@/api/useAutoApi/debugTalk";
+import ace from 'ace-builds'
+import 'ace-builds/src-noconflict/theme-chrome';
+import workerJsonUrl from 'ace-builds/src-noconflict/worker-json?url';
+import workerPythonUrl from 'ace-builds/src-noconflict/mode-python?url';
+import 'ace-builds/src-noconflict/theme-monokai'
+
+ace.config.setModuleUrl('ace/mode/json_worker', workerJsonUrl);
+ace.config.setModuleUrl('ace/mode/python', workerPythonUrl);
 
 export default defineComponent({
-  name: 'saveOrUpdateTimedTasks',
-  setup(props, {emit}) {
-    const createForm = () => {
-      return {
-        name: '', // 项目名称
-        responsible_name: '', // 负责人
-        test_user: '', // 测试人员
-        dev_user: '', // 开发人员
-        publish_app: '', // 关联应用
-        simple_desc: '', // 简要描述
-        config_id: null, // 配置信息
-      }
-    }
-    const formRef = ref()
+  name: 'saveOrUpdateDebugTalk',
+  components: {},
+  setup() {
+    const debugTalkRef = ref()
+    const route = useRoute()
     const state = reactive({
-      isShowDialog: false,
-      editType: '',
-      // 参数请参考 `/src/router/route.ts` 中的 `dynamicRoutes` 路由菜单格式
-      form: createForm(),
-      rules: {
-        name: [{required: true, message: '请输入模块名称', trigger: 'blur'},],
-        project_id: [{required: true, message: '请选择所属项目', trigger: 'blur'},],
-      },
-      projectList: [], // 项目数据
-      projectListQuery: {   //
-        page: 1,
-        pageSize: 20,
-        name: '',
-      },
+      editor: null,
+      content: '',  // bulk内容
+      // headers
+
     });
 
-    // 打开弹窗
-    const openDialog = (type: string, row: any) => {
-      // 获取项目列表
-      useTimedTasksApi()
-      state.editType = type
-      if (row) {
-        state.form = JSON.parse(JSON.stringify(row));
-      } else {
-        state.form = createForm()
-      }
-      onDialog();
-    };
-    // 关闭弹窗
-    const onDialog = () => {
-      state.isShowDialog = !state.isShowDialog;
-    };
-    // 新增
-    const saveOrUpdate = () => {
-      formRef.value.validate((valid: any) => {
-        if (valid) {
-          useTimedTasksApi().saveOrUpdate(state.form)
-              .then(() => {
-                ElMessage.success('操作成功');
-                emit('getList')
-                onDialog(); // 关闭弹窗
-              })
-        }
+    // 初始化Editor
+    const initEditor= (data: any) => {
+      console.log('editorRef.value', debugTalkRef.value)
+      console.log('editorRef.value', data)
+      state.editor = ace.edit(debugTalkRef.value, {
+        fontSize: 16,
+        mode: "ace/mode/python",
+        theme: "ace/theme/monokai",
       })
-      console.log(state.form, 'state.menuForm')
-      // setBackEndControlRefreshRoutes() // 刷新菜单，未进行后端接口测试
-    };
-    // 页面加载时
+
+      state.editor.session.setValue(data)
+    }
+
+    const initData = () => {
+        if (route.query.id) {
+          useDebugTalkApi().getDebugTalkInfo({id: route.query.id})
+          .then(res => {
+            state.content = res.data.debug_talk
+            initEditor(state.content)
+          })
+        }
+    }
+
     onMounted(() => {
-      // getMenuData();
-    });
+      initData()
+    })
 
     return {
-      openDialog,
-      formRef,
-      onDialog,
-      saveOrUpdate,
+      initEditor,
+      initData,
+      debugTalkRef,
       ...toRefs(state),
     };
   },
-});
+})
+
 </script>
+
+<style lang="scss" scoped>
+.employee_body {
+  margin: 10px 20px 0;
+  overflow: hidden;
+}
+
+.app-container {
+  padding: 0;
+}
+
+.inputclass {
+  width: 300px;
+}
+
+.el-dialog {
+  height: 50%;
+}
+
+table {
+  width: 50%;
+  border-collapse: collapse;
+
+  tr, td {
+    border: 1px solid #d2d2d6;
+    padding: 5px;
+  }
+}
+
+.radio-group {
+  margin-bottom: 15px;
+}
+
+.title-wrap {
+  font-size: 14px;
+  color: #8b60f0;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  margin-top: 12px;
+
+  .title {
+    padding: 0 16px;
+  }
+
+  .line {
+    width: 100px;
+    height: 2px;
+    border-bottom: 2px dashed #e1e1f5;
+  }
+
+  .add-line {
+    width: 800px;
+    overflow: hidden;
+  }
+}
+
+.filter-item {
+  color: #fff;
+  background-color: #5bc0de;
+  border-color: #ffffff;
+  margin-bottom: 10px;
+
+  &:hover {
+    color: #fff;
+    background-color: #31b0d5;
+    border-color: #ffffff;
+  }
+}
+</style>
+
+<style lang="scss">
+/* jsoneditor右上角默认有一个链接,加css去掉了 */
+.jsoneditor-poweredBy {
+  display: none;
+}
+
+.ace_gutter {
+  background: #FFF
+}
+
+.jsoneditor-vue .jsoneditor {
+  border: 0;
+
+  .jsoneditor-menu {
+    // background: #ebebeb;
+    background-color: #ebebeb;
+    border-bottom: 0;
+
+    .jsoneditor-modes {
+      color: #000;
+    }
+
+    .jsoneditor-outer {
+      background: #ebebeb;
+    }
+
+    button {
+      outline: none;
+      background-color: #5bc0de;
+
+      &:hover {
+        background-color: #5bc0de;
+      }
+    }
+  }
+}
+</style>
