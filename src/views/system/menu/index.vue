@@ -73,7 +73,7 @@ import {useMenuApi} from '/@/api/useSystemApi/menu';
 import {useStore} from '/@/store';
 import {RouteRecordRaw} from 'vue-router';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import saveOrUpdate from '/@/views/system/menu/component/saveOrUpdate.vue';
+import saveOrUpdate from '/@/views/system/menu/components/saveOrUpdate.vue';
 
 export default defineComponent({
   name: 'systemMenu',

@@ -20,7 +20,11 @@
           v-loading="tableLoading"
           :data="listData"
           style="width: 100%">
-        <el-table-column type="index" label="序号" width="60"/>
+        <el-table-column label="序号" width="50px" align="center">
+          <template #default="scope">
+            {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="角色名称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="role_type" label="权限类型" show-overflow-tooltip></el-table-column>
         <el-table-column prop="status" label="角色状态" show-overflow-tooltip>
@@ -57,7 +61,7 @@
 <script lang="ts">
 import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import saveOrUpdate from '/@/views/system/role/component/saveOrUpdate.vue';
+import saveOrUpdate from '/@/views/system/role/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useRolesApi} from "/@/api/useSystemApi/roles";
 
@@ -78,7 +82,6 @@ export default defineComponent({
   setup() {
     const saveOrUpdateRef = ref();
     const state = reactive({
-      moduleName: '角色', // 模块名称
       listData: [],
       tableLoading: false,
       total: 0,

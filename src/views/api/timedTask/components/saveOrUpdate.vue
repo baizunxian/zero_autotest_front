@@ -1,6 +1,8 @@
 <template>
   <div class="system-edit-menu-container">
-    <el-dialog :title="editType === 'save'? '新增' : '修改'" v-model="isShowDialog" width="40%">
+    <el-dialog
+        :title="editType === 'save'? '新增' : '修改'"
+        v-model="isShowDialog" width="40%">
       <el-form :model="form" :rules="rules" ref="formRef" size="default" label-width="80px">
         <el-row :gutter="35">
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">

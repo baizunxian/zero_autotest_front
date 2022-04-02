@@ -4,7 +4,7 @@ import {Session} from '/@/utils/storage';
 
 // 配置新建一个 axios 实例
 const service = axios.create({
-  baseURL: 'http://localhost:8011/api',
+  baseURL: 'http://localhost:8012/api',
   timeout: 50000,
   headers: {'Content-Type': 'application/json'},
 });
@@ -39,6 +39,8 @@ service.interceptors.response.use(
           })
           .catch(() => {
           });
+      } else {
+        ElMessage.error(res.msg || '接口错误！');
       }
       return Promise.reject(service.interceptors.response);
     } else {

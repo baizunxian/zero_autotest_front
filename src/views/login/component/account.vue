@@ -56,7 +56,7 @@ import {computed, defineComponent, reactive, toRefs} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import {ElMessage} from 'element-plus';
 import {initBackEndControlRoutes} from '/@/router/backEnd';
-import {useStore} from '/@/store/index';
+import {useStore} from '/@/store';
 import {Session} from '/@/utils/storage';
 import {formatAxis} from '/@/utils/formatTime';
 import {useLoginApi} from '/@/api/useSystemApi/login';
@@ -105,7 +105,10 @@ export default defineComponent({
             await initBackEndControlRoutes();
             // await initFrontEndControlRoutes();
             signInSuccess();
-          })
+          }).catch(e => {
+            state.loading.signIn = false;
+            console.log(e)
+      })
 
       // if (state.ruleForm.userName === 'admin') {
       // 	defaultRoles = adminRoles;

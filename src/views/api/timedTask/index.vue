@@ -20,6 +20,11 @@
           v-loading="tableLoading"
           :data="listData"
           style="width: 100%">
+        <el-table-column label="序号" width="50px" align="center">
+          <template #default="scope">
+            {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column label="任务名称" show-overflow-tooltip prop="name"></el-table-column>
         <el-table-column label="所属项目" show-overflow-tooltip prop="project_id"></el-table-column>
         <el-table-column label="任务类型" show-overflow-tooltip prop="task_type"></el-table-column>

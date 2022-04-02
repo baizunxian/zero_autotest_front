@@ -1,6 +1,8 @@
 <template>
   <div class="system-edit-user-container">
-    <el-dialog :title="editType === 'save'? `新增${moduleName}` : `修改${moduleName}`" v-model="isShowDialog" width="769px">
+    <el-dialog
+        :title="editType === 'save'? `新增` : `修改`"
+        v-model="isShowDialog" width="769px">
       <el-form :model="form" :rules="rules" ref="userFormRef" size="default" label-width="90px">
         <el-row :gutter="35">
 
@@ -61,10 +63,10 @@
         </el-row>
       </el-form>
       <template #footer>
-				<span class="dialog-footer">
-					<el-button @click="onCancel" size="default">取 消</el-button>
-					<el-button type="primary" @click="saveOrUpdate" size="default">保 存</el-button>
-				</span>
+        <span class="dialog-footer">
+          <el-button @click="onCancel" size="default">取 消</el-button>
+          <el-button type="primary" @click="saveOrUpdate" size="default">保 存</el-button>
+        </span>
       </template>
     </el-dialog>
   </div>

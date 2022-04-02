@@ -1,7 +1,7 @@
 <template>
   <div class="echart-pie-wrap">
     <div class="myEditorTop">[{{ isEdit ? '编辑' : '只读' }}] - [{{ debugtalkfrom.project_name }}]
-      <el-button v-show="isEdit" type="success" size="mini" @click="save" style="margin-left: 10px;">保存</el-button>
+      <el-button v-show="isEdit" type="success" @click="save" style="margin-left: 10px;">保存</el-button>
     </div>
     <editor
         width="100%"
@@ -16,12 +16,12 @@
   </div>
 </template>
 <script>
-import {saveDebugTalk, getDebugTalkInfo} from '@/api/case'
+// import {saveDebugTalk, getDebugTalkInfo} from '@/api/case'
 import {mapGetters} from 'vuex'
 
 export default {
   name: 'editDebugtalk',
-  components: {editor: require('vue2-ace-editor')},
+  // components: {editor: require('vue2-ace-editor')},
   data() {
     return {
       isEdit: true,
@@ -76,11 +76,11 @@ export default {
   },
   methods: {
     editorInit() {
-      require('brace/ext/language_tools')
-      require('brace/ext/searchbox')
-      require('brace/mode/python')
-      require('brace/snippets/python')
-      require('brace/theme/monokai')
+      // require('brace/ext/language_tools')
+      // require('brace/ext/searchbox')
+      // require('brace/mode/python')
+      // require('brace/snippets/python')
+      // require('brace/theme/monokai')
     },
     //重置表单
     async resetform() {

@@ -329,8 +329,8 @@
 </template>
 
 <script>
-import {runTest} from '@/api/case'
-import ECharts from 'vue-echarts/components/ECharts.vue'
+// import {runTest} from '@/api/case'
+import ECharts from 'echarts'
 import 'echarts/lib/chart/bar'
 import 'echarts/lib/chart/line'
 import 'echarts/lib/chart/pie'
@@ -340,9 +340,9 @@ import 'echarts/lib/component/markPoint'
 import 'echarts/lib/component/markLine'
 import 'echarts/lib/component/graphic'
 import 'echarts/lib/component/title'
-import light from 'echarts/lib/theme/light.js'
-import JsonViewer from '@/utils/vue-json-viewer'
-import 'vue-json-viewer/style.css'
+// import light from 'echarts/lib/theme/light.js'
+// import JsonViewer from '@/utils/vue-json-viewer'
+// import 'vue-json-viewer/style.css'
 
 ECharts.registerTheme('ovilia-green', light) //引入主题 
 export default {

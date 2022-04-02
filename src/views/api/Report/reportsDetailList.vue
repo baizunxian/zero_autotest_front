@@ -133,15 +133,15 @@
 </template>
 
 <script>
-import {getReportList, delReport, getReportById, reportsDetailList, getReportNewById} from '@/api/report'
-import Pagination from '@/components/Pagination'
-import testReport from './components/testReport'
-import waves from '@/directive/waves' // waves directive
-import {mapGetters} from 'vuex'
-import {GetLookupValueList, saveOrUpdateLookupValue, delLookupValue} from '@/api/lookup'
-import config from '@/config/config.js'
+// import {getReportList, delReport, getReportById, reportsDetailList, getReportNewById} from '@/api/report'
+// import Pagination from '@/components/Pagination'
+// import testReport from './components/testReport'
+// import waves from '@/directive/waves' // waves directive
+// import {mapGetters} from 'vuex'
+// import {GetLookupValueList, saveOrUpdateLookupValue, delLookupValue} from '@/api/lookup'
+// import config from '@/config/config.js'
 import axios from 'axios'
-import {getToken, getUserId} from '@/utils/auth'
+// import {getToken, getUserId} from '@/utils/auth'
 
 
 export default {

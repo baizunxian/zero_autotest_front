@@ -152,11 +152,11 @@
 </template>
 
 <script>
-import {debugFunc, debugTalkList, getFuncList} from '@/api/case'
-import Pagination from '@/components/Pagination'
-import waves from '@/directive/waves' // waves directive
+// import {debugFunc, debugTalkList, getFuncList} from '@/api/case'
+import Pagination from '/@/components/Pagination'
+// import waves from '@/directive/waves' // waves directive
 import {mapGetters} from 'vuex'
-import JsonViewer from '@/utils/vue-json-viewer'
+// import JsonViewer from '@/utils/vue-json-viewer'
 
 export default {
   name: 'Debugtalk',

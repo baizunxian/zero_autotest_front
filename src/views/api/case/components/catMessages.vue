@@ -127,12 +127,12 @@
 </template>
 
 <script>
-import {GetProjectList} from '@/api/project'
-import {GetModuleList} from '@/api/module'
-import {GetCaseList, gatApiCode} from '@/api/case'
-import catCase from '../catCase'
-import Sortable from 'sortablejs'
-import elTransfer from '@/components/transfer/src/main'
+// import {GetProjectList} from '@/api/project'
+// import {GetModuleList} from '@/api/module'
+// import {GetCaseList, gatApiCode} from '@/api/case'
+// import catCase from '../catCase'
+// import Sortable from 'sortablejs'
+// import elTransfer from '@/components/transfer/src/main'
 
 export default {
   name: 'messages',

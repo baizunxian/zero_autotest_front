@@ -132,10 +132,10 @@
       <!--            </el-table-column>-->
       <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button size="mini" type="info" icon="el-icon-document" @click="lockreport(row)">
+          <el-button  type="info" icon="el-icon-document" @click="lockreport(row)">
             详情
           </el-button>
-          <el-button size="mini" type="primary" icon="el-icon-download" @click="reportDownload(row)"
+          <el-button  type="primary" icon="el-icon-download" @click="reportDownload(row)"
                      :disabled="row.successes =='error'">
             下载
           </el-button>
@@ -190,15 +190,15 @@
 </template>
 
 <script>
-import {delReport, getReportById, getReportList, stopTest} from '@/api/report'
-import {getToken, getUserId} from '@/utils/auth'
-import Pagination from '@/components/Pagination'
-import logs from '@/components/logs'
-import testReport from './components/testReport'
-import waves from '@/directive/waves' // waves directive
+// import {delReport, getReportById, getReportList, stopTest} from '@/api/report'
+// import {getToken, getUserId} from '@/utils/auth'
+import Pagination from '/@/components/Pagination'
+// import logs from '@/components/logs'
+// import testReport from './components/testReport'
+// import waves from '@/directive/waves' // waves directive
 import {mapGetters} from 'vuex'
-import {GetLookupValueList} from '@/api/lookup'
-import config from '@/config/config.js'
+// import {GetLookupValueList} from '@/api/lookup'
+// import config from '@/config/config.js'
 import axios from 'axios'
 
 

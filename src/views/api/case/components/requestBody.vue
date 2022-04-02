@@ -1,19 +1,20 @@
 <template>
-  <el-form inline ref="request-form" :model="request" label-width="50px" size="mini" label-position="right">
+  <el-form inline ref="request-form" :model="requestForm" label-width="50px" size="mini" label-position="right">
     <!-- data -->
-    <el-radio-group v-model="request.type" size="mini" class="radio-group" @change="changeRadio">
+    <el-radio-group v-model="requestForm.dataType" class="radio-group">
       <el-radio label="data">data</el-radio>
       <el-radio label="json">json</el-radio>
       <el-radio label="params">params</el-radio>
       <!--      <el-radio label="form-data">form-data</el-radio>-->
     </el-radio-group>
-    <div v-if="request.type === 'data'">
+
+    <!---------------------------params------------------------------------>
+    <div v-if="requestForm.dataType === 'data'">
       <el-button class="filter-item" type="primary" @click="addData">Add Data</el-button>
       <div>
         <el-table
-            :header-cell-style="tabelheadercolor"
-            ref="multipleTable"
-            :data="testdata"
+            ref="bodyDataTableRef"
+            :data="bodyData"
             header-align='center'
             border
             tooltip-effect="dark"
@@ -22,22 +23,22 @@
           <!-- <el-table-column type="selection" width="55" label="Option">
           </el-table-column> -->
           <el-table-column label="Key" header-align='center'>
-            <template slot="header">
+            <template #header>
               <strong style="font-size: 14px;">参数名</strong>
             </template>
-            <template slot-scope="{row}">
-              <el-input v-model="row.key"></el-input>
+            <template #default="scope">
+              <el-input size="small" v-model="scope.row.key"></el-input>
             </template>
           </el-table-column>
 
           <el-table-column prop="type" width="120" header-align='center'>
-            <template slot="header">
+            <template #header>
               <strong style="font-size: 14px;">参数类型</strong>
             </template>
-            <template slot-scope="{row}">
-              <el-select v-model="row.type" placeholder="请选择">
+            <template v-slot="scope">
+              <el-select size="small" v-model="scope.row.type" placeholder="请选择">
                 <el-option
-                    v-for="item in typeOptions"
+                    v-for="item in dataTypeOptions"
                     :key="item"
                     :label="item"
                     :value="item">
@@ -47,64 +48,81 @@
           </el-table-column>
 
           <el-table-column prop="value" header-align='center'>
-            <template slot="header">
+            <template #header>
               <strong style="font-size: 14px;">参数值</strong>
             </template>
-            <template slot-scope="{row}">
-              <el-input v-model="row.value"></el-input>
+            <template v-slot="scope">
+              <el-input size="small" v-model="scope.row.value"></el-input>
             </template>
           </el-table-column>
           <el-table-column align="center" width="50" class-name="small-padding fixed-width">
-            <template slot-scope="{row,$index}">
-              <el-link :underline="false" type="primary" @click="deleteData(row,$index)"><i class="el-icon-delete"></i>
-              </el-link>
+            <template v-slot="scope">
+              <el-button size="small" type="text" @click="deleteData(scope.row,scope.index)">
+                <el-icon>
+                  <ele-Delete/>
+                </el-icon>
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
+    <el-button @click="editorInit">test</el-button>
+    <JsonEditorVue class="editor" v-model="jsonData" @blur="validate" />
+
+<!--  <v-ace-editor ref="aceEditorRef" v-show="requestForm.dataType === 'json'" :data="jsonData"/>-->
+
+
+<!--    <v-ace-editor-->
+<!--        v-show="requestForm.dataType === 'json'"-->
+<!--        @init="editorInit"-->
+<!--                  v-model:value="jsonData"-->
+<!--                  style="height: 500px"-->
+<!--                  lang="json"-->
+<!--                  :options="{ useWorker: true }" />-->
+
 
     <!-- json -->
-    <vue-json-editor
-        v-if="request.type === 'json'"
-        v-model="json"
-        :showBtns="false"
-        :mode="'code'"
-        @json-change="onJsonChange"
-        @json-save="onJsonSave"
-        @has-error="onError"
-        lang="zh"/>
-    <!-- params -->
-    <div v-if="request.type === 'params'">
+    <!--    <vue-json-editor-->
+    <!--        v-if="requestForm.type === 'json'"-->
+    <!--        v-model="jsonData"-->
+    <!--        :showBtns="false"-->
+    <!--        :mode="'code'"-->
+    <!--        @json-change="onJsonChange"-->
+    <!--        @json-save="onJsonSave"-->
+    <!--        @has-error="onError"-->
+    <!--        lang="zh"/>-->
+
+    <!---------------------------params------------------------------------>
+    <div v-if="requestForm.dataType === 'params'">
       <div>
         <el-button class="filter-item" type="primary" @click="addParams">Add Params</el-button>
       </div>
       <div>
         <el-table
-            :header-cell-style="tabelheadercolor"
-            ref="multipleTable"
-            :data="paramsdata"
+            ref="paramsDataTableRef"
+            :data="paramsData"
             tooltip-effect="dark"
             border
             style="width: 100%"
         >
           <el-table-column header-align='center'>
-            <template slot="header">
+            <template #header>
               <strong style="font-size: 14px;">参数名</strong>
             </template>
-            <template slot-scope="{row}">
-              <el-input v-model="row.key"></el-input>
+            <template #default="scope">
+              <el-input size="small" v-model="scope.row.key"></el-input>
             </template>
           </el-table-column>
 
           <el-table-column prop="type" width="120" header-align='center'>
-            <template slot="header">
+            <template #header>
               <strong style="font-size: 14px;">参数类型</strong>
             </template>
-            <template slot-scope="{row}">
-              <el-select v-model="row.type" placeholder="请选择">
+            <template #default="scope">
+              <el-select size="small" v-model="scope.row.type" placeholder="请选择">
                 <el-option
-                    v-for="item in typeOptions"
+                    v-for="item in dataTypeOptions"
                     :key="item"
                     :label="item"
                     :value="item">
@@ -114,252 +132,136 @@
           </el-table-column>
 
           <el-table-column prop="value" header-align='center'>
-            <template slot="header">
+            <template #header>
               <strong style="font-size: 14px;">参数值</strong>
             </template>
-            <template slot-scope="{row}">
-              <el-input v-model="row.value"></el-input>
+            <template #default="scope">
+              <el-input size="small" v-model="scope.row.value"></el-input>
             </template>
           </el-table-column>
           <el-table-column align="center" width="50" class-name="small-padding fixed-width">
-            <template slot-scope="{row,$index}">
-              <el-link :underline="false" type="primary" @click="deleteParams(row,$index)"><i
-                  class="el-icon-delete"></i></el-link>
+            <template #default="scope">
+              <el-button size="small" type="text" @click="deleteParams(scope.row,scope.index)">
+                <el-icon>
+                  <ele-Delete/>
+                </el-icon>
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
-    <!--    <div v-show="request.type === 'form-data'">-->
-    <!--      <div>-->
-    <!--        <el-button class="filter-item" type="primary" @click="addFormData">Add FromData</el-button>-->
-    <!--        <el-button class="filter-item" type="primary" @click="addFormData1">Add FromData</el-button>-->
-    <!--      </div>-->
-    <!--      <div>-->
-    <!--        <el-table-->
-    <!--            :header-cell-style="tabelheadercolor"-->
-    <!--            ref="formDataRef"-->
-    <!--            :data="formData"-->
-    <!--            tooltip-effect="dark"-->
-    <!--            border-->
-    <!--            style="width: 100%"-->
-    <!--        >-->
-    <!--          <el-table-column header-align='center'>-->
-    <!--            <template slot="header">-->
-    <!--              <strong style="font-size: 14px;">参数名</strong>-->
-    <!--            </template>-->
-    <!--            <template slot-scope="{row}">-->
-    <!--              <el-input v-model="row.key"></el-input>-->
-    <!--            </template>-->
-    <!--          </el-table-column>-->
-
-    <!--          <el-table-column prop="type" width="120" header-align='center'>-->
-    <!--            <template slot="header">-->
-    <!--              <strong style="font-size: 14px;">参数类型</strong>-->
-    <!--            </template>-->
-    <!--            <template slot-scope="{row}">-->
-    <!--              <el-select v-model="row.type" placeholder="请选择">-->
-    <!--                <el-option-->
-    <!--                    v-for="item in formDatatypeOptions"-->
-    <!--                    :key="item"-->
-    <!--                    :label="item"-->
-    <!--                    :value="item">-->
-    <!--                </el-option>-->
-    <!--              </el-select>-->
-    <!--            </template>-->
-    <!--          </el-table-column>-->
-
-    <!--          <el-table-column prop="value" header-align='center'>-->
-    <!--            <template slot="header">-->
-    <!--              <strong style="font-size: 14px;">参数值</strong>-->
-    <!--            </template>-->
-    <!--            <template slot-scope="{row, $index}">-->
-    <!--              &lt;!&ndash;              <input type="file" :id="$index + 'files'">&ndash;&gt;-->
-    <!--              &lt;!&ndash;              <input v-if="row.type === 'File'" :id="$index + 'files'" type="file" v-model="row.value"></input>&ndash;&gt;-->
-    <!--&lt;!&ndash;              <input v-if="row.type === 'File'" :id="$index + 'files'" type="file"></input>&ndash;&gt;-->
-    <!--              <el-upload-->
-    <!--                  v-if="row.type === 'File'"-->
-    <!--                  -->
-    <!--                  class="upload-demo"-->
-    <!--                  action="https://jsonplaceholder.typicode.com/posts/"-->
-    <!--                  :on-change="handleChange"-->
-    <!--                  :file-list="fileList">-->
-    <!--                <el-button size="small" type="primary">点击上传</el-button>-->
-    <!--                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
-    <!--              </el-upload>-->
-    <!--              <el-input v-else v-model="row.value"></el-input>-->
-    <!--            </template>-->
-    <!--          </el-table-column>-->
-    <!--          <el-table-column align="center" width="50" class-name="small-padding fixed-width">-->
-    <!--            <template slot-scope="{row,$index}">-->
-    <!--              <el-link :underline="false" type="primary" @click="deleteParams(row,$index)"><i-->
-    <!--                  class="el-icon-delete"></i></el-link>-->
-    <!--            </template>-->
-    <!--          </el-table-column>-->
-    <!--        </el-table>-->
-    <!--      </div>-->
-    <!--    </div>-->
   </el-form>
+<!--  <App></App>-->
 </template>
 
-<script>
-import {debugtestcase} from '@/api/case'
-import clipboard from '@/utils/clipboard'
-import vueJsonEditor from 'vue-json-editor'
+<script lang="ts">
+// import { VAceEditor } from 'vue3-ace-editor';
+// import 'ace-builds/src-noconflict/mode-json';
+// import 'ace-builds/src-noconflict/theme-chrome';
+// import ace from 'ace-builds';
+// import workerJsonUrl from 'ace-builds/src-noconflict/worker-json?url';
+// ace.config.setModuleUrl('ace/mode/json_worker', workerJsonUrl);
+import JsonEditorVue from '/@/components/VaceEditor/json-editor.vue'
 
-export default {
-  name: 'request',
-  components: {vueJsonEditor},
-  data() {
-    return {
-      activeName: 'body',
-      assertlist: [
-        {formId: Math.random().toFixed(10)}
-      ],
-      testdata: [],  // data 数据
-      json: {key: 'value'},
-      paramsdata: [],  //params
-      // formData: [],  //formData
-      buttonStart: false,
-      hasJsonFlag: true,
-      tabelheadercolor: {color: '#000', background: '#f5f5f5'},
-      methodList: ['POST', 'GET', 'PUT', 'DELETE'],
-      typeList: ['data', 'json', 'params'],
-      typeOptions: ['string', 'int', 'float', 'boolean'],
-      // formDatatypeOptions: ['Text', 'File'],
-      request: {
-        type: 'json',
+import {defineComponent, reactive, ref, toRefs, onMounted} from "vue";
+//
+export default defineComponent({
+  components: {JsonEditorVue},
+  name: 'requestBody',
+  setup() {
+    const formRef = ref()
+    const aceEditorRef = ref()
+
+    const state = reactive({
+      requestForm: {
+        dataType: 'json',
         headers: {},
       },
-      updateNumber: 0
+      bodyData: [],
+      jsonData: {key: 'value'},
+      paramsData: [],
+      hasJsonFlag: false,
+      dataTypeOptions: ['string', 'int', 'float', 'boolean'],
+
+    });
+
+    const editorInit = () => {
+      state.jsonData = {test1: 'test2'}
+      // aceEditorRef.value.initData(state.jsonData)
     }
-  },
-
-  watch: {
-    testdata: {
-      handler(val) {
-        this.updateNumber++
-        if (val && this.updateNumber > 4) {
-          this.$emit('setUpdateCount', 'body-data')
-        }
-      },
-      deep: true
-    },
-    json: {
-      handler(val) {
-        this.updateNumber++
-        if (val && this.updateNumber > 4) {
-          this.$emit('setUpdateCount', 'body-json')
-        }
-      },
-      deep: true
-    },
-    paramsdata: {
-      handler(val) {
-        this.updateNumber++
-        if (val && this.updateNumber > 4) {
-          this.$emit('setUpdateCount')
-        }
-      },
-      deep: true
-    },
-    request: {
-      handler(val) {
-        this.updateNumber++
-        if (val && this.updateNumber > 4) {
-          this.$emit('setUpdateCount')
-        }
-      },
-      deep: true
-    }
-  },
-
-  methods: {
-    // 重置表单
-    resetForm() {
-      this.updateNumber = 0
-      this.testdata = []
-      this.json = {key: 'value'}
-      this.paramsdata = []
-      this.request = {type: 'json', headers: {},}
-      this.hasJsonFlag = true
-    },
-    // from 拼接
-    getBodyForm() {
-
-      let requestData = {}
-      requestData.type = this.request.type
-      if (this.request.type === 'json') {
-        if (!this.hasJsonFlag) throw new Error('json 格式错误!')
-        this.$set(requestData, 'json', this.json)
+    // 初始化表单
+    const initForm = (formData) => {
+      state.requestForm.dataType = formData.type
+      if (formData.type === 'json') {
+        state.jsonData = formData.json
       }
-      if (this.request.type === 'data') {
-        requestData.data = this.testdata
-      }
-      if (this.request.type === 'params') {
-        requestData.params = this.paramsdata
-      }
-      this.hasJsonFlag = true
-      return requestData
-    },
-    // 编辑时赋值
-    setBodyForm(form) {
-      this.updateNumber = 0
-      this.resetForm()
-      this.request.type = form.type
-      if (form.type === 'json') {
-        this.json = form.json
-      }
-      if (form.type === 'params') {
-        if (form.params.length > 0) {
-          form.params.forEach(params => {
+      if (formData.type === 'params') {
+        if (formData.params.length > 0) {
+          formData.params.forEach(params => {
             params['value'] = params.value.toString()
           })
         }
-        this.paramsdata = form.params
+        state.paramsData = formData.params
       }
-      if (form.type === 'data') {
-        this.testdata = form.data
+      if (formData.type === 'data') {
+        state.bodyData = formData.data
       }
-    },
+    }
 
-    typeChange(val) {
 
-    },
-    // data
-    addData() {
-      this.testdata.push({key: '', type: 'string', value: ''})
-    },
-    deleteData(row, index) {
-      this.testdata.splice(index, 1)
-    },
+    // 获取表单数据
+    const getFormData = () => {
+      let requestData = {}
+      requestData.type = state.requestForm.dataType
+      if (state.requestForm.dataType === 'json') {
+        if (!state.hasJsonFlag) throw new Error('json 格式错误!')
+        requestData.json = state.jsonData
+      }
+      if (state.requestForm.type === 'data') {
+        requestData.data = state.bodyData
+      }
+      if (state.requestForm.type === 'params') {
+        requestData.params = state.paramsData
+      }
+      state.hasJsonFlag = true
+      return requestData
+    }
+    // bodyData
+    const addData = () => {
+      state.bodyData.push({key: '', type: 'string', value: ''})
+    }
+    const deleteData = (row, index) => {
+      state.bodyData.splice(index, 1)
+    }
 
     // params
-    addParams() {
-      this.paramsdata.push({key: '', type: 'string', value: ''})
-    },
-    deleteParams(row, index) {
-      this.paramsdata.splice(index, 1)
-    },
-    onJsonChange(value) {
-      // console.log('更改value:', value);
-      // 实时保存
-      this.onJsonSave(value)
-    },
-    onJsonSave(value) {
-      // console.log('保存value:', value);
-      this.resultInfo = value
-      this.hasJsonFlag = true
-    },
-    onError(value) {
-      // console.log("json错误了value:", value);
-      this.hasJsonFlag = false
-    },
-    changeRadio() {
-      this.hasJsonFlag = true
+    const addParams = () => {
+      state.paramsData.push({key: '', type: 'string', value: ''})
     }
-  }
-}
+    const deleteParams = (row, index) => {
+      state.paramsData.splice(index, 1)
+    }
+
+    // onMounted(() => {
+    //   editorInit()
+    // })
+
+    return {
+      formRef,
+      editorInit,
+      initForm,
+      getFormData,
+      addData,
+      deleteData,
+      addParams,
+      deleteParams,
+      aceEditorRef,
+      ...toRefs(state),
+    }
+//
+  },
+});
 </script>
 
 <style lang="scss" scoped>

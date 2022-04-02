@@ -2,7 +2,7 @@
   <div>
     <el-card shadow="hover">
       <div class="mb15">
-        <el-input v-model="listQuery.name" placeholder="请输入模块名称" style="max-width: 180px"></el-input>
+        <el-input v-model="listQuery.name" placeholder="请输入用例名称" style="max-width: 180px"></el-input>
         <el-button type="primary" class="ml10" @click="getList">
           <el-icon>
             <ele-Search/>
@@ -20,14 +20,14 @@
           v-loading="tableLoading"
           :data="listData"
           style="width: 100%">
-        <el-table-column label="模块名称" show-overflow-tooltip prop="name"></el-table-column>
-        <el-table-column label="归属项目" show-overflow-tooltip prop="project_name"></el-table-column>
-        <el-table-column label="测试人员" show-overflow-tooltip prop="test_user"></el-table-column>
-        <el-table-column label="开发人员" show-overflow-tooltip prop="dev_user"></el-table-column>
-        <el-table-column label="用例数" show-overflow-tooltip prop="case_count"></el-table-column>
-        <el-table-column label="描述" show-overflow-tooltip prop="simple_desc"></el-table-column>
-        <el-table-column label="其他信息" show-overflow-tooltip prop="other_desc"></el-table-column>
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column label="ID" show-overflow-tooltip prop="id" width="55"></el-table-column>
+        <el-table-column label="用例名" show-overflow-tooltip prop="name"></el-table-column>
+        <el-table-column label="所属项目" show-overflow-tooltip prop="project_name"></el-table-column>
+        <el-table-column label="所属模块" show-overflow-tooltip prop="module_name"></el-table-column>
         <el-table-column label="关联配置" show-overflow-tooltip prop="config_id"></el-table-column>
+        <el-table-column label="更新时间" show-overflow-tooltip prop="updation_date"></el-table-column>
+        <el-table-column label="创建时间" show-overflow-tooltip prop="creation_date" ></el-table-column>
         <el-table-column label="操作" width="100">
           <template #default="scope">
             <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"
@@ -55,7 +55,7 @@ import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import saveOrUpdate from '/@/views/api/module/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
-import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
+import {useTestCaseApi} from "/@/api/useAutoApi/testcase";
 
 // 定义接口来定义对象的类型
 // interface TableData {
@@ -69,7 +69,7 @@ import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
 
 
 export default defineComponent({
-  name: 'apiModule',
+  name: 'apiTestCase',
   components: {saveOrUpdate, Pagination},
   setup() {
     const saveOrUpdateRef = ref();
@@ -86,7 +86,7 @@ export default defineComponent({
     // 初始化表格数据
     const getList = () => {
       state.tableLoading = true
-      useTimedTasksApi().getList(state.listQuery)
+      useTestCaseApi().getList(state.listQuery)
           .then(res => {
             state.listData = res.data.rows
             state.total = res.data.rowTotal
@@ -107,7 +107,7 @@ export default defineComponent({
         type: 'warning',
       })
           .then(() => {
-            useTimedTasksApi().deleted({id: row.id})
+            useTestCaseApi().deleted({id: row.id})
                 .then(() => {
                   ElMessage.success('删除成功');
                   getList()

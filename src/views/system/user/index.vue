@@ -21,7 +21,11 @@
           v-loading="tableLoading"
           style="width: 100%"
       >
-        <el-table-column type="index" label="序号" width="60"/>
+        <el-table-column label="序号" width="50px" align="center">
+          <template #default="scope">
+            {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
+          </template>
+        </el-table-column>
         <el-table-column prop="username" label="账户名称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="nickname" label="用户昵称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="roles" label="关联角色" show-overflow-tooltip></el-table-column>
@@ -60,14 +64,14 @@
           :limit="listQuery.pageSize"
           @pagination="getList"/>
     </el-card>
-    <save-or-update @getList="getList" :moduleName="moduleName" ref="saveOrUpdateRef"/>
+    <save-or-update @getList="getList" ref="saveOrUpdateRef"/>
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import saveOrUpdate from '/@/views/system/user/component/saveOrUpdate.vue';
+import saveOrUpdate from '/@/views/system/user/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useUserApi} from '/@/api/useSystemApi/user';
 import {useStore} from "/@/store";
@@ -87,6 +91,20 @@ interface TableDataRow {
   updation_date: string;
 }
 
+interface listQueryRow {
+  page: number;
+  pageSize: number;
+  username: string;
+
+}
+
+interface StateRow {
+  listData: Array<TableDataRow>;
+  tableLoading: boolean;
+  total: number;
+  listQuery: listQueryRow;
+}
+
 
 export default defineComponent({
   name: 'systemUser',
@@ -95,8 +113,7 @@ export default defineComponent({
     const saveOrUpdateRef = ref();
     const store = useStore();
     const userInfos = store.state.userInfos.userInfos;
-    const state = reactive({
-      moduleName: '用户', // 模块名称
+    const state = reactive<StateRow>({
       listData: [],
       tableLoading: false,
       total: 0,

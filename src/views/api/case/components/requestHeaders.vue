@@ -3,7 +3,7 @@
     <div>
       <el-button class="filter-item" type="primary" @click="addHeaders">Add Headers</el-button>
       <el-button class="filter-item" type="primary" @click="bulkEdit">
-        {{ this.showBulk ? "KeyValueEdit" : "BulkEdit" }}
+        {{ showBulk ? "KeyValueEdit" : "BulkEdit" }}
       </el-button>
     </div>
 
@@ -13,33 +13,37 @@
 
     <div v-show="!showBulk">
       <el-table
-          :header-cell-style="tabelheadercolor"
           ref="multipleTable"
-          :data="headersdata"
+          :data="headersData"
           tooltip-effect="dark"
           border
           style="width: 100%"
       >
         <el-table-column header-align='center'>
-          <template slot="header">
+          <template #header>
             <strong style="font-size: 14px;">参数名</strong>
           </template>
-          <template slot-scope="{row}">
-            <el-input v-model="row.key"></el-input>
+          <template #default="scope">
+            <el-input v-model="scope.row.key"></el-input>
           </template>
         </el-table-column>
         <el-table-column prop="value" header-align='center'>
-          <template slot="header">
+          <template #header>
             <strong style="font-size: 14px;">参数值</strong>
           </template>
-          <template slot-scope="{row}">
-            <el-input v-model.trim="row.value"></el-input>
+          <template #default="scope">
+            <el-input v-model.trim="scope.row.value"></el-input>
           </template>
         </el-table-column>
         <el-table-column align="center" width="50" class-name="small-padding fixed-width">
-          <template slot-scope="{row,$index}">
-            <el-link :underline="false" type="primary" @click="deleteHeader(row,$index)"><i class="el-icon-delete"></i>
-            </el-link>
+          <template #default="scope">
+
+            <el-button size="small" type="text" @click="deleteHeaders(scope.row,scope.index)">
+              <el-icon>
+                <ele-Delete/>
+              </el-icon>
+            </el-button>
+
           </template>
         </el-table-column>
       </el-table>
@@ -47,141 +51,112 @@
   </el-form>
 </template>
 
-<script>
-export default {
-  name: 'request',
-  data() {
-    return {
-      activeName: 'body',
-      showBulk: false,
-      headersBulk: '',
-      assertlist: [
-        {formId: Math.random().toFixed(10)}
-      ],
-      headersdata: [],  // 请求头
-      buttonStart: false,
-      tabelheadercolor: {color: '#000', background: '#f5f5f5'},
-      methodList: ['POST', 'GET', 'PUT', 'DELETE'],
-      typeList: ['data', 'json', 'params'],
-      typeOptions: ['string', 'int', 'float', 'boolean'],
-      request: {
-        type: 'data',
-        headers: {},
-      },
-      updateNumber: 0,
-    }
-  },
-  watch: {
-    headersdata: {
-      handler(val) {
-        this.updateNumber++
-        if (val && this.updateNumber > 1) {
-          this.$emit('setUpdateCount', 'Headers')
-        }
-      },
-      deep: true
-    }
-  },
-  methods: {
-    // 重置表单
-    resetForm(data) {
-      this.updateNumber = 0
-      this.headersBulk = ''
-      this.headersdata = [
-        {'key': 'token', 'value': '${get_token(123456,Aa123456,reset=False,uat,key_time=360000)}'},
-        {'key': 'appkey', 'value': ''},
-        {'key': 'method', 'value': ''}
-      ]
-      if (data) {
-        // let head = {}
-        // this.$set(head, 'key', 'method')
-        // this.$set(head, 'value', data.code)
-        this.headersdata[2].value = data.code
-      }
-    },
+<script lang="ts">
+import {defineComponent, reactive, ref, toRefs} from "vue";
 
-    // from 拼接
-    getHeadForm() {
-      let headers = {}
-      if (this.showBulk) {
-        this.bulkToKeyValue()
+export default defineComponent({
+  name: 'requestHeaders',
+  components: {},
+  setup() {
+    const formRef = ref()
+    const state = reactive({
+      showBulk: false,  // 启动 bulk
+      headersBulk: '',  // bulk内容
+      // headers
+      headersData: [],  // 请求头数据
+
+    });
+    // 初始化数据
+    const initForm = (formData: any) => {
+      for (let key in formData.headers) {
+        let head = {}
+        head.key = key
+        head.value = formData.headers[key]
+        state.headersData.push(head)
       }
-      if (this.headersdata.length > 0) {
-        this.headersdata.forEach(data => {
+    }
+
+    // 获取表单数据
+    const getFormData = () => {
+      let headers = {}
+      if (state.showBulk) {
+        bulkToKeyValue()
+      }
+      if (state.headersData.length > 0) {
+        state.headersData.forEach(data => {
           if (data.key != '') {
-            this.$set(headers, data.key, data.value)
+            headers[data.key] = data.value
           }
         })
       }
       return headers
-    },
-    // 编辑时赋值
-    setHerdForm(form) {
-      this.updateNumber = 0
-      this.headersdata = []
-      for (let key in form.headers) {
-        let head = {}
-        this.$set(head, 'key', key)
-        this.$set(head, 'value', form.headers[key])
-        this.headersdata.push(head)
-      }
-    },
+    }
 
-    typeChange(val) {
-
-    },
-    // Headers
-    addHeaders() {
-      this.headersdata.push({key: '', value: ''})
-    },
-    deleteHeader(row, index) {
-      this.headersdata.splice(index, 1)
-    },
-
-    bulkEdit() {
-      if (this.showBulk) {
-        this.bulkToKeyValue()
-        this.showBulk = false
+    // bulk 转换
+    const bulkEdit = () => {
+      if (state.showBulk) {
+        bulkToKeyValue()
+        state.showBulk = false
       } else {
-        this.keyValueToBulk()
-        this.showBulk = true
+        keyValueToBulk()
+        state.showBulk = true
       }
-    },
-    bulkToKeyValue() {
-      if (this.headersBulk.length > 0) {
-        let snsArr = this.headersBulk.split(/[(\r\n)\r\n]+/)
+    }
+
+    const bulkToKeyValue = () => {
+      if (state.headersBulk.length > 0) {
+        let snsArr = state.headersBulk.split(/[(\r\n)\r\n]+/)
         if (snsArr.length > 0) {
           let headerList = []
           snsArr.forEach(data => {
             let keyValue = data.split(':')
             let head = {}
             if (keyValue.length >= 2) {
-              this.$set(head, 'key', keyValue[0])
-              this.$set(head, 'value', keyValue[1])
+              head.key = keyValue[0]
+              head.value = keyValue[1]
             } else if (keyValue.length < 2) {
-              this.$set(head, 'key', keyValue[0])
-              this.$set(head, 'value', '')
+              head.key = keyValue[0]
+              head.value = ''
             }
             headerList.push(head)
           })
-          this.headersdata = headerList
+          state.headersData = headerList
         }
       }
-    },
-    keyValueToBulk() {
-      if (this.headersdata.length > 0) {
+    }
+
+    const keyValueToBulk = () => {
+      if (state.headersData.length > 0) {
         let bulk = ''
-        this.headersdata.forEach(data => {
+        state.headersData.forEach(data => {
           if (data.key != '') {
             bulk = bulk + data.key + ':' + data.value + '\r\n'
           }
         })
-        this.headersBulk = bulk
+        state.headersBulk = bulk
       }
-    },
+    }
 
-  }
-}
+    // Headers
+    const addHeaders = () => {
+      state.headersData.push({key: '', value: ''})
+    }
+    const deleteHeaders = (row, index) => {
+      state.headersData.splice(index, 1)
+    }
+
+    return {
+      formRef,
+      initForm,
+      getFormData,
+      addHeaders,
+      deleteHeaders,
+      bulkEdit,
+      ...toRefs(state),
+    };
+  },
+})
+
 </script>
 
 <style lang="scss" scoped>

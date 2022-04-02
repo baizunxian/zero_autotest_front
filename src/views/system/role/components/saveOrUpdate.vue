@@ -1,6 +1,6 @@
 <template>
   <div class="system-edit-role-container">
-    <el-dialog :title="editType === 'save'? `新增${moduleName}` : `修改${moduleName}`" v-model="isShowDialog" width="769px">
+    <el-dialog :title="editType === 'save'? `新增` : `修改`" v-model="isShowDialog" width="769px">
       <el-form :model="form" :rules="rules" label-width="90px" ref="formRef">
         <el-row :gutter="35">
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
