@@ -82,7 +82,7 @@
       <template #footer>
             <span class="dialog-footer">
               <el-button @click="showRunPage = !showRunPage">取消</el-button>
-              <el-button type="primary" @click="runTestCase">调试</el-button>
+              <el-button type="primary" :loading="runCaseLoading" @click="runTestCase">运行</el-button>
             </span>
       </template>
     </el-dialog>
@@ -126,6 +126,7 @@ export default defineComponent({
       },
       // run test case
       showRunPage: false,
+      runCaseLoading: false,
       envList: [],
       runForm: {
         id: null,
@@ -182,11 +183,17 @@ export default defineComponent({
     }
     // 运行测试用例
     const runTestCase = () => {
+      state.runCaseLoading = !state.runCaseLoading;
       useTestCaseApi().runTestCase(state.runForm)
           .then(res => {
             console.log(res)
             ElMessage.success('运行成功');
+            state.runCaseLoading = !state.runCaseLoading;
             state.showRunPage = false;
+          })
+          .catch((err: any) => {
+            ElMessage.error(err.message);
+            state.runCaseLoading = !state.runCaseLoading;
           })
     }
     // 页面加载时
