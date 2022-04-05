@@ -1,5 +1,10 @@
 <template>
-  <div ref="debugTalkRef" style="height: 100vh"></div>
+  <div class="echart-pie-wrap">
+    <div class="myEditorTop">[{{ isEdit ? '编辑' : '只读' }}] - [{{ debugTalkFrom.project_name }}]
+      <el-button v-show="isEdit" type="success" @click="save" style="margin-left: 10px;">保存</el-button>
+    </div>
+    <div ref="debugTalkRef" class="debugTalk"></div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -23,33 +28,56 @@ export default defineComponent({
     const debugTalkRef = ref()
     const route = useRoute()
     const state = reactive({
+      isEdit: true,
       editor: null,
       content: '',  // bulk内容
+      debugTalkFrom: {
+        id: null,
+        debug_talk: '',
+        project_name: ''
+      },
       // headers
 
     });
 
     // 初始化Editor
-    const initEditor= (data: any = '') => {
-      console.log('editorRef.value', debugTalkRef.value)
-      console.log('editorRef.value', data)
+    const initEditor = (data: any = '') => {
       state.editor = ace.edit(debugTalkRef.value, {
-        fontSize: 16,
+        fontSize: 14,
         mode: "ace/mode/python",
         theme: "ace/theme/monokai",
+        enableBasicAutocompletion: true, // 启用基本自动完成
+        enableSnippets: true, // 启用代码段
+        enableLiveAutocompletion: true, // 启用实时自动完成
+        printMarginColumn: 30,
+        displayIndentGuides: true, // 显示参考线
+        enableEmmet: true, // 启用Emmet
+        tabSize: 4, // 标签大小
+        useWorker: true, // 使用辅助对象
+        showPrintMargin: false, //去除编辑器里的竖线
+        enableMultiselect: true, //     选中多处
+        readOnly: false, // 是否只读
+        showFoldWidgets: true, // 显示折叠部件
+        fadeFoldWidgets: true, // 淡入折叠部件
+        wrap: true, //换行
+        animatedScroll: true,
+        navigateWithinSoftTabs: true,
       })
 
       state.editor.session.setValue(data)
     }
 
     const initData = () => {
-        if (route.query.id) {
-          useDebugTalkApi().getDebugTalkInfo({id: route.query.id})
-          .then(res => {
-            state.content = res.data.debug_talk
-            initEditor(state.content)
-          })
-        }
+      if (route.query) {
+        useDebugTalkApi().getDebugTalkInfo(route.query)
+            .then(res => {
+              state.debugTalkFrom.debug_talk = res.data.debug_talk
+              state.debugTalkFrom.project_name = res.data.project_name
+              state.debugTalkFrom.id = res.data.id
+              state.isEdit = res.data.edit
+              initEditor(state.debugTalkFrom.debug_talk)
+            })
+      }
     }
 
     onMounted(() => {
@@ -68,110 +96,21 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.employee_body {
-  margin: 10px 20px 0;
-  overflow: hidden;
-}
+.echart-pie-wrap {
+  //height: calc(100% - 45px);
 
-.app-container {
-  padding: 0;
-}
-
-.inputclass {
-  width: 300px;
-}
-
-.el-dialog {
-  height: 50%;
-}
-
-table {
-  width: 50%;
-  border-collapse: collapse;
-
-  tr, td {
-    border: 1px solid #d2d2d6;
-    padding: 5px;
-  }
-}
-
-.radio-group {
-  margin-bottom: 15px;
-}
-
-.title-wrap {
-  font-size: 14px;
-  color: #8b60f0;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-  margin-top: 12px;
-
-  .title {
-    padding: 0 16px;
+  .myEditorTop {
+    height: 45px;
+    display: flex;
+    align-items: center;
+    background-color: #333;
+    padding-left: 50px;
+    color: rgb(241, 238, 8);
+    font-weight: bold;
   }
 
-  .line {
-    width: 100px;
-    height: 2px;
-    border-bottom: 2px dashed #e1e1f5;
+}
+.debugTalk {
+    height: calc(100vh - 45px - 84px - 30px);
   }
-
-  .add-line {
-    width: 800px;
-    overflow: hidden;
-  }
-}
-
-.filter-item {
-  color: #fff;
-  background-color: #5bc0de;
-  border-color: #ffffff;
-  margin-bottom: 10px;
-
-  &:hover {
-    color: #fff;
-    background-color: #31b0d5;
-    border-color: #ffffff;
-  }
-}
-</style>
-
-<style lang="scss">
-/* jsoneditor右上角默认有一个链接,加css去掉了 */
-.jsoneditor-poweredBy {
-  display: none;
-}
-
-.ace_gutter {
-  background: #FFF
-}
-
-.jsoneditor-vue .jsoneditor {
-  border: 0;
-
-  .jsoneditor-menu {
-    // background: #ebebeb;
-    background-color: #ebebeb;
-    border-bottom: 0;
-
-    .jsoneditor-modes {
-      color: #000;
-    }
-
-    .jsoneditor-outer {
-      background: #ebebeb;
-    }
-
-    button {
-      outline: none;
-      background-color: #5bc0de;
-
-      &:hover {
-        background-color: #5bc0de;
-      }
-    }
-  }
-}
 </style>

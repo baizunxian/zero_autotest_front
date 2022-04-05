@@ -1,8 +1,9 @@
 <template>
   <div>
     <div style="display: flex; align-items: center;">
-      <strong>输出参数
+
         <el-tooltip placement="bottom-start">
+          <strong>输出参数</strong>
           <template #content>
             整个用例输出的参数列表，可输出的参数包括公共的变量和提取的参数; <br/>
             <br/>参数名：可以自定义名称<br/>
@@ -12,11 +13,12 @@
             3.在测试报告中可以参数输出参数为{ "name": ”OK“ }
             <br/>
           </template>
-          <el-icon><ele-IconInfo style="color:#409eff;margin-left:5px;"></ele-IconInfo></el-icon>
         </el-tooltip>
-      </strong>
-      <el-button class="filter-item" type="success" icon="el-icon-plus" round size="small" style="padding: 4px;"
-                 title="新增参数" @click="addOutput"></el-button>
+
+      <el-button type="text" @click="addOutput" title="新增参数">
+        <el-icon><ele-Plus></ele-Plus></el-icon>add
+      </el-button>
+
     </div>
     <el-table
         ref="outputTableRef"

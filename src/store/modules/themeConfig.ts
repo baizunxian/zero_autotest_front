@@ -67,7 +67,7 @@ const themeConfigModule: Module<ThemeConfigState, RootStateTypes> = {
        * 界面显示
        */
       // 是否开启侧边栏 Logo
-      isShowLogo: false,
+      isShowLogo: true,
       // 初始化变量，用于 el-scrollbar 的高度更新，请勿删除
       isShowLogoChange: false,
       // 是否开启 Breadcrumb，强制经典、横向布局不显示
@@ -83,7 +83,7 @@ const themeConfigModule: Module<ThemeConfigState, RootStateTypes> = {
       // 是否开启 TagsView 拖拽
       isSortableTagsView: true,
       // 是否开启 TagsView 共用
-      isShareTagsView: false,
+      isShareTagsView: true,
       // 是否开启 Footer 底部版权信息
       isFooter: false,
       // 是否开启灰色模式
@@ -128,7 +128,7 @@ const themeConfigModule: Module<ThemeConfigState, RootStateTypes> = {
        * 全局网站标题 / 副标题
        */
       // 网站主标题（菜单导航、浏览器当前网页标题）
-      globalTitle: 'zero-autotest',
+      globalTitle: 'ZERO AUTOTEST',
       // 网站副标题（登录页顶部文字）
       globalViceTitle: 'ZERO AUTO TEST',
       // 默认全局组件大小，可选值"<large|'default'|small>"，默认 'large'

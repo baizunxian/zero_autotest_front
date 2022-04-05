@@ -28,5 +28,26 @@ export function useTestCaseApi() {
         data,
       });
     },
+    runTestCase: (data?: object) => {
+      return request({
+        url: '/testcase/runTestCase',
+        method: 'post',
+        data,
+      });
+    },
+    debugTestCase: (data?: object) => {
+      return request({
+        url: '/testcase/deleted',
+        method: 'post',
+        data,
+      });
+    },
+    getTestCaseInfo: (data?: object) => {
+      return request({
+        url: '/testcase/getTestCaseInfo',
+        method: 'post',
+        data,
+      });
+    },
   };
 }

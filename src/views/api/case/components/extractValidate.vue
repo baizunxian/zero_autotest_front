@@ -2,9 +2,10 @@
   <!-- data - table -->
   <div>
     <div style="display: flex; align-items: center;">
-      <strong>提取
+      <strong>
         <el-tooltip placement="bottom-start">
-          <el-icon><ele-InfoFilled /></el-icon>
+          提取
+<!--          <el-icon><ele-InfoFilled /></el-icon>-->
           <template #content>
             从当前 HTTP 请求的响应结果中提取参数，并保存到参数变量中（例如token），后续测试用例可通过$token的形式进行引用<br/>
             <br/>参数名：可以自定义名称<br/>
@@ -14,8 +15,11 @@
 
         </el-tooltip>
       </strong>
-      <el-button class="filter-item" type="success" round size="mini" style="padding: 4px;"
-                 title="新增提取" @click="addExtract"></el-button>
+
+      <el-button type="text" @click="addExtract" title="新增提取">
+        <el-icon><ele-Plus></ele-Plus></el-icon>add
+      </el-button>
+
     </div>
     <el-table
         ref="extractTableRef"
@@ -55,8 +59,9 @@
 
     <!-- headers -->
     <div style="display: flex; align-items: center;">
-      <strong>校验</strong>
+
       <el-tooltip placement="bottom-start">
+         <strong>校验</strong>
         <template #content>
           测试用例中定义的结果校验项，作用域为当前测试用例，用于实现对当前测试用例运行结果的校验<br/>
           <br/>校验参数：响应结果中的参数<br/>
@@ -65,12 +70,16 @@
           校验值：跟校验参数进行对比的值<br/>
           <br/>样例：返回内容为 {code: 0, msg: 'OK'}，要校验msg等于OK， 校验参数格式为content.msg，对比规则为equals，类型为String，校验值为OK<br/>
         </template>
-        <el-icon><ele-info-filled /></el-icon>
+<!--        <el-icon><ele-info-filled /></el-icon>-->
 
         <i class="el-icon-info" style="color:#409eff;margin-left:5px;"></i>
       </el-tooltip>
-      <el-button class="filter-item" type="success" icon="el-icon-plus" round size="mini" style="padding: 4px;"
-                 title="新增校验" @click="addValidate"></el-button>
+
+      <el-button type="text" @click="addValidate" title="新增校验">
+        <el-icon><ele-Plus></ele-Plus></el-icon>add
+      </el-button>
+<!--      <el-button class="filter-item" type="success" icon="el-icon-plus" round size="mini" style="padding: 4px;"-->
+<!--                 title="新增校验" @click="addValidate"></el-button>-->
     </div>
     <el-table
         ref="validateTableRef"
@@ -216,7 +225,7 @@ export default defineComponent({
         state.extract.forEach(ext => {
           if (ext.key !== '') {
             let extracts = {}
-            state.$set(extracts, ext.key, ext.value)
+            extracts[ext.key] = ext.value
             from.extract.push(extracts)
           }
         })

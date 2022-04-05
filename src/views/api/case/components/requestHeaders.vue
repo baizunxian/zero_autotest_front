@@ -1,8 +1,10 @@
 <template>
   <el-form inline ref="request-form" label-width="50px" size="mini" label-position="right">
     <div>
-      <el-button class="filter-item" type="primary" @click="addHeaders">Add Headers</el-button>
-      <el-button class="filter-item" type="primary" @click="bulkEdit">
+      <el-button type="text" @click="addHeaders" title="添加header">
+        <el-icon><ele-Plus></ele-Plus></el-icon>add
+      </el-button>
+      <el-button type="text" @click="bulkEdit" title="文本编辑">
         {{ showBulk ? "KeyValueEdit" : "BulkEdit" }}
       </el-button>
     </div>
@@ -24,7 +26,7 @@
             <strong style="font-size: 14px;">参数名</strong>
           </template>
           <template #default="scope">
-            <el-input v-model="scope.row.key"></el-input>
+            <el-input size="small" v-model="scope.row.key"></el-input>
           </template>
         </el-table-column>
         <el-table-column prop="value" header-align='center'>
@@ -32,7 +34,7 @@
             <strong style="font-size: 14px;">参数值</strong>
           </template>
           <template #default="scope">
-            <el-input v-model.trim="scope.row.value"></el-input>
+            <el-input size="small" v-model.trim="scope.row.value"></el-input>
           </template>
         </el-table-column>
         <el-table-column align="center" width="50" class-name="small-padding fixed-width">

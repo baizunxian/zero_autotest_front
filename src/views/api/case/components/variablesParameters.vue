@@ -2,8 +2,8 @@
   <!-- data - table -->
   <div>
     <div style="display: flex; align-items: center;">
-      <strong>变量</strong>
       <el-tooltip placement="bottom-start">
+        <strong>变量</strong>
         <template #content>
           定义的全局变量，作用域为整个用例
           <br/>
@@ -16,10 +16,12 @@
           例如有个变量名是 pwd 想对 pwd 对应的值加密 则变量名改完 pwd__encryption 保存后对应的值加密<br/>
           <br/>样例：定义一个名称为id，值为10000的变量，格式为参数名id，类型为int，参数值为10000<br/>
         </template>
-        <el-icon><ele-IconInfo></ele-IconInfo></el-icon>
       </el-tooltip>
-      <el-button class="filter-item" type="success" icon="el-icon-plus" round size="mini" style="padding: 4px;"
-                 title="新增变量" @click="addVariables"></el-button>
+
+      <el-button type="text" @click="addVariables" title="新增变量">
+        <el-icon><ele-Plus></ele-Plus></el-icon>add
+      </el-button>
+
     </div>
     <el-table
         ref="multipleTable"
@@ -88,8 +90,8 @@
 
     <!-- headers -->
     <div style="display: flex; align-items: center;">
-      <strong>参数</strong>
       <el-tooltip placement="bottom-start">
+        <strong>参数</strong>
         <template #content>
           全局参数，用于实现数据化驱动，作用域为整个用例<br/>
           <br/>参数名：可以自定义名称<br/>
@@ -98,19 +100,12 @@
           <br/>样例1：定义单个参数，参数有两个值格式，参数名称为name1，参数值["value1","value2"]<br/>
           <br/>样例2：定义多个参数，每个参数有两个值格式，参数名称为name1，name2，参数值[["name1_value1","name1_value2"],["name2_value1","name2_value2"]]<br/>
         </template>
-        <el-icon><ele-IconInfo></ele-IconInfo></el-icon>
       </el-tooltip>
-      <el-button
-          class="filter-item"
-          type="success"
-          icon="el-icon-plus"
-          round
-          size="mini"
-          style="padding: 4px;"
-          title="新增参数"
 
-          @click="addParameters">
+      <el-button type="text" @click="addParameters" title="新增参数">
+        <el-icon><ele-Plus></ele-Plus></el-icon>add
       </el-button>
+
       <!--
             <el-button class="filter-item" type="success" icon="el-icon-plus"  round size="mini" style="padding: 4px;" title="新增参数" @click="csvUpload">导入</el-button>
       -->
@@ -162,16 +157,19 @@
     </el-table>
 
     <div style="display: flex; align-items: center;">
-      <strong>函数</strong>
+
       <el-tooltip placement="bottom-start">
+        <strong>函数</strong>
         <template #content>
           前置函数：在 HTTP 请求发送前执行 hook 函数，主要用于准备工作<br/>
           后置函数：在 HTTP 请求发送后执行 hook 函数，主要用户测试后的清理工作<br/>
         </template>
-        <el-icon><ele-IconInfo></ele-IconInfo></el-icon>
       </el-tooltip>
-      <el-button class="filter-item" type="success" icon="el-icon-plus" round size="mini" style="padding: 4px;"
-                 title="新增函数" @click="addHooks"></el-button>
+
+      <el-button type="text" @click="addHooks" title="新增函数">
+        <el-icon><ele-Plus></ele-Plus></el-icon>add
+      </el-button>
+
     </div>
     <el-table
         ref="hooksTableRef"
@@ -237,10 +235,10 @@ export default defineComponent({
       state.parameters = [{key: '', value: '', remarks_: ''}]
 
       if (formData && formData.variables && formData.variables.length > 0) {
-        this.variables = data.variables
+        state.variables = formData.variables
       }
       if (formData.parameters) {
-        this.parameters = []
+        state.parameters = []
         formData.parameters.forEach(p => {
           if (typeof p['value'] == 'string') {
             state.parameters.push({key: p['key'], value: p['value'], remarks_: p['remarks_']})
@@ -250,8 +248,8 @@ export default defineComponent({
         })
       }
       if (formData && formData.setup_hooks && formData.teardown_hooks) {
-        let setup_hooks = data.setup_hooks
-        let teardown_hooks = data.teardown_hooks
+        let setup_hooks = formData.setup_hooks
+        let teardown_hooks = formData.teardown_hooks
         setup_hooks.forEach((hook, index) => {
           state.hooks.push({'setup_hooks': hook, 'teardown_hooks': teardown_hooks[index]})
         })
@@ -268,26 +266,28 @@ export default defineComponent({
         setup_hooks: [],
         teardown_hooks: [],
       }
+      console.log(state, 'vpvariables STate')
       if (state.variables.length > 0) {
-        this.variables.forEach(data => {
+        state.variables.forEach(data => {
           if (data.key !== '' && data.type === 'string') {
             data.value = data.value.replace(/'/g, '"')
             form.variables.push(data)
           }else{
             form.variables.push(data)
           }
+          console.log(form, 'from==============')
         })
       }
       if (state.parameters.length > 0) {
-        this.parameters.forEach(data => {
+        state.parameters.forEach(data => {
           if (data.key !== '') {
             data.value = data.value.replace(/'/g, '"')
             form.parameters.push(data)
           }
         })
       }
-      if (this.hooks.length > 0) {
-        this.hooks.forEach(data => {
+      if (state.hooks.length > 0) {
+        state.hooks.forEach(data => {
           if (data.key !== '') {
             form.setup_hooks.push(data.setup_hooks)
             form.teardown_hooks.push(data.teardown_hooks)

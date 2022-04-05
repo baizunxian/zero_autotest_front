@@ -10,8 +10,8 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { useStore } from '/@/store/index';
-import logoMini from '/@/assets/logo-mini.svg';
+import { useStore } from '/@/store';
+import logoMini from '/@/assets/logo.png';
 
 export default defineComponent({
 	name: 'layoutLogo',
@@ -59,7 +59,7 @@ export default defineComponent({
 		}
 	}
 	&-medium-img {
-		width: 20px;
+		width: 30px;
 		margin-right: 5px;
 	}
 }
@@ -70,7 +70,7 @@ export default defineComponent({
 	cursor: pointer;
 	animation: logoAnimation 0.3s ease-in-out;
 	&-img {
-		width: 20px;
+		width: 30px;
 		margin: auto;
 	}
 	&:hover {

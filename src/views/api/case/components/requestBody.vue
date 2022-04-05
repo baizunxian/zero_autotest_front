@@ -67,31 +67,8 @@
         </el-table>
       </div>
     </div>
-    <el-button @click="editorInit">test</el-button>
-    <JsonEditorVue class="editor" v-model="jsonData" @blur="validate" />
 
-<!--  <v-ace-editor ref="aceEditorRef" v-show="requestForm.dataType === 'json'" :data="jsonData"/>-->
-
-
-<!--    <v-ace-editor-->
-<!--        v-show="requestForm.dataType === 'json'"-->
-<!--        @init="editorInit"-->
-<!--                  v-model:value="jsonData"-->
-<!--                  style="height: 500px"-->
-<!--                  lang="json"-->
-<!--                  :options="{ useWorker: true }" />-->
-
-
-    <!-- json -->
-    <!--    <vue-json-editor-->
-    <!--        v-if="requestForm.type === 'json'"-->
-    <!--        v-model="jsonData"-->
-    <!--        :showBtns="false"-->
-    <!--        :mode="'code'"-->
-    <!--        @json-change="onJsonChange"-->
-    <!--        @json-save="onJsonSave"-->
-    <!--        @has-error="onError"-->
-    <!--        lang="zh"/>-->
+    <JsonEditorVue v-show="requestForm.dataType === 'json'" class="editor" v-model="jsonData" @blur="validate" />
 
     <!---------------------------params------------------------------------>
     <div v-if="requestForm.dataType === 'params'">
@@ -156,12 +133,6 @@
 </template>
 
 <script lang="ts">
-// import { VAceEditor } from 'vue3-ace-editor';
-// import 'ace-builds/src-noconflict/mode-json';
-// import 'ace-builds/src-noconflict/theme-chrome';
-// import ace from 'ace-builds';
-// import workerJsonUrl from 'ace-builds/src-noconflict/worker-json?url';
-// ace.config.setModuleUrl('ace/mode/json_worker', workerJsonUrl);
 import JsonEditorVue from '/@/components/VaceEditor/json-editor.vue'
 
 import {defineComponent, reactive, ref, toRefs, onMounted} from "vue";
@@ -215,7 +186,7 @@ export default defineComponent({
       let requestData = {}
       requestData.type = state.requestForm.dataType
       if (state.requestForm.dataType === 'json') {
-        if (!state.hasJsonFlag) throw new Error('json 格式错误!')
+        // if (!state.hasJsonFlag) throw new Error('json 格式错误!')
         requestData.json = state.jsonData
       }
       if (state.requestForm.type === 'data') {
@@ -350,7 +321,35 @@ table {
   background: #FFF
 }
 
-.jsoneditor-vue .jsoneditor {
+.json-editor-vue  {
+  .jsoneditor {
+    border: 0;
+  }
+  .jsoneditor-menu {
+    border-bottom: 0;
+    background-color: #ebebeb;
+    border-bottom: 0;
+
+    .jsoneditor-modes {
+      color: #000;
+    }
+
+    .jsoneditor-outer {
+      background: #ebebeb;
+    }
+
+  }
+  button {
+      outline: none;
+      background-color: #5bc0de;
+
+      &:hover {
+        background-color: #5bc0de;
+      }
+    }
+}
+
+json-editor-vue .jsoneditor {
   border: 0;
 
   .jsoneditor-menu {
@@ -366,14 +365,7 @@ table {
       background: #ebebeb;
     }
 
-    button {
-      outline: none;
-      background-color: #5bc0de;
 
-      &:hover {
-        background-color: #5bc0de;
-      }
-    }
   }
 }
 </style>
