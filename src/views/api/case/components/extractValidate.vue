@@ -5,7 +5,7 @@
       <strong>
         <el-tooltip placement="bottom-start">
           提取
-<!--          <el-icon><ele-InfoFilled /></el-icon>-->
+          <!--          <el-icon><ele-InfoFilled /></el-icon>-->
           <template #content>
             从当前 HTTP 请求的响应结果中提取参数，并保存到参数变量中（例如token），后续测试用例可通过$token的形式进行引用<br/>
             <br/>参数名：可以自定义名称<br/>
@@ -17,7 +17,10 @@
       </strong>
 
       <el-button type="text" @click="addExtract" title="新增提取">
-        <el-icon><ele-Plus></ele-Plus></el-icon>add
+        <el-icon>
+          <ele-CirclePlusFilled></ele-CirclePlusFilled>
+        </el-icon>
+        add
       </el-button>
 
     </div>
@@ -48,7 +51,7 @@
       </el-table-column>
       <el-table-column align="center" width="50" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button size="small" type="text" @click="deleteExtract(scope.row,scope.index)">
+          <el-button size="small" type="text" @click="deleteExtract(scope.$index)">
             <el-icon>
               <ele-Delete/>
             </el-icon>
@@ -61,7 +64,7 @@
     <div style="display: flex; align-items: center;">
 
       <el-tooltip placement="bottom-start">
-         <strong>校验</strong>
+        <strong>校验</strong>
         <template #content>
           测试用例中定义的结果校验项，作用域为当前测试用例，用于实现对当前测试用例运行结果的校验<br/>
           <br/>校验参数：响应结果中的参数<br/>
@@ -70,16 +73,19 @@
           校验值：跟校验参数进行对比的值<br/>
           <br/>样例：返回内容为 {code: 0, msg: 'OK'}，要校验msg等于OK， 校验参数格式为content.msg，对比规则为equals，类型为String，校验值为OK<br/>
         </template>
-<!--        <el-icon><ele-info-filled /></el-icon>-->
+        <!--        <el-icon><ele-info-filled /></el-icon>-->
 
         <i class="el-icon-info" style="color:#409eff;margin-left:5px;"></i>
       </el-tooltip>
 
       <el-button type="text" @click="addValidate" title="新增校验">
-        <el-icon><ele-Plus></ele-Plus></el-icon>add
+        <el-icon>
+          <ele-CirclePlusFilled></ele-CirclePlusFilled>
+        </el-icon>
+        add
       </el-button>
-<!--      <el-button class="filter-item" type="success" icon="el-icon-plus" round size="mini" style="padding: 4px;"-->
-<!--                 title="新增校验" @click="addValidate"></el-button>-->
+      <!--      <el-button class="filter-item" type="success" icon="el-icon-plus" round size="mini" style="padding: 4px;"-->
+      <!--                 title="新增校验" @click="addValidate"></el-button>-->
     </div>
     <el-table
         ref="validateTableRef"
@@ -138,7 +144,7 @@
       </el-table-column>
       <el-table-column align="center" width="50" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button size="small" type="text" @click="deleteValidate(scope.row,scope.index)">
+          <el-button size="small" type="text" @click="deleteValidate(scope.$index)">
             <el-icon>
               <ele-Delete/>
             </el-icon>
@@ -240,7 +246,7 @@ export default defineComponent({
     const addExtract = () => {
       state.extract.push({key: '', value: 'body.'})
     }
-    const deleteExtract = (row, index) => {
+    const deleteExtract = (index: number) => {
       state.extract.splice(index, 1)
     }
 
@@ -248,7 +254,7 @@ export default defineComponent({
     const addValidate = () => {
       state.validate.push({check: 'content.', comparator: 'equals', type: 'string', expected: ''})
     }
-    const deleteValidate = (row, index) => {
+    const deleteValidate = (index: number) => {
       state.validate.splice(index, 1)
     }
 

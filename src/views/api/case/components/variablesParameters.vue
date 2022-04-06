@@ -19,7 +19,10 @@
       </el-tooltip>
 
       <el-button type="text" @click="addVariables" title="新增变量">
-        <el-icon><ele-Plus></ele-Plus></el-icon>add
+        <el-icon>
+          <ele-CirclePlusFilled></ele-CirclePlusFilled>
+        </el-icon>
+        add
       </el-button>
 
     </div>
@@ -78,7 +81,7 @@
       <el-table-column align="center" width="50" class-name="small-padding fixed-width">
         <template #default="scope">
 
-          <el-button size="small" type="text" @click="deleteVariables(scope.row,scope.index)">
+          <el-button size="small" type="text" @click="deleteVariables(scope.$index)">
             <el-icon>
               <ele-Delete/>
             </el-icon>
@@ -103,7 +106,10 @@
       </el-tooltip>
 
       <el-button type="text" @click="addParameters" title="新增参数">
-        <el-icon><ele-Plus></ele-Plus></el-icon>add
+        <el-icon>
+          <ele-CirclePlusFilled></ele-CirclePlusFilled>
+        </el-icon>
+        add
       </el-button>
 
       <!--
@@ -147,7 +153,7 @@
 
       <el-table-column align="center" width="150" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button size="small" type="text" @click="deleteParameters(scope.row,scope.index)">
+          <el-button size="small" type="text" @click="deleteParameters(scope.$index)">
             <el-icon>
               <ele-Delete/>
             </el-icon>
@@ -167,7 +173,10 @@
       </el-tooltip>
 
       <el-button type="text" @click="addHooks" title="新增函数">
-        <el-icon><ele-Plus></ele-Plus></el-icon>add
+        <el-icon>
+          <ele-CirclePlusFilled></ele-CirclePlusFilled>
+        </el-icon>
+        add
       </el-button>
 
     </div>
@@ -196,7 +205,7 @@
       </el-table-column>
       <el-table-column align="center" width="50" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button size="small" type="text" @click="deleteHooks(scope.row,scope.index)">
+          <el-button size="small" type="text" @click="deleteHooks(scope.$index)">
             <el-icon>
               <ele-Delete/>
             </el-icon>
@@ -208,8 +217,37 @@
 </template>
 
 <script lang="ts">
-// import {cvsToParam} from '@/api/caseParams'
-// import {temp} from '@/utils/request'
+
+interface baseState {
+  key: string,
+  value: string,
+  remarks_: string
+}
+
+interface variablesState extends baseState {
+  type: string
+}
+
+interface hooksState {
+  setup_hooks: string,
+  teardown_hooks: string
+}
+
+interface formDataState {
+  variables: Array<variablesState>,
+  parameters: Array<baseState>,
+  setup_hooks: Array<hooksState>,
+  teardown_hooks: Array<hooksState>,
+}
+
+interface state {
+  variables: Array<variablesState>,
+  parameters: Array<baseState>,
+  hooks: Array<hooksState>,
+  ValueV: string,
+  ValueP: string,
+  typeOptions: Array<string>,
+}
 
 import {defineComponent, reactive, ref, toRefs} from "vue";
 
@@ -218,7 +256,7 @@ export default defineComponent({
   components: {},
   setup() {
     const formRef = ref()
-    const state = reactive({
+    const state = reactive<state>({
       variables: [],   // 变量列表
       parameters: [{key: '', value: '', remarks_: ''}],  //  参数列表
       hooks: [],  // 钩子函数列表
@@ -228,7 +266,7 @@ export default defineComponent({
 
     });
     // 初始化数据
-    const initForm = (formData: any) => {
+    const initForm = (formData: formDataState) => {
       state.variables = []
       state.parameters = []
       state.hooks = []
@@ -250,8 +288,9 @@ export default defineComponent({
       if (formData && formData.setup_hooks && formData.teardown_hooks) {
         let setup_hooks = formData.setup_hooks
         let teardown_hooks = formData.teardown_hooks
-        setup_hooks.forEach((hook, index) => {
-          state.hooks.push({'setup_hooks': hook, 'teardown_hooks': teardown_hooks[index]})
+        setup_hooks.forEach((hook: string, index: number) => {
+          let hookData: hooksState = {setup_hooks: hook, teardown_hooks: teardown_hooks[index]}
+          state.hooks.push(hookData)
         })
         // this.hooks = form.hooks
       }
@@ -272,7 +311,7 @@ export default defineComponent({
           if (data.key !== '' && data.type === 'string') {
             data.value = data.value.replace(/'/g, '"')
             form.variables.push(data)
-          }else{
+          } else {
             form.variables.push(data)
           }
           console.log(form, 'from==============')
@@ -302,7 +341,7 @@ export default defineComponent({
     const addVariables = () => {
       state.variables.push({key: '', type: 'string', value: '', remarks_: ''})
     }
-    const deleteVariables = (row, index) => {
+    const deleteVariables = (index: number) => {
       state.variables.splice(index, 1)
     }
 
@@ -310,7 +349,7 @@ export default defineComponent({
     const addParameters = () => {
       state.parameters.push({key: '', value: '', remarks_: ''})
     }
-    const deleteParameters = (row, index) => {
+    const deleteParameters = (index: number) => {
       state.parameters.splice(index, 1)
     }
 
@@ -318,7 +357,7 @@ export default defineComponent({
     const addHooks = () => {
       state.hooks.push({setup_hooks: '', teardown_hooks: ''})
     }
-    const deleteHooks = (row, index) => {
+    const deleteHooks = (index: number) => {
       state.hooks.splice(index, 1)
     }
 

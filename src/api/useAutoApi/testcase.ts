@@ -37,7 +37,7 @@ export function useTestCaseApi() {
     },
     debugTestCase: (data?: object) => {
       return request({
-        url: '/testcase/deleted',
+        url: '/testcase/debugTestCase',
         method: 'post',
         data,
       });

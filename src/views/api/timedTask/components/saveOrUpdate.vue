@@ -3,17 +3,17 @@
     <el-dialog
         :title="editType === 'save'? '新增' : '修改'"
         v-model="isShowDialog" width="40%">
-      <el-form :model="form" :rules="rules" ref="formRef" size="default" label-width="80px">
+      <el-form :model="form" :rules="rules" ref="formRef" label-width="80px">
         <el-row :gutter="35">
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="模块名称" prop="name">
-              <el-input v-model="form.name" placeholder="模块名称" clearable></el-input>
+              <el-input size="small" v-model="form.name" placeholder="模块名称" clearable></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="所属项目" prop="project_id">
-              <el-select v-model="form.project_id" clearable placeholder="选择所属项目" style="width: 100%">
+              <el-select size="small" v-model="form.project_id" clearable placeholder="选择所属项目" style="width: 100%">
                 <el-option
                     v-for="item in projectList"
                     :key="item.id"
@@ -27,37 +27,37 @@
 
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="负责人" prop="leader_user">
-              <el-input v-model="form.leader_user" placeholder="负责人" clearable></el-input>
+              <el-input size="small" v-model="form.leader_user" placeholder="负责人" clearable></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="测试人员" prop="test_user">
-              <el-input v-model="form.test_user" placeholder="测试人员" clearable></el-input>
+              <el-input size="small" v-model="form.test_user" placeholder="测试人员" clearable></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="开发人员">
-              <el-input v-model="form.dev_user" placeholder="开发人员" clearable></el-input>
+              <el-input size="small" v-model="form.dev_user" placeholder="开发人员" clearable></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="关联应用">
-              <el-input v-model="form.publish_app" placeholder="关联应用" clearable></el-input>
+              <el-input size="small" v-model="form.publish_app" placeholder="关联应用" clearable></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="简要描述">
-              <el-input v-model="form.simple_desc" placeholder="简要描述" clearable></el-input>
+              <el-input size="small" v-model="form.simple_desc" placeholder="简要描述" clearable></el-input>
             </el-form-item>
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="关联配置">
-              <el-input v-model="form.config_id" placeholder="关联配置" clearable></el-input>
+              <el-input size="small" v-model="form.config_id" placeholder="关联配置" clearable></el-input>
             </el-form-item>
           </el-col>
 
@@ -65,8 +65,8 @@
       </el-form>
       <template #footer>
 				<span class="dialog-footer">
-					<el-button @click="onDialog" size="default">取 消</el-button>
-					<el-button type="primary" @click="saveOrUpdate" size="default">保 存</el-button>
+					<el-button @click="onDialog">取 消</el-button>
+					<el-button type="primary" @click="saveOrUpdate">保 存</el-button>
 				</span>
       </template>
     </el-dialog>
@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, toRefs, ref} from 'vue';
+import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
 import {ElMessage} from "element-plus";
 

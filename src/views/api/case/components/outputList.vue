@@ -16,7 +16,7 @@
         </el-tooltip>
 
       <el-button type="text" @click="addOutput" title="新增参数">
-        <el-icon><ele-Plus></ele-Plus></el-icon>add
+        <el-icon><ele-CirclePlusFilled></ele-CirclePlusFilled></el-icon>add
       </el-button>
 
     </div>
@@ -38,7 +38,7 @@
       <el-table-column align="center" width="50" class-name="small-padding fixed-width">
         <template #default="scope">
 
-          <el-button size="small" type="text" @click="deleteOutput(scope.row,scope.index)">
+          <el-button size="small" type="text" @click="deleteOutput(scope.$index)">
             <el-icon>
               <ele-Delete/>
             </el-icon>

@@ -57,7 +57,7 @@
           </el-table-column>
           <el-table-column align="center" width="50" class-name="small-padding fixed-width">
             <template v-slot="scope">
-              <el-button size="small" type="text" @click="deleteData(scope.row,scope.index)">
+              <el-button size="small" type="text" @click="deleteData(scope.$index)">
                 <el-icon>
                   <ele-Delete/>
                 </el-icon>
@@ -68,7 +68,7 @@
       </div>
     </div>
 
-    <JsonEditorVue v-show="requestForm.dataType === 'json'" class="editor" v-model="jsonData" @blur="validate" />
+    <JsonEditorVue v-show="requestForm.dataType === 'json'" class="editor" v-model="jsonData" style="height: 500px"/>
 
     <!---------------------------params------------------------------------>
     <div v-if="requestForm.dataType === 'params'">
@@ -118,7 +118,7 @@
           </el-table-column>
           <el-table-column align="center" width="50" class-name="small-padding fixed-width">
             <template #default="scope">
-              <el-button size="small" type="text" @click="deleteParams(scope.row,scope.index)">
+              <el-button size="small" type="text" @click="deleteParams(scope.$index)">
                 <el-icon>
                   <ele-Delete/>
                 </el-icon>
@@ -202,7 +202,7 @@ export default defineComponent({
     const addData = () => {
       state.bodyData.push({key: '', type: 'string', value: ''})
     }
-    const deleteData = (row, index) => {
+    const deleteData = (index: number) => {
       state.bodyData.splice(index, 1)
     }
 
@@ -210,7 +210,7 @@ export default defineComponent({
     const addParams = () => {
       state.paramsData.push({key: '', type: 'string', value: ''})
     }
-    const deleteParams = (row, index) => {
+    const deleteParams = (index: number) => {
       state.paramsData.splice(index, 1)
     }
 

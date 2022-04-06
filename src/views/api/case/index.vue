@@ -60,14 +60,15 @@
         v-model="showRunPage"
         width="600px"
         top="8vh"
+        title="运行用例"
         :close-on-click-modal="false">
       <el-form
           :model="runForm"
-          label-width="80px"
+          label-width="70px"
 
       >
         <el-form-item label="运行环境" prop="belong_project_id">
-          <el-select v-model="runForm.base_url" placeholder="选择环境" filterable style="width:80%">
+          <el-select v-model="runForm.base_url" placeholder="选择环境" filterable style="width:100%">
             <el-option :value="''" label="自带环境">自带环境</el-option>
             <el-option
                 v-for="item in envList"
@@ -145,9 +146,11 @@ export default defineComponent({
     };
 
     // 新增或修改
-    const onOpenSaveOrUpdate = (editType: string, row: any) => {
-      router.push({name: 'saveOrUpdateTestCase', query: {editType: editType, id: row.id}})
-      // saveOrUpdateRef.value.openDialog(editType, row);
+    const onOpenSaveOrUpdate = (editType: string, row: any | null) => {
+      let query: object = {}
+      query.editType = editType
+      if (row) query.id = row.id
+      router.push({name: 'saveOrUpdateTestCase', query: query})
     };
 
     // 删除角色
@@ -177,9 +180,9 @@ export default defineComponent({
     // 获取环境信息
     const getEnvList = () => {
       useEnvApi().getList({page: 1, pageSize: 1000})  // 请求数据写死，后面优化
-      .then(res => {
-        state.envList = res.data.rows
-      })
+          .then(res => {
+            state.envList = res.data.rows
+          })
     }
     // 运行测试用例
     const runTestCase = () => {

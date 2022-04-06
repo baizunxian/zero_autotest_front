@@ -1,9 +1,16 @@
 <template>
   <div class="system-edit-menu-container">
-    <el-card shadow="hover">
+    <el-card class="save-update-card" shadow="hover">
       <div>
-        <el-page-header :content="editType === 'create'? '新增用例':'更新用例'" style="margin: 10px;">
+        <el-page-header
+            class="page-header"
+            :content="editType === 'create'? '新增用例':'更新用例'"
+            style="margin: 10px;"
+            @back="goBack"
+        >
         </el-page-header>
+
+        <h3 class="block-title">请求信息</h3>
 
         <url ref="urlRef" @saveOrUpdateOrDebug="saveOrUpdateOrDebug"/>
 
@@ -62,10 +69,11 @@ import VariablesParameters from '/@/views/api/case/components/variablesParameter
 import OutputList from '/@/views/api/case/components/outputList.vue'
 import Skip from '/@/views/api/case/components/skip.vue'
 // import {mapGetters} from 'vuex'
-import {ElMessage, ElLoading} from "element-plus";
+import {ElLoading, ElMessage} from "element-plus";
 import {useStore} from "/@/store";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {useTestCaseApi} from '/@/api/useAutoApi/testcase';
+import router from "/@/router";
 
 export default defineComponent({
   name: 'saveOrUpdateTestCase',
@@ -79,9 +87,10 @@ export default defineComponent({
     OutputList,
     Skip,
   },
-  setup(props, {emit}) {
+  setup() {
     const store = useStore();
     const route = useRoute();
+    const router = useRouter();
     const userInfo = store.state.userInfos
     const urlRef = ref()
     const messagesRef = ref()
@@ -102,19 +111,15 @@ export default defineComponent({
     const saveOrUpdateOrDebug = (type: string) => {
       try {
         // 获取url mothod 表单
-        let urlForm = urlRef.value.getFormData()
+        let urlForm = urlRef.value.getFormData()   // url表单信息
         let msgForm = messagesRef.value.getFormData()
         let bodyForm = requestBodyRef.value.getFormData()
         let headForm = requestHeadersRef.value.getFormData()
         let EVForm = extractValidateRef.value.getFormData()
         let VPForm = variablesParametersRef.value.getFormData()
-        console.log(VPForm, 'VPForm')
         let outputForm = outputListRef.value.getFormData()
-        let skipForm = skipRef.value.getFormData()
-        //
-        // this.$set(bodyForm, 'url', urlForm.url)
-        // this.$set(bodyForm, 'method', urlForm.method)
-        // this.$set(bodyForm, 'headers', headForm)
+        // let skipForm = skipRef.value.getFormData()
+
         bodyForm.url = urlForm.url
         bodyForm.method = urlForm.method
         bodyForm.headers = headForm
@@ -134,7 +139,7 @@ export default defineComponent({
           service_name: '',
           include: msgForm.include,
           testcase: {
-            skip: true,
+            // skip: true,
             case_id: msgForm.id,
             name: msgForm.name,
             request: bodyForm,
@@ -149,10 +154,7 @@ export default defineComponent({
           },
         }
         console.log(urlForm, ' urlForm')
-        //   let skip_info = this.$refs.skip.getSkip()
-        //   if (skip_info) {
-        //     testCaseForm.test.skip_info = skip_info
-        //   }
+
         // 保存用例
         if (type === 'save') {
           console.log('testCaseForm', testCaseForm)
@@ -172,7 +174,7 @@ export default defineComponent({
             background: 'rgba(0, 0, 0, 0.8)',
             customClass: 'loading-class'
           })
-          useTestCaseApi().debugCase(testCaseForm)
+          useTestCaseApi().debugTestCase(testCaseForm)
               .then(res => {
                 // this.reportData = res.data
                 console.log(res, 'this.res')
@@ -254,6 +256,11 @@ export default defineComponent({
       }
     }
 
+    // 返回到列表
+    const goBack = () => {
+      router.push({name: 'apiTestCase'})
+    }
+
     onMounted(() => {
       initTestCast()
     })
@@ -269,6 +276,8 @@ export default defineComponent({
       skipRef,
       store,
       route,
+      router,
+      goBack,
       saveOrUpdateOrDebug,
       ...toRefs(state),
     };
@@ -297,5 +306,18 @@ export default defineComponent({
   width: 3px;
   height: 14px;
   background: #409eff;
+}
+
+
+::v-deep .page-header .el-page-header__icon .el-icon {
+  background-color: #3883fa;
+  border-radius: 50%;
+  color: white;
+}
+::v-deep .el-page-header .page-header  {
+  margin-left: 0!important;
+}
+::v-deep .save-update-card .el-card__body {
+  padding-top: 0;
 }
 </style>

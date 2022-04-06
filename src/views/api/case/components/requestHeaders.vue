@@ -2,7 +2,7 @@
   <el-form inline ref="request-form" label-width="50px" size="mini" label-position="right">
     <div>
       <el-button type="text" @click="addHeaders" title="添加header">
-        <el-icon><ele-Plus></ele-Plus></el-icon>add
+        <el-icon><ele-CirclePlusFilled></ele-CirclePlusFilled></el-icon>add
       </el-button>
       <el-button type="text" @click="bulkEdit" title="文本编辑">
         {{ showBulk ? "KeyValueEdit" : "BulkEdit" }}
@@ -40,7 +40,7 @@
         <el-table-column align="center" width="50" class-name="small-padding fixed-width">
           <template #default="scope">
 
-            <el-button size="small" type="text" @click="deleteHeaders(scope.row,scope.index)">
+            <el-button size="small" type="text" @click="deleteHeaders(scope.$index)">
               <el-icon>
                 <ele-Delete/>
               </el-icon>
@@ -143,7 +143,7 @@ export default defineComponent({
     const addHeaders = () => {
       state.headersData.push({key: '', value: ''})
     }
-    const deleteHeaders = (row, index) => {
+    const deleteHeaders = (index: number) => {
       state.headersData.splice(index, 1)
     }
 

@@ -1,69 +1,79 @@
 <template>
   <div>
+
     <el-form
-        inline
+        :inline="true"
         ref="formRef"
         :model="form"
         label-width="50px"
         label-position="right"
         :rules="rules"
         class="title">
-      <el-form-item prop="url">
-        <el-input
-            v-model="form.url"
-            placeholder="请输入请求路径"
-            class="input-with-select"
-            style="width:700px"
-        >
-          <template #prepend>
-            <el-select v-model="form.method" placeholder="Select" style="width: 110px">
-              <el-option
-                  v-for="item in methodList"
-                  :key="item"
-                  :label="item"
-                  :value="item">
-                <span style="float: left">{{ item }}</span>
-              </el-option>
-            </el-select>
-          </template>
-        </el-input>
+      <el-row :gutter="35">
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+          <el-form-item prop="url">
+            <el-input
+                v-model="form.url"
+                placeholder="请输入请求路径"
+                class="input-with-select"
+                style="min-width:600px"
+            >
+              <template #prepend>
+                <el-select v-model="form.method" placeholder="Select" style="width: 100px">
+                  <el-option
+                      v-for="item in methodList"
+                      :key="item"
+                      :label="item"
+                      :value="item">
+                    <span style="float: left; font-weight: 200">{{ item }}</span>
+                  </el-option>
+                </el-select>
+              </template>
+            </el-input>
+          </el-form-item>
+<!--        </el-col>-->
 
-      </el-form-item>
-      <el-button type="primary" @click="saveOrUpdateCase('save')" class="title-button">保存</el-button>
-      <el-button type="success" @click="onEnv">调试</el-button>
-      <el-button type="warning">断言调试</el-button>
+<!--        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">-->
+          <el-form-item>
+            <el-button type="primary" @click="saveOrUpdateCase('save')" class="title-button">保存</el-button>
+            <el-button type="success" @click="onEnv">调试</el-button>
+            <el-button type="warning">断言调试</el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
     </el-form>
 
-        <el-dialog
-            v-model="showEnv"
-            width="600px"
-            top="8vh"
-            :close-on-click-modal="false">
-          <el-form
-              :model="form"
-              label-width="80px"
+    <el-dialog
+        v-model="showEnv"
+        width="600px"
+        top="8vh"
+        :close-on-click-modal="false">
+      <el-form
+          :model="form"
+          label-width="80px"
 
-          >
-            <el-form-item label="运行环境" prop="belong_project_id">
-              <el-select v-model="form.base_url" placeholder="选择环境" filterable style="width:80%">
-                <el-option :value="null" label="自带环境">自带环境</el-option>
-                <el-option
-                    v-for="item in envList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.url">
-                  <span style="float: left">{{ item.name }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-form>
-          <template #footer>
+      >
+        <el-form-item label="运行环境" prop="belong_project_id">
+          <el-select v-model="form.base_url" placeholder="选择环境" filterable style="width:80%">
+            <el-option :value="''" label="自带环境">自带环境</el-option>
+            <el-option
+                v-for="item in envList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.url">
+              <span style="float: left">{{ item.name }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
             <span class="dialog-footer">
               <el-button @click="showEnv = !showEnv">取消</el-button>
               <el-button type="primary" @click="saveOrUpdateCase('debug')">调试</el-button>
             </span>
-          </template>
-        </el-dialog>
+      </template>
+    </el-dialog>
 
   </div>
 </template>
@@ -91,7 +101,7 @@ export default defineComponent({
         id: '',
         url: '',
         method: 'POST',
-        base_url: null,
+        base_url: '',
         enabled_flag: null
       }
     }
@@ -125,7 +135,7 @@ export default defineComponent({
         if (valid) {
           if (handleType === 'save') {
             emit('saveOrUpdateOrDebug', 'save')
-          }else if(handleType === 'debug') {
+          } else if (handleType === 'debug') {
             emit('saveOrUpdateOrDebug', 'debug')
           }
         } else {
@@ -138,9 +148,9 @@ export default defineComponent({
 
     const getEnvList = () => {
       useEnvApi().getList({page: 1, pageSize: 1000})  // 请求数据写死，后面优化
-      .then(res => {
-        state.envList = res.data.rows
-      })
+          .then(res => {
+            state.envList = res.data.rows
+          })
     }
 
     const onEnv = () => {

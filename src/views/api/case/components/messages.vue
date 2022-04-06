@@ -182,16 +182,16 @@ import {ElMessage} from "element-plus";
 export default defineComponent({
   name: 'case-url',
   components: {},
-  setup(props, {emit}) {
+  setup() {
     const formRef = ref()
     const createForm = () => {
       return {
         name: '',
-        code_id: 1,
+        code_id: null,
         code: '',
-        project_id: 1,
-        module_id: 1,
-        config_id: 1,
+        project_id: null,
+        module_id: null,
+        config_id: null,
         id: null,
         priority: 3,
         include: []
@@ -281,11 +281,6 @@ export default defineComponent({
       state.moduleList = []
       state.include_data = []
       state.moduleQuery.project_id = state.configQuery.project_id = state.caseQuery.project_id = project_id
-      console.log('project_id', project_id)
-      console.log('state.moduleQuery', state.moduleQuery)
-      console.log('state.caseQuery', state.caseQuery)
-      // state.configQuery.project_id = project_id
-      // state.caseQuery.project_id = project_id
 
       getModuleList()
       getCaseList()
@@ -303,12 +298,9 @@ export default defineComponent({
     //  ----------------config start-------------------------------------
     // 获取用例列表
     const getCaseList = () => {
-      console.log('state.caseQuery', state.caseQuery)
       useTestCaseApi().getList(state.caseQuery) // 请求数据写死，后面优化
           .then(res => {
             state.caseList = state.include_data = res.data.rows
-            console.log('state.caseList', state.caseList)
-            console.log('state.include_data', state.include_data)
           })
     }
 
@@ -346,5 +338,9 @@ export default defineComponent({
 }
 ::v-deep .el-transfer-panel__filter .el-input__inner {
   height: 26px !important;
+}
+::v-deep .el-transfer-panel .el-transfer-panel__header .el-checkbox .el-checkbox__label {
+  font-size: 12px;
+  font-weight: bold;
 }
 </style>
