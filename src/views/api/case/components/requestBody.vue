@@ -368,4 +368,15 @@ json-editor-vue .jsoneditor {
 
   }
 }
+
+.block-title {
+  position: relative;
+  padding-left: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  height: 28px;
+  line-height: 28px;
+  background: #f7f7fc;
+  color: #333333;
+}
 </style>

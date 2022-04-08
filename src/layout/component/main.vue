@@ -42,7 +42,8 @@ export default defineComponent({
 		// 设置 main 的高度
 		const initHeaderHeight = () => {
 			let { isTagsview } = store.state.themeConfig.themeConfig;
-			if (isTagsview) return (state.headerHeight = `84px`);
+			// if (isTagsview) return (state.headerHeight = `84px`);
+			if (isTagsview) return (state.headerHeight = `114px`);
 			else return (state.headerHeight = `50px`);
 		};
 		// 初始化获取当前路由 meta，用于设置 iframes padding

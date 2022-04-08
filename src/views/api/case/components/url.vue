@@ -54,9 +54,9 @@
           label-width="80px"
 
       >
-        <el-form-item label="运行环境" prop="belong_project_id">
+        <el-form-item label="运行环境" prop="base_url">
           <el-select v-model="form.base_url" placeholder="选择环境" filterable style="width:80%">
-            <el-option :value="''" label="自带环境">自带环境</el-option>
+            <el-option value="" label="自带环境"></el-option>
             <el-option
                 v-for="item in envList"
                 :key="item.id"
@@ -101,8 +101,7 @@ export default defineComponent({
         id: '',
         url: '',
         method: 'POST',
-        base_url: '',
-        enabled_flag: null
+        base_url: ''
       }
     }
     const state = reactive({
@@ -163,6 +162,9 @@ export default defineComponent({
         }
       })
     }
+    const onOpenCloseEnvDialog = () => {
+      state.showEnv = !state.showEnv
+    }
 
 
     return {
@@ -172,6 +174,7 @@ export default defineComponent({
       saveOrUpdateCase,
       getEnvList,
       onEnv,
+      onOpenCloseEnvDialog,
       ...toRefs(state),
     };
   },
@@ -233,4 +236,8 @@ export default defineComponent({
   }
 }
 
+/* el-input */
+.el-input__inner {
+  font-weight: bold;
+}
 </style>

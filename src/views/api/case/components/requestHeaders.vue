@@ -1,6 +1,6 @@
 <template>
   <el-form inline ref="request-form" label-width="50px" size="mini" label-position="right">
-    <div>
+    <div class="block-title">
       <el-button type="text" @click="addHeaders" title="添加header">
         <el-icon><ele-CirclePlusFilled></ele-CirclePlusFilled></el-icon>add
       </el-button>
@@ -267,5 +267,21 @@ table {
       }
     }
   }
+}
+
+/* el-input */
+.el-input__inner {
+  font-weight: bold;
+}
+
+.block-title {
+  position: relative;
+  padding-left: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  height: 28px;
+  line-height: 28px;
+  background: #f7f7fc;
+  color: #333333;
 }
 </style>

@@ -55,6 +55,27 @@
         </div>
       </div>
     </el-card>
+
+
+<!--    <el-dialog-->
+<!--        lock-scroll-->
+<!--        title="测试报告"-->
+<!--        v-model="showTestReportDialog"-->
+<!--        width="80%"-->
+<!--        :close-on-click-modal="false"-->
+<!--        center-->
+<!--        append-to-body-->
+<!--        top='4vh'-->
+<!--    >-->
+      <el-dialog
+        v-model="showTestReportDialog"
+        width="80%"
+        top="8vh"
+        destroy-on-close
+        :close-on-click-modal="false">
+      <test-report :reportBody="reportBody"/>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -68,12 +89,11 @@ import ExtractValidate from '/@/views/api/case/components/extractValidate.vue'
 import VariablesParameters from '/@/views/api/case/components/variablesParameters.vue'
 import OutputList from '/@/views/api/case/components/outputList.vue'
 import Skip from '/@/views/api/case/components/skip.vue'
-// import {mapGetters} from 'vuex'
+import TestReport from '/@/views/api/Report/components/report.vue';
 import {ElLoading, ElMessage} from "element-plus";
 import {useStore} from "/@/store";
 import {useRoute, useRouter} from "vue-router";
 import {useTestCaseApi} from '/@/api/useAutoApi/testcase';
-import router from "/@/router";
 
 export default defineComponent({
   name: 'saveOrUpdateTestCase',
@@ -86,6 +106,7 @@ export default defineComponent({
     VariablesParameters,
     OutputList,
     Skip,
+    TestReport,
   },
   setup() {
     const store = useStore();
@@ -105,6 +126,11 @@ export default defineComponent({
       activeName: 'requestBody',
       editType: '',
       content: {key: 'vaue'},
+
+      // report
+      // report
+      showTestReportDialog: false,
+      reportBody: {},
     });
 
 
@@ -176,10 +202,13 @@ export default defineComponent({
           })
           useTestCaseApi().debugTestCase(testCaseForm)
               .then(res => {
-                // this.reportData = res.data
+                state.reportBody = res.data
                 console.log(res, 'this.res')
+                console.log(type, 'type')
                 if (type === 'debug') {
-                  // this.testReportShow = true
+                  console.log('-----------------debug---------------')
+                  urlRef.value.onOpenCloseEnvDialog()
+                  state.showTestReportDialog = true
                   loading.close()
                 } else {
                   // this.drawer = true
@@ -210,6 +239,7 @@ export default defineComponent({
                 url: case_data.request.url,
                 method: case_data.request.method,
                 enabled_flag: data.enabled_flag,
+                base_url: '',
               }
               urlRef.value.initForm(urlForm)
               // msg
@@ -314,9 +344,11 @@ export default defineComponent({
   border-radius: 50%;
   color: white;
 }
-::v-deep .el-page-header .page-header  {
-  margin-left: 0!important;
+
+::v-deep .el-page-header .page-header {
+  margin-left: 0 !important;
 }
+
 ::v-deep .save-update-card .el-card__body {
   padding-top: 0;
 }

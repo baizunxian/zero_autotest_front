@@ -16,16 +16,17 @@
         <el-row>
           <el-col :span="12">
             <div class="test-polar">
-              <v-chart theme="ovilia-green" :options="getpolardata()" style="width: 480px; height: 100px;"/>
+              <v-chart theme="ovilia-green" :options="getPolarData()" style="width: 480px; height: 100px;"/>
               <div class="tip">
-                <p>{{ reportData.stat.successes }} 用例成功 {{ reportData.stat.failures }} 用例失败</p>
-                <p>{{ reportData.stat.errors }} 用例错误 {{ reportData.stat.skipped }} 用例跳过</p>
+                <p>{{ reportBody.stat.teststeps.successes }} 用例成功 {{ reportBody.stat.teststeps.failures }} 用例失败</p>
+<!--                <p>{{ reportBody.stat.errors }} 用例错误</p>-->
+<!--                <p>{{ reportBody.stat.errors }} 用例错误 {{ reportBody.stat.skipped }} 用例跳过</p>-->
               </div>
             </div>
           </el-col>
           <el-col :span="12">
             <div class="test-polar">
-              <v-chart theme="ovilia-green" :options="getsuitesdata()" style="width: 480px; height: 100px;"/>
+              <v-chart theme="ovilia-green" :options="getSuitesData()" style="width: 480px; height: 100px;"/>
               <div class="tip">
                 <p>{{ test_suite_success }} 套件通过</p>
                 <p>{{ test_suite_fail }} 套件失败</p>
@@ -62,25 +63,25 @@
                 <div id="test-collection" class="test-collection">
                   <div>
                     <div class="test-heading">
-                      <h5 class="test-name">{{ reportdata.name }}</h5>
+                      <h5 class="test-name">{{ reportBody.name }}</h5>
                       <div class="test-time-info'">
-                        <span class="label start-time">执行时间 {{ reportdata.time.start_at }}</span>
-                        <span class="label end-time">执行用时 {{ reportdata.time.duration | interceptdate }}  秒</span>
+                        <span class="label start-time">执行时间 {{ reportBody.time.start_at }}</span>
+                        <span class="label end-time">执行用时 {{ reportBody.time.duration }}  秒</span>
                       </div>
                       <div class="test-desc">
                         <el-tag type="success" style="margin-right: 10px;">Pass: {{
-                            reportdata.stat.successes
+                            reportBody.stat.teststeps.successes
                           }}
                         </el-tag>
-                        <el-tag type="warning" style="margin-right: 10px;">Fail: {{ reportdata.stat.failures }}</el-tag>
-                        <el-tag type="danger" style="margin-right: 10px;">Error: {{ reportdata.stat.errors }}</el-tag>
-                        <el-tag type="info" style="margin-right: 10px;">Skip: {{ reportdata.stat.skipped }}</el-tag>
+                        <el-tag type="warning" style="margin-right: 10px;">Fail: {{ reportBody.stat.teststeps.failures }}</el-tag>
+<!--                        <el-tag type="danger" style="margin-right: 10px;">Error: {{ reportBody.stat.teststeps.errors }}</el-tag>-->
+<!--                        <el-tag type="info" style="margin-right: 10px;">Skip: {{ reportBody.stat.skipped }}</el-tag>-->
                       </div>
                     </div>
 
                     <div class="test-content">
 
-                      <div class="collapsible node-list" v-for="(record, index) in reportdata.records"
+                      <div class="collapsible node-list" v-for="(record, index) in reportData.step_datas"
                            :key="guid2() + index + 'records' ">
                         <span v-if="record.status === 'success'" class="node level-1 leaf pass"></span>
                         <span v-if="record.status === 'failure'" class="node level-1 leaf fail"></span>
@@ -92,9 +93,10 @@
                       <div>
                         <el-collapse Vlaue="1" accordion>
                           <template>
-                            <el-collapse-item :name="index" v-for="(record, index) in reportdata.records"
+                            <el-collapse-item :name="index" v-for="(record, index) in reportData.records"
                                               :key="guid2() + index + 'records1' ">
-                              <div slot="title" style="width: 100%; padding: 5px 0px;">
+                              <template #title>
+                              <div style="width: 100%; padding: 5px 0px;">
                                 <div>
                                   <div>
                                     <div v-if="record.status === 'success'" style="font-size: 16px; padding: 3px 0;">
@@ -124,6 +126,7 @@
                                   </div>
                                 </div>
                               </div>
+                              </template>
                               <div class='collapsible-body'>
 
                                 <div class='node-steps'>
@@ -146,37 +149,37 @@
                                       <td class='status info' title='info' alt='info' align="center"><i
                                           class='el-icon-pie-chart'></i></td>
                                       <td class='timestamp'>url</td>
-                                      <td class='step-details'>{{ record.meta_data.request.url }}</td>
+                                      <td class='step-details'>{{ record.data.req_resps.request.url }}</td>
                                     </tr>
 
                                     <tr class='info' status='info'>
                                       <td class='status info' title='info' alt='info' align="center"><i
                                           class='el-icon-pie-chart'></i></td>
                                       <td class='timestamp'>method</td>
-                                      <td class='step-details'>{{ record.meta_data.request.method }}</td>
+                                      <td class='step-details'>{{ record.data.req_resps.request.method }}</td>
                                     </tr>
 
                                     <tr class='info' status='info'>
                                       <td class='status info' title='info' alt='info' align="center"><i
                                           class='el-icon-pie-chart'></i></td>
                                       <td class='timestamp'>status_code</td>
-                                      <td class='step-details'>{{ record.meta_data.response.status_code }}</td>
+                                      <td class='step-details'>{{ record.data.req_resps.response.status_code }}</td>
                                     </tr>
-                                    <template v-for="(value, key, index) in record.meta_data.request">
+                                    <template v-for="(value, key, index) in record.data.req_resps.request">
                                       <tr v-if="key!=='url' && key !== 'method' && key !== 'start_timestamp'"
                                           :key="guid2() + index + 'request'">
                                         <td class='status debug' title='debug' alt='debug' align="center"><i
                                             class='el-icon-pie-chart'></i></td>
                                         <td class='timestamp'>{{ key }}</td>
                                         <td class='step-details' v-if="key === 'headers'">
-                                          <div v-for="(header_value, header_key) in record.meta_data.request.headers"
+                                          <div v-for="(header_value, header_key) in record.data.req_resps.request.headers"
                                                :key="guid2() + header_key + 'headers'">
                                             <strong>{{ header_key }}</strong>: {{ header_value }}
                                           </div>
                                         </td>
                                         <td class='step-details' v-else-if="key === 'json'">
                                           <json-viewer
-                                              :value="record.meta_data.request.json"
+                                              :value="record.data.req_resps.request.json"
                                               :expand-depth="5"
                                               :copyable="copyable"
                                               :boxed="true"
@@ -192,7 +195,7 @@
                                       <td><strong style="color: coral;">Response</strong></td>
                                       <td></td>
                                     </tr>
-                                    <template v-for="(value, key, index) in record.meta_data.response">
+                                    <template v-for="(value, key, index) in record.data.req_resps.response">
                                       <tr v-if="key!=='content' &&
                                             key !== 'start_timestamp' &&
                                             key !== 'response_time_ms' &&
@@ -208,17 +211,17 @@
                                             class='el-icon-pie-chart'></i></td>
                                         <td class='timestamp'>{{ key }}</td>
                                         <td class='step-details' v-if="key === 'headers'">
-                                          <div v-for="(header_value, header_key) in record.meta_data.response.headers"
+                                          <div v-for="(header_value, header_key) in record.data.req_resps.response.headers"
                                                :key="guid2() + header_key + 'headers'">
                                             <strong>{{ header_key }}</strong>: {{ header_value }}
                                           </div>
                                         </td>
                                         <td class='step-details'
-                                            v-else-if="key === 'json' && record.meta_data.response.json!=null">
-                                          <img v-if="record.meta_data.response.content_type === 'image'"
-                                               :src="record.meta_data.response.content" alt="">
+                                            v-else-if="key === 'json' && record.data.req_resps.response.json!=null">
+                                          <img v-if="record.data.req_resps.response.content_type === 'image'"
+                                               :src="record.data.req_resps.response.content" alt="">
                                           <json-viewer
-                                              :value="record.meta_data.response.json"
+                                              :value="record.data.req_resps.response.json"
                                               :expand-depth="5"
                                               :copyable="copyable"
                                               boxed
@@ -227,17 +230,17 @@
                                           <!--                                                <pre v-else>{{ record.meta_data.response.json }}</pre>-->
                                         </td>
                                         <td class='step-details' v-else-if="key === 'text'">
-                                          <img v-if="record.meta_data.response.content_type === 'image'"
-                                               :src="record.meta_data.response.content" alt="">
+                                          <img v-if="record.data.req_resps.response.content_type === 'image'"
+                                               :src="record.data.req_resps.response.content" alt="">
                                           <json-viewer
-                                               v-else
-                                              :value="record.meta_data.response.text"
+                                              v-else
+                                              :value="record.data.req_resps.response.text"
                                               :expand-depth="1"
                                               :copyable="copyable"
                                               boxed
                                               sort
                                           />
-<!--                                          <pre v-else>{{ record.meta_data.response.text }}</pre>-->
+                                          <!--                                          <pre v-else>{{ record.meta_data.response.text }}</pre>-->
                                         </td>
                                         <td v-else>{{ value }}</td>
                                       </tr>
@@ -247,9 +250,9 @@
                                       <td class='status pass' title='pass' alt='pass' align="center"><i
                                           class='el-icon-pie-chart'></i></td>
                                       <td class='timestamp'>Validators</td>
-                                      <td class='timestamp' v-if="record.meta_data.validators.length < 1">无校验</td>
+                                      <td class='timestamp' v-if="record.data.req_resps.validators.length < 1">无校验</td>
                                       <td class='step-details' v-else>
-                                        <div v-for="validator in record.meta_data.validators"
+                                        <div v-for="validator in record.data.req_resps.validators"
                                              :key="guid2() + validator.check_result + 'validators'">
                                           <el-tag :type="validator.check_result === 'pass'? 'success':'danger'"
                                                   effect="dark">
@@ -265,9 +268,9 @@
                                           class='el-icon-pie-chart'></i></td>
                                       <td class='timestamp'>Statistics</td>
                                       <td class='step-details'>
-                                        <div>请求内容大小(bytes): {{ record.meta_data.response.content_size }}</div>
-                                        <div>响应时间(ms): {{ record.meta_data.response.response_time_ms }}</div>
-                                        <div>用时(ms): {{ record.meta_data.response.elapsed_ms }}</div>
+                                        <div>请求内容大小(bytes): {{ record.data.req_resps.response.content_size }}</div>
+                                        <div>响应时间(ms): {{ record.data.req_resps.response.response_time_ms }}</div>
+                                        <div>用时(ms): {{ record.data.req_resps.response.elapsed_ms }}</div>
                                       </td>
                                     </tr>
                                     <tr v-if="record.attachment.length > 0" class='log' status='fail'>
@@ -283,9 +286,9 @@
                                       <td></td>
                                       <td>变量</td>
                                       <td>
-                                        <!--                                            <pre> {{ reportdata.output[index]? reportdata.output[index]['in']: '' }}</pre>-->
+                                        <!--                                            <pre> {{ reportData.output[index]? reportData.output[index]['in']: '' }}</pre>-->
                                         <json-viewer
-                                            :value="reportdata.output[index]? reportdata.output[index]['in']: ''"
+                                            :value="reportData.output[index]? reportData.output[index]['in']: ''"
                                             :expand-depth="5"
                                             :copyable="copyable"
                                             boxed
@@ -297,9 +300,9 @@
                                       <td></td>
                                       <td>输出变量</td>
                                       <td>
-                                        <!--                                            <pre>{{ reportdata.output[index]? reportdata.output[index]['out']: '' }}</pre>-->
+                                        <!--                                            <pre>{{ reportData.output[index]? reportData.output[index]['out']: '' }}</pre>-->
                                         <json-viewer
-                                            :value="reportdata.output[index]? reportdata.output[index]['out']: '' "
+                                            :value="reportData.output[index]? reportData.output[index]['out']: '' "
                                             :expand-depth="5"
                                             :copyable="copyable"
                                             boxed
@@ -328,9 +331,9 @@
   </el-container>
 </template>
 
-<script>
+<script lang="ts">
 // import {runTest} from '@/api/case'
-import ECharts from 'echarts'
+import * as ECharts from 'echarts'
 import 'echarts/lib/chart/bar'
 import 'echarts/lib/chart/line'
 import 'echarts/lib/chart/pie'
@@ -340,49 +343,61 @@ import 'echarts/lib/component/markPoint'
 import 'echarts/lib/component/markLine'
 import 'echarts/lib/component/graphic'
 import 'echarts/lib/component/title'
-// import light from 'echarts/lib/theme/light.js'
-// import JsonViewer from '@/utils/vue-json-viewer'
-// import 'vue-json-viewer/style.css'
+import light from 'echarts/lib/theme/light.js'
+import JsonViewer from 'vue3-json-viewer'
+import 'vue-json-viewer/style.css'
+import {defineComponent, onMounted, reactive, toRefs} from "vue";
 
-ECharts.registerTheme('ovilia-green', light) //引入主题 
-export default {
+ECharts.registerTheme('ovilia-green', light) //引入主题
+
+export default defineComponent({
   name: 'testReport',
   components: {
     'v-chart': ECharts,
     JsonViewer
   },
-  props: {
-    reportData: Object
+  props: ['reportBody'],
+
+  created() {
+    this.initReportData()
   },
-  filters: {
-    interceptdate: function (value) {
-      return value.toFixed(3)
-    }
-  },
-  data() {
-    return {
+  setup(props) {
+    const state = reactive({
       suites_index: 0,
-      reportdata: {},
+      reportData: {},
       details: [],
-      detaildata: [],
+      detailData: [],
       test_suite_success: 0,
       test_suite_fail: 0,
-      uuid: this.guid2(),
+      // uuid: guid2(),
       copyable: {copyText: '复制', copiedText: '复制成功'}
+    });
+
+    const initReportData = () => {
+      console.log('------------------initReportData-----------------')
+      props.reportBody.details.forEach(detail => {
+        state.details.push(detail)
+      })
+      state.reportData = state.details[0]
+      console.log('state.reportData', state.reportData)
     }
-  },
-  mounted() {
-    this.gettest()
-  },
-  created() {
-    this.reportData.details.forEach(detail => {
-      this.details.push(detail)
-    })
-    this.reportdata = this.details[0]
-  },
-  methods: {
-    getpolardata() {
-      let polar = {
+
+    const initTestCount = () => {
+      state.reportData.details.forEach(test_suite_summary => {
+        if (test_suite_summary.success === true) {
+          state.test_suite_success += 1
+        }
+      })
+      state.test_suite_fail = state.reportData.details.length - state.test_suite_success
+    }
+
+    const getDetails = (data, index) => {
+      state.reportData = data
+      state.suites_index = index
+    }
+
+    const getPolarData = () => {
+      return {
         title: {
           text: '用例结果',
           subtext: '动态数据',
@@ -425,8 +440,8 @@ export default {
               show: false
             },
             data: [
-              {value: this.reportData.stat.successes, name: '成功', itemStyle: {color: '#00af00'}},
-              {value: this.reportData.stat.failures, name: '失败', itemStyle: {color: '#F7464A'}},
+              {value: props.reportBody.stat.teststeps.successes, name: '成功', itemStyle: {color: '#00af00'}},
+              {value: props.reportBody.stat.teststeps.failures, name: '失败', itemStyle: {color: '#F7464A'}},
             ],
             itemStyle: {
               emphasis: {
@@ -438,10 +453,10 @@ export default {
           }
         ]
       }
-      return polar
-    },
-    getsuitesdata() {
-      let suitesdata = {
+    }
+
+    const getSuitesData = () => {
+      return {
         title: {
           text: '套件结果',
           subtext: '动态数据',
@@ -484,8 +499,8 @@ export default {
               show: false
             },
             data: [
-              {value: this.test_suite_success, name: '成功', itemStyle: {color: '#00af00'}},
-              {value: this.test_suite_fail, name: '失败', itemStyle: {color: '#F7464A'}},
+              {value: state.test_suite_success, name: '成功', itemStyle: {color: '#00af00'}},
+              {value: state.test_suite_fail, name: '失败', itemStyle: {color: '#F7464A'}},
             ],
             itemStyle: {
               emphasis: {
@@ -497,35 +512,38 @@ export default {
           }
         ]
       }
-      return suitesdata
-    },
+    }
 
-    gettest() {
-      this.reportData.details.forEach(test_suite_summary => {
-        if (test_suite_summary.success == true) {
-          this.test_suite_success += 1
-        }
-      })
-      this.test_suite_fail = this.reportData.details.length - this.test_suite_success
-    },
-
-    getDetails(data, index) {
-      this.reportdata = data
-      this.suites_index = index
-    },
-
-    guid2() {
+    const guid2 = () => {
       function S4() {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
       }
 
       return (S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4())
     }
+
+    onMounted(() => {
+      console.log('props-------------ro', props.reportBody)
+      initReportData()
+      console.log('start-------------ro', state.reportData)
+    })
+
+
+    return {
+      initReportData,
+      initTestCount,
+      getDetails,
+      getPolarData,
+      getSuitesData,
+      guid2,
+      ...toRefs(state),
+    };
   }
-}
+})
+
 </script>
 
-<style scoped src='@/styles/extent.css'></style>
+<style scoped src='/@/styles/extent.css'></style>
 
 <style lang="scss" scoped>
 .container {

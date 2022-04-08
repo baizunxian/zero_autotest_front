@@ -1,7 +1,7 @@
 <template>
   <!-- data - table -->
   <div>
-    <div style="display: flex; align-items: center;">
+    <div class="block-title" style="display: flex; align-items: center;">
       <el-tooltip placement="bottom-start">
         <strong>变量</strong>
         <template #content>
@@ -92,7 +92,7 @@
     </el-table>
 
     <!-- headers -->
-    <div style="display: flex; align-items: center;">
+    <div class="block-title" style="display: flex; align-items: center;">
       <el-tooltip placement="bottom-start">
         <strong>参数</strong>
         <template #content>
@@ -162,7 +162,7 @@
       </el-table-column>
     </el-table>
 
-    <div style="display: flex; align-items: center;">
+    <div class="block-title" style="display: flex; align-items: center;">
 
       <el-tooltip placement="bottom-start">
         <strong>函数</strong>
@@ -389,5 +389,23 @@ export default defineComponent({
     background-color: #31b0d5;
     border-color: #ffffff;
   }
+}
+/* el-input */
+.el-input__inner {
+  font-weight: bold;
+}
+::v-deep .el-textarea__inner {
+  font-weight: bold;
+}
+
+.block-title {
+  position: relative;
+  padding-left: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  height: 28px;
+  line-height: 28px;
+  background: #f7f7fc;
+  color: #333333;
 }
 </style>
