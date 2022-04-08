@@ -343,4 +343,7 @@ export default defineComponent({
   font-size: 12px;
   font-weight: bold;
 }
+::v-deep .el-input__inner {
+  font-weight: bold;
+}
 </style>

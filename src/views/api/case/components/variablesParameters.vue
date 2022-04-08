@@ -391,7 +391,7 @@ export default defineComponent({
   }
 }
 /* el-input */
-.el-input__inner {
+::v-deep .el-input__inner {
   font-weight: bold;
 }
 ::v-deep .el-textarea__inner {

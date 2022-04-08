@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { computed, onBeforeMount, onUnmounted, getCurrentInstance, defineComponent, defineAsyncComponent } from 'vue';
-import { useStore } from '/@/store/index';
+import { useStore } from '/@/store';
 import { Local } from '/@/utils/storage';
 export default defineComponent({
 	name: 'layout',

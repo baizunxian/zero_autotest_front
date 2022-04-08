@@ -232,7 +232,7 @@ table {
 }
 </style>
 
-<style lang="scss">
+<style lang="scss" scoped>
 /* jsoneditor右上角默认有一个链接,加css去掉了 */
 .jsoneditor-poweredBy {
   display: none;
@@ -270,7 +270,7 @@ table {
 }
 
 /* el-input */
-.el-input__inner {
+::v-deep .el-input__inner {
   font-weight: bold;
 }
 

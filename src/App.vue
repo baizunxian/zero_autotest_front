@@ -102,13 +102,13 @@ export default defineComponent({
   top: 0;
 }
 
-::v-deep .auto-test .el-overlay .el-overlay-dialog .el-dialog .el-dialog__body {
+.auto-test .el-overlay .el-overlay-dialog .el-dialog .el-dialog__body {
   padding: 12px 16px !important;
   max-height: 60vh;
   overflow-y: auto;
 }
 
-::v-deep .auto-test .el-dialog__body {
+.auto-test .el-dialog__body {
   padding: 12px 16px !important;
   max-height: 60vh;
   overflow-y: auto;

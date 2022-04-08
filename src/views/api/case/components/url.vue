@@ -212,10 +212,10 @@ export default defineComponent({
     font-weight: 1000;
   }
 
-  ::v-deep .el-input__inner {
-    font-weight: bold;
-    font-size: 13px;
-  }
+  //::v-deep .el-input__inner {
+  //  font-weight: bold;
+  //  font-size: 13px;
+  //}
 
   ::v-deep .el-form-item--mini .el-form-item__error {
     padding-left: 100px;
@@ -237,7 +237,7 @@ export default defineComponent({
 }
 
 /* el-input */
-.el-input__inner {
+::v-deep .el-input__inner {
   font-weight: bold;
 }
 </style>

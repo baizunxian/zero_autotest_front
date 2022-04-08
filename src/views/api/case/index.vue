@@ -30,8 +30,10 @@
         <el-table-column label="所属项目" show-overflow-tooltip prop="project_name"></el-table-column>
         <el-table-column label="所属模块" show-overflow-tooltip prop="module_name"></el-table-column>
         <el-table-column label="关联配置" show-overflow-tooltip prop="config_id"></el-table-column>
+        <el-table-column label="更新人" show-overflow-tooltip prop="created_by_name"></el-table-column>
         <el-table-column label="更新时间" show-overflow-tooltip prop="updation_date"></el-table-column>
         <el-table-column label="创建时间" show-overflow-tooltip prop="creation_date"></el-table-column>
+        <el-table-column label="创建人" show-overflow-tooltip prop="updated_by_name"></el-table-column>
         <el-table-column label="操作" width="150">
           <template #default="scope">
             <el-button type="text"
