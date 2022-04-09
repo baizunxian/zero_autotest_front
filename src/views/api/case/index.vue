@@ -90,6 +90,15 @@
             </span>
       </template>
     </el-dialog>
+
+    <el-dialog
+        v-model="showTestReportDialog"
+        width="80%"
+        top="8vh"
+        destroy-on-close
+        :close-on-click-modal="false">
+      <test-report :reportBody="reportBody"/>
+    </el-dialog>
   </div>
 </template>
 
@@ -101,6 +110,7 @@ import Pagination from '/@/components/Pagination/index.vue';
 import {useTestCaseApi} from "/@/api/useAutoApi/testcase";
 import {useRouter} from "vue-router";
 import {useEnvApi} from "/@/api/useAutoApi/env";
+import TestReport from '/@/views/api/Report/components/report.vue';
 
 // 定义接口来定义对象的类型
 // interface TableData {
@@ -115,11 +125,12 @@ import {useEnvApi} from "/@/api/useAutoApi/env";
 
 export default defineComponent({
   name: 'apiTestCase',
-  components: {saveOrUpdate, Pagination},
+  components: {saveOrUpdate, Pagination, TestReport},
   setup() {
     const saveOrUpdateRef = ref();
     const router = useRouter();
     const state = reactive({
+
       listData: [],
       tableLoading: false,
       total: 0,
@@ -135,7 +146,10 @@ export default defineComponent({
       runForm: {
         id: null,
         base_url: '',
-      }
+      },
+      // report
+      reportBody: {},
+      showTestReportDialog: false,
     });
     // 初始化表格数据
     const getList = () => {
@@ -194,7 +208,8 @@ export default defineComponent({
           .then(res => {
             console.log(res)
             ElMessage.success('运行成功');
-            state.runCaseLoading = !state.runCaseLoading;
+            state.showTestReportDialog = !state.showTestReportDialog;
+            state.reportBody = res.data
             state.showRunPage = false;
           })
           .catch((err: any) => {

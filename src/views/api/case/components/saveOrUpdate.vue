@@ -57,17 +57,17 @@
     </el-card>
 
 
-<!--    <el-dialog-->
-<!--        lock-scroll-->
-<!--        title="测试报告"-->
-<!--        v-model="showTestReportDialog"-->
-<!--        width="80%"-->
-<!--        :close-on-click-modal="false"-->
-<!--        center-->
-<!--        append-to-body-->
-<!--        top='4vh'-->
-<!--    >-->
-      <el-dialog
+    <!--    <el-dialog-->
+    <!--        lock-scroll-->
+    <!--        title="测试报告"-->
+    <!--        v-model="showTestReportDialog"-->
+    <!--        width="80%"-->
+    <!--        :close-on-click-modal="false"-->
+    <!--        center-->
+    <!--        append-to-body-->
+    <!--        top='4vh'-->
+    <!--    >-->
+    <el-dialog
         v-model="showTestReportDialog"
         width="80%"
         top="8vh"
@@ -80,7 +80,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
+import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue'
 import Url from '/@/views/api/case/components/url.vue'
 import Messages from '/@/views/api/case/components/messages.vue'
 import RequestBody from '/@/views/api/case/components/requestBody.vue'
@@ -89,11 +89,11 @@ import ExtractValidate from '/@/views/api/case/components/extractValidate.vue'
 import VariablesParameters from '/@/views/api/case/components/variablesParameters.vue'
 import OutputList from '/@/views/api/case/components/outputList.vue'
 import Skip from '/@/views/api/case/components/skip.vue'
-import TestReport from '/@/views/api/Report/components/report.vue';
-import {ElLoading, ElMessage} from "element-plus";
-import {useStore} from "/@/store";
-import {useRoute, useRouter} from "vue-router";
-import {useTestCaseApi} from '/@/api/useAutoApi/testcase';
+import TestReport from '/@/views/api/Report/components/report.vue'
+import {ElLoading, ElMessage} from "element-plus"
+import {useStore} from "/@/store"
+import {useRoute, useRouter} from "vue-router"
+import {useTestCaseApi} from '/@/api/useAutoApi/testcase'
 
 export default defineComponent({
   name: 'saveOrUpdateTestCase',
