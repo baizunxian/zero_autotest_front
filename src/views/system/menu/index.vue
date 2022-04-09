@@ -24,7 +24,7 @@
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
         <el-table-column label="菜单名称" show-overflow-tooltip>
           <template #default="scope">
-            <SvgIcon :name="scope.row.icon"/>
+            <SvgIcon v-if="scope.row.meta" :name="scope.row.meta.icon"/>
             <span class="ml10">{{ scope.row.title }}</span>
           </template>
         </el-table-column>
@@ -62,8 +62,7 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <save-or-update :moduleName="moduleName" :menuList="menuList" :allMenuList="allMenuList" @getList="getList"
-                    ref="saveOrUpdateRef"/>
+    <save-or-update :menuList="menuList" @getList="getList" ref="saveOrUpdateRef"/>
   </div>
 </template>
 
@@ -84,7 +83,6 @@ export default defineComponent({
     const state = reactive({
       moduleName: '菜单', // 模块名称
       menuList: [],
-      allMenuList: null,
       menuTableLoading: false,
       listQuery: {
         page: 1,
@@ -93,32 +91,11 @@ export default defineComponent({
       },
     });
 
-    // 递归组装菜单
-    const menuAssembly = (parent_menu: Array<object>, all_menu: Array<object>) => {
-      parent_menu.forEach(parent => {
-        all_menu.forEach(menu => {
-          if (menu.parent_id == parent.id) {
-            parent.children = parent.children ? parent.children : [];
-            parent.children.push(menu);
-          }
-        })
-        if (parent.children) menuAssembly(parent.children, all_menu);
-      })
-      state.menuList = parent_menu
-    };
-
     // 获取菜单列表
     const getList = async () => {
       state.menuTableLoading = true
-      let res = await useMenuApi().allMenu()
-      state.allMenuList = res.data
-      let parent_menu = []
-      res.data.forEach(menu => {
-        if (!menu.parent_id) {
-          parent_menu.push(menu)
-        }
-      })
-      menuAssembly(parent_menu, res.data)
+      let res = await useMenuApi().getAllMenus()
+      state.menuList = res.data
       state.menuTableLoading = false
     };
     // 打开新增菜单弹窗
@@ -147,9 +124,7 @@ export default defineComponent({
     })
 
     return {
-      // addMenuRef,
       saveOrUpdateRef,
-      // onOpenAddMenu,
       onOpenSaveOrUpdate,
       deleted,
       getList,

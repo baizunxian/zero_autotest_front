@@ -1,20 +1,25 @@
 <template>
   <div class="system-edit-menu-container">
-    <el-dialog :title="editType === 'save'? `新增${moduleName}` : `修改${moduleName}`" v-model="isShowDialog" width="769px">
+    <el-dialog :title="editType === 'save'? `新增` : `修改`" v-model="isShowDialog" width="769px" destroy-on-close>
       <el-form :model="form" :rules="rules" size="default" label-width="80px">
         <el-row :gutter="35">
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="上级菜单" prop="parent_id">
-              <el-select v-model="form.parent_id" clearable placeholder="Select">
-                <el-option :value="0" label="根目录"></el-option>
-                <el-option
-                    v-for="item in allMenuList"
-                    :key="item.id"
-                    :label="item.title"
-                    :value="item.id"
-                >
-                </el-option>
-              </el-select>
+              <el-tree-select
+                  :props="{children: 'children', label:'title', value: 'id'}"
+                  v-model="form.parent_id"
+                  clearable
+                  :data="menuData"/>
+              <!--              <el-select v-model="form.parent_id" clearable placeholder="Select">-->
+              <!--                <el-option :value="0" label="根目录"></el-option>-->
+              <!--                <el-option-->
+              <!--                    v-for="item in allMenuList"-->
+              <!--                    :key="item.id"-->
+              <!--                    :label="item.title"-->
+              <!--                    :value="item.id"-->
+              <!--                >-->
+              <!--                </el-option>-->
+              <!--              </el-select>-->
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
@@ -147,7 +152,7 @@ import {ElMessage} from "element-plus";
 export default defineComponent({
   name: 'saveOrUpdateMenu',
   components: {IconSelector},
-  props: ['menuList', 'allMenuList', 'moduleName'],
+  props: ['menuList'],
   setup(props, {emit}) {
     const createMenuForm = () => {
       return {
@@ -183,7 +188,7 @@ export default defineComponent({
         path: [{required: true, message: '请输入路由路径', trigger: 'blur'},],
         title: [{required: true, message: '请输入菜单名称', trigger: 'blur'},],
       },
-      menuData: [], // 上级菜单数据
+      menuData: [], // 菜单数据
     });
     // 创建表单
 
@@ -218,16 +223,23 @@ export default defineComponent({
             emit('getList')
             closeDialog(); // 关闭弹窗
           })
-      console.log(state.form, 'state.menuForm')
       // setBackEndControlRefreshRoutes() // 刷新菜单，未进行后端接口测试
     };
+
+    const getMenuList = async () => {
+      let res = await useMenuApi().getAllMenus()
+      state.menuData = []
+      state.menuData.push({id: 0, title: '根目录', children: res.data})
+    };
+
     // 页面加载时
     onMounted(() => {
-      // getMenuData();
+      getMenuList();
     });
 
     return {
       openDialog,
+      getMenuList,
       closeDialog,
       onSelectIframeChange,
       onCancel,

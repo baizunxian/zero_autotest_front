@@ -15,7 +15,7 @@
 		"D": "^1.0.0",
 		"axios": "^0.26.0",
 		"echarts": "^5.3.2",
-		"element-plus": "^2.0.4",
+		"element-plus": "^2.1.8",
 		"json-editor-vue": "^0.3.6",
 		"mitt": "^3.0.0",
 		"nprogress": "^0.2.0",

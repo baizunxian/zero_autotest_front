@@ -331,18 +331,25 @@ export default defineComponent({
   components: {
     JsonViewer,
   },
-  props: ['reportBody'],
+  props: {
+    reportBody: {
+      type: Object,
+      required: true
+    }
+  },
 
   created() {
-    this.initReportData()
+    if (this.$props.reportBody) {
+      this.initReportData()
+    }
   },
+
   setup(props) {
     const suitesChartRef = ref()
     const stepChartRef = ref()
     const state = reactive({
       suites_index: 0,
       reportData: {},
-      details: [],
       nodeStepData: {},  // 选中的用例步骤数据
       reportTestCaseData: {
         testcase: {
@@ -1483,6 +1490,7 @@ export default defineComponent({
       }
     });
 
+    // 初始化报告数据
     const initReportData = () => {
       // state.detailData = state.test_data.data.details
       // 用例 成功状态
@@ -1501,6 +1509,7 @@ export default defineComponent({
       }
     }
 
+    // 节点点击赋值
     const reportNodeClick = (node: any) => {
       if (!node.step_datas) {
         state.nodeStepData = node
@@ -1534,11 +1543,7 @@ export default defineComponent({
     //   state.test_suite_fail = state.reportData.details.length - state.test_suite_success
     // }
 
-    const getDetails = (data, index) => {
-      state.reportData = data
-      state.suites_index = index
-    }
-
+    // 用例图
     const initStepData = () => {
       let stepECharts = ECharts.init(stepChartRef.value)
       stepECharts.setOption({
@@ -1606,7 +1611,7 @@ export default defineComponent({
         ]
       })
     }
-
+    // 套件图
     const initSuitesData = () => {
       let suiteECharts = ECharts.init(suitesChartRef.value)
       suiteECharts.setOption({
@@ -1685,9 +1690,11 @@ export default defineComponent({
 
     onMounted(() => {
       console.log('props-------------ro', props.reportBody)
-      initReportData()
-      initSuitesData()
-      initStepData()
+      if (props.reportBody) {
+        initReportData()
+        initSuitesData()
+        initStepData()
+      }
       console.log('start-------------ro', state.reportData)
     })
 
@@ -1700,7 +1707,6 @@ export default defineComponent({
       initReportData,
       reportNodeClick,
       // initTestCount,
-      getDetails,
       guid2,
       ...toRefs(state),
     };

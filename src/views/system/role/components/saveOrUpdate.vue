@@ -102,7 +102,6 @@ interface RoleState {
 
 export default defineComponent({
   name: 'editRole',
-  props: ['moduleName'],
   setup(props, {emit}) {
     let createForm = () => {
       return {
@@ -161,16 +160,17 @@ export default defineComponent({
         }
       })
 
-    };
+    }
     // 获取菜单结构数据
     const getMenuData = () => {
       useMenuApi().getAllMenus()
           .then(res => {
             state.menuData = res.data
           });
-    };
+    }
+    // 赋值勾选的权限
     const roleTreeChange = () => {
-      state.form.menus = roleTreeRef.value.getCheckedKeys()
+      state.form.menus = roleTreeRef.value.getCheckedKeys(true)
     }
     return {
       openDialog,
