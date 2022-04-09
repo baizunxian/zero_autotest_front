@@ -1,7 +1,7 @@
 <template>
   <el-form inline ref="request-form" label-width="50px" size="mini" label-position="right">
     <div class="block-title">
-      <el-button type="text" @click="addHeaders" title="添加header">
+      <el-button size="small" type="text" @click="addHeaders" title="添加header">
         <el-icon><ele-CirclePlusFilled></ele-CirclePlusFilled></el-icon>add
       </el-button>
       <el-button type="text" @click="bulkEdit" title="文本编辑">
@@ -10,7 +10,7 @@
     </div>
 
     <div v-show="showBulk">
-      <el-input type="textarea" rows="5" v-model="headersBulk" placeholder="" show-word-limit></el-input>
+      <el-input size="small" type="textarea" rows="5" v-model="headersBulk" placeholder="" show-word-limit></el-input>
     </div>
 
     <div v-show="!showBulk">

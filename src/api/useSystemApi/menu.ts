@@ -31,6 +31,14 @@ export function useMenuApi() {
         method: 'post',
         data
       })
+    },
+    // 删除
+    deleted(data?: object) {
+      return request({
+        url: '/menu/deleted',
+        method: 'post',
+        data
+      })
     }
   };
 }

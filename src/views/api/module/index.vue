@@ -34,9 +34,9 @@
         <el-table-column label="其他信息" show-overflow-tooltip prop="other_desc"></el-table-column>
         <el-table-column label="关联配置" show-overflow-tooltip prop="config_id"></el-table-column>
         <el-table-column label="更新时间" show-overflow-tooltip prop="updation_date"></el-table-column>
-        <el-table-column label="更新人" show-overflow-tooltip prop="updated_by"></el-table-column>
+        <el-table-column label="更新人" show-overflow-tooltip prop="updated_by_name"></el-table-column>
         <el-table-column label="创建时间" show-overflow-tooltip prop="creation_date"></el-table-column>
-        <el-table-column label="创建人" show-overflow-tooltip prop="created_by"></el-table-column>
+        <el-table-column label="创建人" show-overflow-tooltip prop="created_by_name"></el-table-column>
         <el-table-column label="操作" width="100">
           <template #default="scope">
             <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"

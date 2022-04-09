@@ -17,6 +17,7 @@
         </el-button>
       </div>
       <el-table
+          border
           :data="listData"
           v-loading="tableLoading"
           style="width: 100%"

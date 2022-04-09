@@ -17,6 +17,7 @@
         </el-button>
       </div>
       <el-table
+          border
           :data="menuList"
           v-loading="menuTableLoading"
           style="width: 100%"
@@ -70,7 +71,6 @@
 import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {useMenuApi} from '/@/api/useSystemApi/menu';
 import {useStore} from '/@/store';
-import {RouteRecordRaw} from 'vue-router';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import saveOrUpdate from '/@/views/system/menu/components/saveOrUpdate.vue';
 
@@ -103,18 +103,22 @@ export default defineComponent({
     //   addMenuRef.value.openDialog();
     // };
     // 打开编辑菜单弹窗
-    const onOpenSaveOrUpdate = (editType: string, row: RouteRecordRaw) => {
+    const onOpenSaveOrUpdate = (editType: string, row: any) => {
       saveOrUpdateRef.value.openDialog(editType, row);
     };
     // 删除当前行
-    const deleted = (row: RouteRecordRaw) => {
+    const deleted = (row: any) => {
       ElMessageBox.confirm(`此操作将永久删除路由：${row.path}, 是否继续?`, '提示', {
         confirmButtonText: '删除',
         cancelButtonText: '取消',
         type: 'warning',
       })
           .then(() => {
-            ElMessage.success('删除成功');
+            useMenuApi().deleted({id: row.id}).then(() => {
+              ElMessage.success('删除成功');
+              getList()
+            })
+
           })
           .catch(() => {
           });

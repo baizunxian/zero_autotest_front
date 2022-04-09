@@ -3,18 +3,18 @@
     <el-card shadow="hover" style="height: 100%;">
 
       <el-row>
-        <el-col :span="12" style="padding-left: 5px; padding-right: 5px;">
-          <div style="border: 1px solid rgb(220, 218, 226); padding: 10px; border-radius: 4px;">
-            <div ref="suitesChartRef" style="width: 480px; height: 100px;"></div>
+        <el-col :span="12" style="padding-left: 5px; padding-right: 5px; width: 100%">
+          <div style="border: 1px solid rgb(220, 218, 226); padding: 10px; border-radius: 4px; width: 100%">
+            <div class="suites_chart" ref="suitesChartRef" style="width: 100%; height: 100px;"></div>
             <div class="tip">
               <p>{{ reportTestCaseData.testcase.stat.testcases.success }} 套件通过</p>
               <p>{{ reportTestCaseData.testcase.stat.testcases.fail }} 套件失败</p>
             </div>
           </div>
         </el-col>
-        <el-col :span="12" style="padding-left: 5px; padding-right: 5px;">
-          <div style="border: 1px solid rgb(220, 218, 226); padding: 10px; border-radius: 4px;">
-            <div ref="stepChartRef" style="width: 480px; height: 100px;"></div>
+        <el-col :span="12" style="padding-left: 5px; padding-right: 5px; width: 100%">
+          <div style="border: 1px solid rgb(220, 218, 226); padding: 10px; border-radius: 4px; width: 100%">
+            <div ref="stepChartRef" style="width: 100%; height: 100px;"></div>
             <div class="tip">
               <p>{{ reportTestCaseData.testcase.stat.teststeps.successes }} 用例通过</p>
               <p>{{ reportTestCaseData.testcase.stat.teststeps.failures }} 用例失败</p>
@@ -249,7 +249,7 @@
 
                     <tr>
                       <td class="table__parameter">校验[validators]</td>
-<!--                      <td class="table__content">-->
+                      <!--                      <td class="table__content">-->
 
                       <td class='timestamp' v-if="!reportTestCaseData.step.validators.validate_extractor">无校验</td>
                       <td class='step-details' v-else>
@@ -262,13 +262,13 @@
                           <strong> {{ validator.check }} {{ validator.comparator }}:</strong>
                           {{ [validator.expect, validator.check_value] }}
                         </div>
-<!--                        <json-viewer-->
-<!--                            :value="reportTestCaseData.step.validators"-->
-<!--                            :expand-depth="5"-->
-<!--                            copyable-->
-<!--                            :boxed="true"-->
-<!--                            sort-->
-<!--                        />-->
+                        <!--                        <json-viewer-->
+                        <!--                            :value="reportTestCaseData.step.validators"-->
+                        <!--                            :expand-depth="5"-->
+                        <!--                            copyable-->
+                        <!--                            :boxed="true"-->
+                        <!--                            sort-->
+                        <!--                        />-->
                       </td>
                     </tr>
 
@@ -323,7 +323,7 @@
 import "vue3-json-viewer/dist/index.css"
 import {JsonViewer} from 'vue3-json-viewer'
 import * as ECharts from 'echarts'
-import {defineComponent, onMounted, reactive, ref, toRefs} from "vue";
+import {defineComponent, onMounted, reactive, ref, toRefs, nextTick} from "vue";
 
 
 export default defineComponent({
@@ -1534,14 +1534,6 @@ export default defineComponent({
       }
     }
 
-    // const initTestCount = () => {
-    //   state.reportData.details.forEach(test_suite_summary => {
-    //     if (test_suite_summary.success === true) {
-    //       state.test_suite_success += 1
-    //     }
-    //   })
-    //   state.test_suite_fail = state.reportData.details.length - state.test_suite_success
-    // }
 
     // 用例图
     const initStepData = () => {
@@ -1689,15 +1681,22 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      console.log('props-------------ro', props.reportBody)
       if (props.reportBody) {
         initReportData()
         initSuitesData()
         initStepData()
+        // 窗口变动自适应大小
+        window.onresize = () => {
+          ECharts.init(stepChartRef.value).resize();
+          ECharts.init(suitesChartRef.value).resize();
+        }
+        // 加载完dom重新渲染
+        nextTick(() => {
+          ECharts.init(stepChartRef.value).resize();
+          ECharts.init(suitesChartRef.value).resize();
+        })
       }
-      console.log('start-------------ro', state.reportData)
     })
-
 
     return {
       suitesChartRef,

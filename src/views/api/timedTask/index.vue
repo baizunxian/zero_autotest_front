@@ -2,7 +2,7 @@
   <div>
     <el-card shadow="hover">
       <div class="mb15">
-        <el-input v-model="listQuery.name" placeholder="请输入模块名称" style="max-width: 180px"></el-input>
+        <el-input v-model="listQuery.name" placeholder="请输入名称" style="max-width: 180px"></el-input>
         <el-button type="primary" class="ml10" @click="getList">
           <el-icon>
             <ele-Search/>
@@ -26,13 +26,19 @@
           </template>
         </el-table-column>
         <el-table-column label="任务名称" show-overflow-tooltip prop="name"></el-table-column>
-        <el-table-column label="所属项目" show-overflow-tooltip prop="project_id"></el-table-column>
-        <el-table-column label="任务类型" show-overflow-tooltip prop="task_type"></el-table-column>
+        <el-table-column label="所属项目" show-overflow-tooltip prop="project_name"></el-table-column>
+        <el-table-column label="执行时间" show-overflow-tooltip prop="crontab_str"></el-table-column>
+        <el-table-column label="任务类型" show-overflow-tooltip prop="task_type">
+          <template #default="scope">
+            <el-tag type="success" v-if="scope.row.task_type === 2">模块</el-tag>
+            <el-tag type="success" v-if="scope.row.task_type === 3">套件</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="备注" show-overflow-tooltip prop="description"></el-table-column>
         <el-table-column label="更新时间" show-overflow-tooltip prop="updation_date"></el-table-column>
-        <el-table-column label="更新人" show-overflow-tooltip prop="created_by"></el-table-column>
+        <el-table-column label="更新人" show-overflow-tooltip prop="updated_by_name"></el-table-column>
         <el-table-column label="创建时间" show-overflow-tooltip prop="creation_date"></el-table-column>
-        <el-table-column label="创建人" show-overflow-tooltip prop="created_by"></el-table-column>
+        <el-table-column label="创建人" show-overflow-tooltip prop="created_by_name"></el-table-column>
         <el-table-column label="操作" width="100">
           <template #default="scope">
             <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"
@@ -58,7 +64,7 @@
 <script lang="ts">
 import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import saveOrUpdate from '/@/views/api/module/components/saveOrUpdate.vue';
+import saveOrUpdate from '/@/views/api/timedTask/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
 

@@ -32,7 +32,7 @@
           <strong style="font-size: 14px;">参数名</strong>
         </template>
         <template #default="scope">
-          <el-input v-model="scope.row.key"></el-input>
+          <el-input size="small" v-model="scope.row.key"></el-input>
         </template>
       </el-table-column>
       <el-table-column align="center" width="50" class-name="small-padding fixed-width">

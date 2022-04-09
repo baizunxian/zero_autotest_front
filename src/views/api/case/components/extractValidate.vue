@@ -16,7 +16,7 @@
         </el-tooltip>
       </strong>
 
-      <el-button type="text" @click="addExtract" title="新增提取">
+      <el-button size="small" type="text" @click="addExtract" title="新增提取">
         <el-icon>
           <ele-CirclePlusFilled></ele-CirclePlusFilled>
         </el-icon>
@@ -38,7 +38,7 @@
           <strong style="font-size: 14px;">变量名</strong>
         </template>
         <template #default="scope">
-          <el-input v-model="scope.row.key"></el-input>
+          <el-input size="small" v-model="scope.row.key"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="value" header-align='center'>
@@ -46,7 +46,7 @@
           <strong style="font-size: 14px;">提取值</strong>
         </template>
         <template #default="scope">
-          <el-input v-model="scope.row.value"></el-input>
+          <el-input size="small" v-model="scope.row.value"></el-input>
         </template>
       </el-table-column>
       <el-table-column align="center" width="50" class-name="small-padding fixed-width">
@@ -78,7 +78,7 @@
         <i class="el-icon-info" style="color:#409eff;margin-left:5px;"></i>
       </el-tooltip>
 
-      <el-button type="text" @click="addValidate" title="新增校验">
+      <el-button size="small" type="text" @click="addValidate" title="新增校验">
         <el-icon>
           <ele-CirclePlusFilled></ele-CirclePlusFilled>
         </el-icon>
@@ -99,7 +99,7 @@
           <strong style="font-size: 14px;">校验参数</strong>
         </template>
         <template #default="scope">
-          <el-input v-model="scope.row.check"></el-input>
+          <el-input size="small" v-model="scope.row.check"></el-input>
         </template>
       </el-table-column>
       <el-table-column prop="Comparator" width="120" header-align='center'>
@@ -107,7 +107,7 @@
           <strong style="font-size: 14px;">对比规则</strong>
         </template>
         <template #default="scope">
-          <el-select v-model="scope.row.comparator" placeholder="请选择">
+          <el-select size="small" v-model="scope.row.comparator" placeholder="请选择">
             <el-option
                 v-for="item in comparatorOptions"
                 :key="item"
@@ -123,7 +123,7 @@
           <strong style="font-size: 14px;">类型</strong>
         </template>
         <template #default="scope">
-          <el-select v-model="scope.row.type" placeholder="请选择">
+          <el-select size="small" v-model="scope.row.type" placeholder="请选择">
             <el-option
                 v-for="item in typeOptions"
                 :key="item"
@@ -139,7 +139,7 @@
           <strong style="font-size: 14px;">校验值</strong>
         </template>
         <template #default="scope">
-          <el-input v-model="scope.row.expected"></el-input>
+          <el-input size="small" v-model="scope.row.expected"></el-input>
         </template>
       </el-table-column>
       <el-table-column align="center" width="50" class-name="small-padding fixed-width">
@@ -252,7 +252,7 @@ export default defineComponent({
 
     // validate
     const addValidate = () => {
-      state.validate.push({check: 'content.', comparator: 'equals', type: 'string', expected: ''})
+      state.validate.push({check: 'body.', comparator: 'equals', type: 'string', expected: ''})
     }
     const deleteValidate = (index: number) => {
       state.validate.splice(index, 1)

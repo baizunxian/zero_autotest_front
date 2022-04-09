@@ -17,6 +17,7 @@
         </el-button>
       </div>
       <el-table
+          border
           v-loading="tableLoading"
           :data="listData"
           style="width: 100%">
@@ -54,7 +55,7 @@
           :limit="listQuery.pageSize"
           @pagination="getList"/>
     </el-card>
-    <save-or-update :moduleName="moduleName" ref="saveOrUpdateRef" @getList="getList"/>
+    <save-or-update ref="saveOrUpdateRef" @getList="getList"/>
   </div>
 </template>
 

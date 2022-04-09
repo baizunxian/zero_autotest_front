@@ -11,7 +11,7 @@
 
 <!--      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6" class="mb20">-->
         <el-form-item label="所属项目" prop="project_id">
-          <el-select v-model="form.project_id" placeholder="选择请求方法" filterable style="width: 100%;"
+          <el-select size="small" v-model="form.project_id" placeholder="选择请求方法" filterable style="width: 100%;"
                      @change="selectProject">
             <el-option
                 v-for="project in projectList"
@@ -26,7 +26,7 @@
 
 <!--      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6" class="mb20">-->
         <el-form-item label="可选模块" prop="module_id">
-          <el-select v-model="form.module_id" placeholder="选择模块" filterable style="width: 100%;">
+          <el-select size="small" v-model="form.module_id" placeholder="选择模块" filterable style="width: 100%;">
             <el-option
                 v-for="modules in moduleList"
                 :key="modules.id + modules.name"
@@ -40,7 +40,7 @@
 
 <!--      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6" class="mb20">-->
         <el-form-item label="关联配置" prop="config_id">
-          <el-select v-model="form.config_id" placeholder="请选择配置" clearable filterable
+          <el-select size="small" v-model="form.config_id" placeholder="请选择配置" clearable filterable
                      style="width: 100%;">
             <el-option
                 v-for="item in configList"

@@ -12,7 +12,7 @@
           <strong style="font-size: 14px;">跳过方法</strong>
         </template>
         <template #default="scope">
-          <el-select clearable v-model="scope.row.key" placeholder="请选择" style="width: 100%">
+          <el-select size="small" clearable v-model="scope.row.key" placeholder="请选择" style="width: 100%">
             <el-option
                 v-for="(value,key)  in SkipSelect"
                 :key="key"
@@ -28,7 +28,7 @@
           <strong style="font-size: 14px;">判断值</strong>
         </template>
         <template #default="scope">
-          <el-input v-model="scope.row.value"></el-input>
+          <el-input size="small" v-model="scope.row.value"></el-input>
         </template>
       </el-table-column>
 

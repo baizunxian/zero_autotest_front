@@ -1,7 +1,7 @@
 <template>
   <el-form inline ref="request-form" :model="requestForm" label-width="50px" size="mini" label-position="right">
     <!-- data -->
-    <el-radio-group v-model="requestForm.dataType" class="radio-group">
+    <el-radio-group size="small" v-model="requestForm.dataType" class="radio-group">
       <el-radio label="data">data</el-radio>
       <el-radio label="json">json</el-radio>
       <el-radio label="params">params</el-radio>
@@ -10,7 +10,7 @@
 
     <!---------------------------params------------------------------------>
     <div v-if="requestForm.dataType === 'data'">
-      <el-button class="filter-item" type="primary" @click="addData">Add Data</el-button>
+      <el-button size="small" class="filter-item" type="primary" @click="addData">Add Data</el-button>
       <div>
         <el-table
             ref="bodyDataTableRef"
@@ -73,7 +73,7 @@
     <!---------------------------params------------------------------------>
     <div v-if="requestForm.dataType === 'params'">
       <div>
-        <el-button class="filter-item" type="primary" @click="addParams">Add Params</el-button>
+        <el-button size="small" class="filter-item" type="primary" @click="addParams">Add Params</el-button>
       </div>
       <div>
         <el-table
