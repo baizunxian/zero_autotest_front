@@ -1816,7 +1816,7 @@ table {
   width: 80%;
 }
 
-::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
+:deep(.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content) {
   background-color: #fffacd;
 }
 

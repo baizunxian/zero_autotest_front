@@ -236,7 +236,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-::v-deep .jsoneditor-vue {
+:deep(.jsoneditor-vue) {
   height: 800px;
 }
 

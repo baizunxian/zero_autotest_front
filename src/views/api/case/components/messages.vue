@@ -333,17 +333,17 @@ export default defineComponent({
 
 
 <style lang="scss" scoped>
-::v-deep .el-transfer-panel .el-transfer-panel__header {
+:deep(.el-transfer-panel .el-transfer-panel__header) {
   height: 30px !important;
 }
-::v-deep .el-transfer-panel__filter .el-input__inner {
+:deep(.el-transfer-panel__filter .el-input__inner) {
   height: 26px !important;
 }
-::v-deep .el-transfer-panel .el-transfer-panel__header .el-checkbox .el-checkbox__label {
+:deep(.el-transfer-panel .el-transfer-panel__header .el-checkbox .el-checkbox__label) {
   font-size: 12px;
   font-weight: bold;
 }
-::v-deep .el-input__inner {
+:deep(.el-input__inner) {
   font-weight: bold;
 }
 </style>

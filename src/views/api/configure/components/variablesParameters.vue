@@ -162,57 +162,57 @@
       </el-table-column>
     </el-table>
 
-    <div class="block-title" style="display: flex; align-items: center;">
+<!--    <div class="block-title" style="display: flex; align-items: center;">-->
 
-      <el-tooltip placement="bottom-start">
-        <strong>函数</strong>
-        <template #content>
-          前置函数：在 HTTP 请求发送前执行 hook 函数，主要用于准备工作<br/>
-          后置函数：在 HTTP 请求发送后执行 hook 函数，主要用户测试后的清理工作<br/>
-        </template>
-      </el-tooltip>
+<!--      <el-tooltip placement="bottom-start">-->
+<!--        <strong>函数</strong>-->
+<!--        <template #content>-->
+<!--          前置函数：在 HTTP 请求发送前执行 hook 函数，主要用于准备工作<br/>-->
+<!--          后置函数：在 HTTP 请求发送后执行 hook 函数，主要用户测试后的清理工作<br/>-->
+<!--        </template>-->
+<!--      </el-tooltip>-->
 
-      <el-button type="text" @click="addHooks" title="新增函数">
-        <el-icon>
-          <ele-CirclePlusFilled></ele-CirclePlusFilled>
-        </el-icon>
-        add
-      </el-button>
+<!--      <el-button type="text" @click="addHooks" title="新增函数">-->
+<!--        <el-icon>-->
+<!--          <ele-CirclePlusFilled></ele-CirclePlusFilled>-->
+<!--        </el-icon>-->
+<!--        add-->
+<!--      </el-button>-->
 
-    </div>
-    <el-table
-        ref="hooksTableRef"
-        :data="hooks"
-        border
-        tooltip-effect="dark"
-        style="width: 100%"
-    >
-      <el-table-column label="key" header-align='center'>
-        <template #header>
-          <strong style="font-size: 14px;">前置函数</strong>
-        </template>
-        <template #default="scope">
-          <el-input v-model="scope.row.setup_hooks"></el-input>
-        </template>
-      </el-table-column>
-      <el-table-column prop="value" header-align='center'>
-        <template #header>
-          <strong style="font-size: 14px;">后置函数</strong>
-        </template>
-        <template #default="scope">
-          <el-input v-model="scope.row.teardown_hooks"></el-input>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" width="50" class-name="small-padding fixed-width">
-        <template #default="scope">
-          <el-button size="small" type="text" @click="deleteHooks(scope.$index)">
-            <el-icon>
-              <ele-Delete/>
-            </el-icon>
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+<!--    </div>-->
+<!--    <el-table-->
+<!--        ref="hooksTableRef"-->
+<!--        :data="hooks"-->
+<!--        border-->
+<!--        tooltip-effect="dark"-->
+<!--        style="width: 100%"-->
+<!--    >-->
+<!--      <el-table-column label="key" header-align='center'>-->
+<!--        <template #header>-->
+<!--          <strong style="font-size: 14px;">前置函数</strong>-->
+<!--        </template>-->
+<!--        <template #default="scope">-->
+<!--          <el-input v-model="scope.row.setup_hooks"></el-input>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column prop="value" header-align='center'>-->
+<!--        <template #header>-->
+<!--          <strong style="font-size: 14px;">后置函数</strong>-->
+<!--        </template>-->
+<!--        <template #default="scope">-->
+<!--          <el-input v-model="scope.row.teardown_hooks"></el-input>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column align="center" width="50" class-name="small-padding fixed-width">-->
+<!--        <template #default="scope">-->
+<!--          <el-button size="small" type="text" @click="deleteHooks(scope.$index)">-->
+<!--            <el-icon>-->
+<!--              <ele-Delete/>-->
+<!--            </el-icon>-->
+<!--          </el-button>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--    </el-table>-->
   </div>
 </template>
 

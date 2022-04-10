@@ -19,8 +19,8 @@
               <v-chart theme="ovilia-green" :options="getPolarData()" style="width: 480px; height: 100px;"/>
               <div class="tip">
                 <p>{{ reportBody.stat.teststeps.successes }} 用例成功 {{ reportBody.stat.teststeps.failures }} 用例失败</p>
-<!--                <p>{{ reportBody.stat.errors }} 用例错误</p>-->
-<!--                <p>{{ reportBody.stat.errors }} 用例错误 {{ reportBody.stat.skipped }} 用例跳过</p>-->
+                <!--                <p>{{ reportBody.stat.errors }} 用例错误</p>-->
+                <!--                <p>{{ reportBody.stat.errors }} 用例错误 {{ reportBody.stat.skipped }} 用例跳过</p>-->
               </div>
             </div>
           </el-col>
@@ -73,9 +73,12 @@
                             reportBody.stat.teststeps.successes
                           }}
                         </el-tag>
-                        <el-tag type="warning" style="margin-right: 10px;">Fail: {{ reportBody.stat.teststeps.failures }}</el-tag>
-<!--                        <el-tag type="danger" style="margin-right: 10px;">Error: {{ reportBody.stat.teststeps.errors }}</el-tag>-->
-<!--                        <el-tag type="info" style="margin-right: 10px;">Skip: {{ reportBody.stat.skipped }}</el-tag>-->
+                        <el-tag type="warning" style="margin-right: 10px;">Fail: {{
+                            reportBody.stat.teststeps.failures
+                          }}
+                        </el-tag>
+                        <!--                        <el-tag type="danger" style="margin-right: 10px;">Error: {{ reportBody.stat.teststeps.errors }}</el-tag>-->
+                        <!--                        <el-tag type="info" style="margin-right: 10px;">Skip: {{ reportBody.stat.skipped }}</el-tag>-->
                       </div>
                     </div>
 
@@ -96,36 +99,36 @@
                             <el-collapse-item :name="index" v-for="(record, index) in reportData.records"
                                               :key="guid2() + index + 'records1' ">
                               <template #title>
-                              <div style="width: 100%; padding: 5px 0px;">
-                                <div>
+                                <div style="width: 100%; padding: 5px 0px;">
                                   <div>
-                                    <div v-if="record.status === 'success'" style="font-size: 16px; padding: 3px 0;">
-                                      {{ record.name }}
-                                      <el-tag type="success">pass</el-tag>
+                                    <div>
+                                      <div v-if="record.status === 'success'" style="font-size: 16px; padding: 3px 0;">
+                                        {{ record.name }}
+                                        <el-tag type="success">pass</el-tag>
+                                      </div>
+                                      <div v-if="record.status === 'failure'" style="font-size: 16px; padding: 3px 0;">
+                                        {{ record.name }}
+                                        <el-tag type="danger">fail</el-tag>
+                                      </div>
+                                      <div v-if="record.status === 'error'" style="font-size: 16px; padding: 3px 0;">
+                                        {{ record.name }}
+                                        <el-tag type="danger">error</el-tag>
+                                      </div>
+                                      <div v-if="record.status === 'skipped'" style="font-size: 16px; padding: 3px 0;">
+                                        {{ record.name }}
+                                        <el-tag type="info">skip</el-tag>
+                                      </div>
                                     </div>
-                                    <div v-if="record.status === 'failure'" style="font-size: 16px; padding: 3px 0;">
-                                      {{ record.name }}
-                                      <el-tag type="danger">fail</el-tag>
-                                    </div>
-                                    <div v-if="record.status === 'error'" style="font-size: 16px; padding: 3px 0;">
-                                      {{ record.name }}
-                                      <el-tag type="danger">error</el-tag>
-                                    </div>
-                                    <div v-if="record.status === 'skipped'" style="font-size: 16px; padding: 3px 0;">
-                                      {{ record.name }}
-                                      <el-tag type="info">skip</el-tag>
-                                    </div>
-                                  </div>
-                                  <div class="node-header">
-                                    <div class="node-header-left">
-                                      <span class='node-time'>{{ record.start_timestamp }}</span>
-                                      <span class='node-duration'>response_time: {{
-                                          record.meta_data.response.response_time_ms
-                                        }} ms</span>
+                                    <div class="node-header">
+                                      <div class="node-header-left">
+                                        <span class='node-time'>{{ record.start_timestamp }}</span>
+                                        <span class='node-duration'>response_time: {{
+                                            record.meta_data.response.response_time_ms
+                                          }} ms</span>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
                               </template>
                               <div class='collapsible-body'>
 
@@ -172,8 +175,9 @@
                                             class='el-icon-pie-chart'></i></td>
                                         <td class='timestamp'>{{ key }}</td>
                                         <td class='step-details' v-if="key === 'headers'">
-                                          <div v-for="(header_value, header_key) in record.data.req_resps.request.headers"
-                                               :key="guid2() + header_key + 'headers'">
+                                          <div
+                                              v-for="(header_value, header_key) in record.data.req_resps.request.headers"
+                                              :key="guid2() + header_key + 'headers'">
                                             <strong>{{ header_key }}</strong>: {{ header_value }}
                                           </div>
                                         </td>
@@ -211,8 +215,9 @@
                                             class='el-icon-pie-chart'></i></td>
                                         <td class='timestamp'>{{ key }}</td>
                                         <td class='step-details' v-if="key === 'headers'">
-                                          <div v-for="(header_value, header_key) in record.data.req_resps.response.headers"
-                                               :key="guid2() + header_key + 'headers'">
+                                          <div
+                                              v-for="(header_value, header_key) in record.data.req_resps.response.headers"
+                                              :key="guid2() + header_key + 'headers'">
                                             <strong>{{ header_key }}</strong>: {{ header_value }}
                                           </div>
                                         </td>
@@ -706,7 +711,7 @@ export default defineComponent({
   justify-content: space-between;
 }
 
-::v-deep .el-collapse-item__header {
+:deep(.el-collapse-item__header) {
   line-height: normal;
   // border: 1px solid #EBEEF5;
   height: 60px;
@@ -716,17 +721,17 @@ export default defineComponent({
   padding: 8px;
 }
 
-::v-deep .el-collapse-item__wrap {
+:deep(.el-collapse-item__wrap) {
   line-height: normal;
   border-left: 1px solid #EBEEF5;
   border-right: 1px solid #EBEEF5;
 }
 
-::v-deep .el-collapse-item {
+:deep(.el-collapse-item) {
   margin-top: 10px;
 }
 
-::v-deep .el-collapse {
+:deep(.el-collapse) {
   // margin-top: 10px;
   border: none;
 }

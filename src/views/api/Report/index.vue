@@ -237,7 +237,7 @@ table {
   }
 }
 
-::v-deep .el-dialog--center .el-dialog__body {
+:deep(.el-dialog--center .el-dialog__body) {
   padding: 5px;
 }
 </style>

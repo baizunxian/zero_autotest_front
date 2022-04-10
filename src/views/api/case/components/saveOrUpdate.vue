@@ -339,17 +339,17 @@ export default defineComponent({
 }
 
 
-::v-deep .page-header .el-page-header__icon .el-icon {
+:deep(.page-header .el-page-header__icon .el-icon) {
   background-color: #3883fa;
   border-radius: 50%;
   color: white;
 }
 
-::v-deep .el-page-header .page-header {
+:deep(.el-page-header .page-header) {
   margin-left: 0 !important;
 }
 
-::v-deep .save-update-card .el-card__body {
+:deep(.save-update-card .el-card__body) {
   padding-top: 0;
 }
 </style>

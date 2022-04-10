@@ -125,7 +125,7 @@ export default defineComponent({
   }
 }
 /* el-input */
-::v-deep .el-input__inner {
+:deep(.el-input__inner) {
   font-weight: bold;
 }
 

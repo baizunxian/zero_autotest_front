@@ -205,7 +205,7 @@ export default defineComponent({
     margin-left: 10px;
   }
 
-  ::v-deep .el-input-group__prepend {
+ :deep(.el-input-group__prepend) {
     // color: #909399;
     font-weight: 1000;
   }
@@ -215,11 +215,11 @@ export default defineComponent({
   //  font-size: 13px;
   //}
 
-  ::v-deep .el-form-item--mini .el-form-item__error {
+  :deep(.el-form-item--mini .el-form-item__error) {
     padding-left: 100px;
   }
 
-  ::v-deep .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item {
+  :deep(.el-form-item--mini.el-form-item, .el-form-item--small.el-form-item) {
     margin-bottom: 5px;
   }
 }
@@ -235,7 +235,7 @@ export default defineComponent({
 }
 
 /* el-input */
-::v-deep .el-input__inner {
+:deep(.el-input__inner) {
   font-weight: bold;
 }
 </style>

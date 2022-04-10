@@ -103,9 +103,9 @@
         </el-table-column>
         <el-table-column label="创建时间" prop="creation_date" align="center" width="150"></el-table-column>
         <el-table-column label="更新时间" prop="updation_date" align="center" width="150"></el-table-column>
-        <el-table-column prop="" label="操作" width="120">
+        <el-table-column prop="" label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button size="mini" type="primary" icon="el-icon-s-order" @click="getList(scope.row)">
+            <el-button type="text" icon="el-icon-s-order" @click="getList(scope.row)">
               函数列表
             </el-button>
           </template>
@@ -114,17 +114,13 @@
       <pagination v-show="total>0" :total="total" :page="listQuery.page" :limit="listQuery.pageSize"
                   @pagination="getList"/>
 
-
     </el-card>
-
-    <!--    <save-or-update ref="saveOrUpdateRef" @getList="getList"/>-->
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import saveOrUpdate from '/@/views/api/module/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useDebugTalkApi} from "/@/api/useAutoApi/debugTalk";
 import {useRouter} from 'vue-router'
@@ -141,8 +137,8 @@ import {useRouter} from 'vue-router'
 
 
 export default defineComponent({
-  name: 'apiModule',
-  components: {saveOrUpdate, Pagination},
+  name: 'apiDebugTalk',
+  components: {Pagination},
   setup() {
     const saveOrUpdateRef = ref();
     const router = useRouter();

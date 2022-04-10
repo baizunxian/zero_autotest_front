@@ -564,7 +564,7 @@ export default {
     margin-left: 10px;
   }
 
-  ::v-deep .el-input-group__prepend {
+  :deep(.el-input-group__prepend) {
     // color: #909399;
     font-weight: 1000;
   }
@@ -591,15 +591,15 @@ h5 {
   font-weight: 100;
 }
 
-::v-deep .el-dialog--center .el-dialog__body {
+:deep(.el-dialog--center .el-dialog__body) {
   padding: 0px 25px 30px;
 }
 
-::v-deep .el-transfer-panel {
+:deep(.el-transfer-panel) {
   width: 300px;
 }
 
-::v-deep .el-drawer__body {
+:deep(.el-drawer__body) {
   overflow: auto;
 }
 
