@@ -146,6 +146,7 @@ export default defineComponent({
       runForm: {
         id: null,
         base_url: '',
+        run_type: 1,
       },
       // report
       reportBody: {},
@@ -210,7 +211,7 @@ export default defineComponent({
             ElMessage.success('运行成功');
             state.showTestReportDialog = !state.showTestReportDialog;
             state.reportBody = res.data
-            state.showRunPage = false;
+            state.runCaseLoading = !state.runCaseLoading;
           })
           .catch((err: any) => {
             ElMessage.error(err.message);

@@ -38,11 +38,11 @@
         <el-table-column label="创建时间" show-overflow-tooltip prop="creation_date"></el-table-column>
         <el-table-column label="创建人" show-overflow-tooltip prop="created_by"></el-table-column>
         <el-table-column label="操作" width="100">
-          <template #default="scope">
-            <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"
-                       @click="onOpenSaveOrUpdate('update', scope.row)">修改
+          <template #default="{row}">
+            <el-button size="small" type="text" @click="onOpenSaveOrUpdate('update', row)">
+              修改
             </el-button>
-            <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text" @click="deleted(scope.row)">
+            <el-button size="small" type="text" @click="deleted(row)">
               删除
             </el-button>
           </template>

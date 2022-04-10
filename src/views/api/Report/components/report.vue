@@ -248,6 +248,22 @@
                     <tbody>
 
                     <tr>
+                      <td class="table__parameter">错误[error_massage]</td>
+                      <td class="table__content">
+                        <pre>{{ reportTestCaseData.step.message }}</pre>
+<!--/*                        <span style="color: red">{{ reportTestCaseData.step.message }}</span>*/-->
+<!--                        <json-viewer-->
+<!--                            :value="reportTestCaseData.step.message"-->
+<!--                            :expand-depth="5"-->
+<!--                            copyable-->
+<!--                            style="color: red"-->
+<!--                            :boxed="true"-->
+<!--                            sort-->
+<!--                        />-->
+                      </td>
+                    </tr>
+
+                    <tr>
                       <td class="table__parameter">校验[validators]</td>
                       <!--                      <td class="table__content">-->
 
@@ -1742,7 +1758,7 @@ td {
 
 .step {
   .step__header {
-    padding: 0 15px 10px;
+    padding: 0 0 10px;
     width: 100%;
     display: flex;
     position: relative;
@@ -1802,5 +1818,32 @@ table {
 
 ::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
   background-color: #fffacd;
+}
+
+pre, .code-block {
+    background-color: #f8f9fa;
+    border: 1px solid #ebedef;
+    border-radius: 4px;
+    color: #222 !important;
+    font-family: Consolas,monospace;
+    font-size: 13px;
+    margin: 0;
+    padding: 7px 10px;
+    white-space: pre-wrap;
+}
+
+.pre {
+    border: none;
+    white-space: pre;
+    padding: 5px 0 5px 30px;
+    font-family: Consolas;
+    font-size: 13px;
+}
+.pre > pre {
+    background: transparent;
+    border: none;
+}
+.dark pre, .dark #test-view-charts .card-panel, .dark .scenario, .dark .background, .dark ul.steps, .dark .collapsible > li, .dark #charts-row .card-panel {
+    border: 1px solid #333 !important;
 }
 </style>

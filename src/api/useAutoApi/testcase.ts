@@ -17,35 +17,35 @@ export function useTestCaseApi() {
     saveOrUpdate(data?: object) {
       return request({
         url: '/testcase/saveOrUpdate',
-        method: 'post',
+        method: 'POST',
         data
       })
     },
     deleted: (data?: object) => {
       return request({
         url: '/testcase/deleted',
-        method: 'post',
+        method: 'POST',
         data,
       });
     },
     runTestCase: (data?: object) => {
       return request({
         url: '/testcase/runTestCase',
-        method: 'post',
+        method: 'POST',
         data,
       });
     },
     debugTestCase: (data?: object) => {
       return request({
         url: '/testcase/debugTestCase',
-        method: 'post',
+        method: 'POST',
         data,
       });
     },
     getTestCaseInfo: (data?: object) => {
       return request({
         url: '/testcase/getTestCaseInfo',
-        method: 'post',
+        method: 'POST',
         data,
       });
     },

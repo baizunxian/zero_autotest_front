@@ -17,14 +17,14 @@ export function useModuleApi() {
     saveOrUpdate(data?: object) {
       return request({
         url: '/module/saveOrUpdateModule',
-        method: 'post',
+        method: 'POST',
         data
       })
     },
     deleted: (params?: object) => {
       return request({
         url: '/module/deleteModule',
-        method: 'post',
+        method: 'POST',
         params,
       });
     },

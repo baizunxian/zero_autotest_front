@@ -11,9 +11,9 @@
 					</div>
 				</div>
 			</div>
-			<div class="right">
-				<img src="https://gitee.com/lyt-top/vue-next-admin-images/raw/master/error/404.png" />
-			</div>
+<!--			<div class="right">-->
+<!--				<img src="https://gitee.com/lyt-top/vue-next-admin-images/raw/master/error/404.png" />-->
+<!--			</div>-->
 		</div>
 	</div>
 </template>

@@ -18,14 +18,14 @@ export function useRolesApi() {
     saveOrUpdate(data?: object) {
       return request({
         url: '/roles/saveOrUpdateRole',
-        method: 'post',
+        method: 'POST',
         data
       })
     },
     deleted(data?: object) {
       return request({
         url: '/roles/deleteRole',
-        method: 'post',
+        method: 'POST',
         data
       })
     }

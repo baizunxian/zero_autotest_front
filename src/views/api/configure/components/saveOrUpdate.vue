@@ -1,156 +1,355 @@
 <template>
   <div class="system-edit-menu-container">
-    <el-dialog :title="editType === 'save'? '新增' : '修改'" v-model="isShowDialog" width="40%">
-      <el-form :model="form" :rules="rules" ref="formRef" size="default" label-width="80px">
-        <el-row :gutter="35">
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="模块名称" prop="name">
-              <el-input v-model="form.name" placeholder="模块名称" clearable></el-input>
-            </el-form-item>
-          </el-col>
+    <el-card class="save-update-card" shadow="hover">
+      <div>
+        <el-page-header
+            class="page-header"
+            :content="editType === 'create'? '新增用例':'更新用例'"
+            style="margin: 10px 0;"
+            @back="goBack"
+        >xsetwdtz
+        </el-page-header>
 
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="所属项目" prop="project_id">
-              <el-select v-model="form.project_id" clearable placeholder="选择所属项目" style="width: 100%">
-                <el-option
-                    v-for="item in projectList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+        <h3 class="block-title">请求信息</h3>
 
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="负责人" prop="leader_user">
-              <el-input v-model="form.leader_user" placeholder="负责人" clearable></el-input>
-            </el-form-item>
-          </el-col>
+        <url ref="urlRef" @saveOrUpdateOrDebug="saveOrUpdateOrDebug"/>
 
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="测试人员" prop="test_user">
-              <el-input v-model="form.test_user" placeholder="测试人员" clearable></el-input>
-            </el-form-item>
-          </el-col>
+        <h3 class="block-title">基本信息</h3>
 
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="开发人员">
-              <el-input v-model="form.dev_user" placeholder="开发人员" clearable></el-input>
-            </el-form-item>
-          </el-col>
+        <messages ref="messagesRef"/>
 
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="关联应用">
-              <el-input v-model="form.publish_app" placeholder="关联应用" clearable></el-input>
-            </el-form-item>
-          </el-col>
+        <h3 class="block-title">参数信息</h3>
+        <div style="min-height: 500px">
+          <el-tabs v-model="activeName">
+            <el-tab-pane name='requestBody'>
+              <template #label><strong>body</strong></template>
+              <request-body ref="requestBodyRef"/>
+            </el-tab-pane>
 
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="简要描述">
-              <el-input v-model="form.simple_desc" placeholder="简要描述" clearable></el-input>
-            </el-form-item>
-          </el-col>
+            <el-tab-pane name='requestHeaders'>
+              <template #label><strong>Headers</strong></template>
+              <request-headers ref="requestHeadersRef"/>
+            </el-tab-pane>
 
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="关联配置">
-              <el-input v-model="form.config_id" placeholder="关联配置" clearable></el-input>
-            </el-form-item>
-          </el-col>
+            <el-tab-pane name='extractValidate'>
+              <template #label><strong>提取/校验</strong></template>
+              <extract-validate ref="extractValidateRef"/>
+            </el-tab-pane>
 
-        </el-row>
-      </el-form>
-      <template #footer>
-				<span class="dialog-footer">
-					<el-button @click="onDialog" size="default">取 消</el-button>
-					<el-button type="primary" @click="saveOrUpdate" size="default">保 存</el-button>
-				</span>
-      </template>
+            <el-tab-pane name='variablesParameters'>
+              <template #label><strong>变量/参数/函数</strong></template>
+              <variables-parameters ref="variablesParametersRef"/>
+            </el-tab-pane>
+
+            <el-tab-pane name='outputList'>
+              <template #label><strong>输出参数</strong></template>
+              <output-list ref="outputListRef"/>
+            </el-tab-pane>
+
+            <el-tab-pane name='Skip'>
+              <template #label><strong>用例跳过条件</strong></template>
+              <skip ref="skipRef"/>
+            </el-tab-pane>
+
+          </el-tabs>
+        </div>
+      </div>
+    </el-card>
+
+
+    <!--    <el-dialog-->
+    <!--        lock-scroll-->
+    <!--        title="测试报告"-->
+    <!--        v-model="showTestReportDialog"-->
+    <!--        width="80%"-->
+    <!--        :close-on-click-modal="false"-->
+    <!--        center-->
+    <!--        append-to-body-->
+    <!--        top='4vh'-->
+    <!--    >-->
+    <el-dialog
+        v-model="showTestReportDialog"
+        width="80%"
+        top="8vh"
+        destroy-on-close
+        :close-on-click-modal="false">
+      <test-report :reportBody="reportBody"/>
     </el-dialog>
+
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, toRefs, ref} from 'vue';
-import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
-import {ElMessage} from "element-plus";
+import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue'
+import Url from '/@/views/api/case/components/url.vue'
+import Messages from '/@/views/api/case/components/messages.vue'
+import RequestBody from '/@/views/api/case/components/requestBody.vue'
+import RequestHeaders from '/@/views/api/case/components/requestHeaders.vue'
+import ExtractValidate from '/@/views/api/case/components/extractValidate.vue'
+import VariablesParameters from '/@/views/api/case/components/variablesParameters.vue'
+import OutputList from '/@/views/api/case/components/outputList.vue'
+import Skip from '/@/views/api/case/components/skip.vue'
+import TestReport from '/@/views/api/Report/components/report.vue'
+import {ElLoading, ElMessage} from "element-plus"
+import {useStore} from "/@/store"
+import {useRoute, useRouter} from "vue-router"
+import {useTestCaseApi} from '/@/api/useAutoApi/testcase'
 
 export default defineComponent({
-  name: 'saveOrUpdateTimedTasks',
-  setup(props, {emit}) {
-    const createForm = () => {
-      return {
-        name: '', // 项目名称
-        responsible_name: '', // 负责人
-        test_user: '', // 测试人员
-        dev_user: '', // 开发人员
-        publish_app: '', // 关联应用
-        simple_desc: '', // 简要描述
-        config_id: null, // 配置信息
-      }
-    }
-    const formRef = ref()
+  name: 'saveOrUpdateTestCase',
+  components: {
+    Url,
+    Messages,
+    RequestBody,
+    RequestHeaders,
+    ExtractValidate,
+    VariablesParameters,
+    OutputList,
+    Skip,
+    TestReport,
+  },
+  setup() {
+    const store = useStore();
+    const route = useRoute();
+    const router = useRouter();
+    const userInfo = store.state.userInfos
+    const urlRef = ref()
+    const messagesRef = ref()
+    const requestBodyRef = ref()
+    const requestHeadersRef = ref()
+    const extractValidateRef = ref()
+    const variablesParametersRef = ref()
+    const outputListRef = ref()
+    const skipRef = ref()
     const state = reactive({
       isShowDialog: false,
+      activeName: 'requestBody',
       editType: '',
-      // 参数请参考 `/src/router/route.ts` 中的 `dynamicRoutes` 路由菜单格式
-      form: createForm(),
-      rules: {
-        name: [{required: true, message: '请输入模块名称', trigger: 'blur'},],
-        project_id: [{required: true, message: '请选择所属项目', trigger: 'blur'},],
-      },
-      projectList: [], // 项目数据
-      projectListQuery: {   //
-        page: 1,
-        pageSize: 20,
-        name: '',
-      },
+      content: {key: 'vaue'},
+
+      // report
+      // report
+      showTestReportDialog: false,
+      reportBody: {},
     });
 
-    // 打开弹窗
-    const openDialog = (type: string, row: any) => {
-      // 获取项目列表
-      useTimedTasksApi()
-      state.editType = type
-      if (row) {
-        state.form = JSON.parse(JSON.stringify(row));
-      } else {
-        state.form = createForm()
-      }
-      onDialog();
-    };
-    // 关闭弹窗
-    const onDialog = () => {
-      state.isShowDialog = !state.isShowDialog;
-    };
-    // 新增
-    const saveOrUpdate = () => {
-      formRef.value.validate((valid: any) => {
-        if (valid) {
-          useTimedTasksApi().saveOrUpdate(state.form)
-              .then(() => {
-                ElMessage.success('操作成功');
-                emit('getList')
-                onDialog(); // 关闭弹窗
+
+    const saveOrUpdateOrDebug = (type: string) => {
+      try {
+        // 获取url mothod 表单
+        let urlForm = urlRef.value.getFormData()   // url表单信息
+        let msgForm = messagesRef.value.getFormData()
+        let bodyForm = requestBodyRef.value.getFormData()
+        let headForm = requestHeadersRef.value.getFormData()
+        let EVForm = extractValidateRef.value.getFormData()
+        let VPForm = variablesParametersRef.value.getFormData()
+        let outputForm = outputListRef.value.getFormData()
+        // let skipForm = skipRef.value.getFormData()
+
+        bodyForm.url = urlForm.url
+        bodyForm.method = urlForm.method
+        bodyForm.headers = headForm
+        // 组装表单
+        let testCaseForm = {
+          id: msgForm.id,
+          user_id: userInfo.userInfos.id,
+          env_name: urlForm.env_name,
+          name: msgForm.name,
+          project_id: msgForm.project_id,
+          module_id: msgForm.module_id,
+          config_id: msgForm.config_id,
+          code_id: msgForm.code_id,
+          code: msgForm.code,
+          priority: msgForm.priority,
+          run_type: 1,
+          service_name: '',
+          include: msgForm.include,
+          testcase: {
+            // skip: true,
+            case_id: msgForm.id,
+            name: msgForm.name,
+            request: bodyForm,
+            parameters: VPForm.parameters,
+            variables: VPForm.variables,
+            hooks: VPForm.hooks,
+            setup_hooks: VPForm.setup_hooks,
+            teardown_hooks: VPForm.teardown_hooks,
+            extract: EVForm.extract,
+            validate: EVForm.validate,
+            output: outputForm
+          },
+        }
+        console.log(urlForm, ' urlForm')
+
+        // 保存用例
+        if (type === 'save') {
+          console.log('testCaseForm', testCaseForm)
+          useTestCaseApi().saveOrUpdate(testCaseForm)
+              .then(res => {
+                ElMessage.success('保存成功！')
+                let case_id = res.data
+                messagesRef.value.setCaseId(case_id)
+              })
+        } else {
+          testCaseForm.type = type
+          testCaseForm.base_url = urlForm.base_url
+          const loading = ElLoading.service({
+            lock: true,
+            text: '用例执行中,请稍候。。。',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.8)',
+            customClass: 'loading-class'
+          })
+          useTestCaseApi().debugTestCase(testCaseForm)
+              .then(res => {
+                state.reportBody = res.data
+                console.log(res, 'this.res')
+                console.log(type, 'type')
+                if (type === 'debug') {
+                  console.log('-----------------debug---------------')
+                  urlRef.value.onOpenCloseEnvDialog()
+                  state.showTestReportDialog = true
+                  loading.close()
+                } else {
+                  // this.drawer = true
+                  loading.close()
+                }
+              })
+              .catch(() => {
+                loading.close()
               })
         }
-      })
-      console.log(state.form, 'state.menuForm')
-      // setBackEndControlRefreshRoutes() // 刷新菜单，未进行后端接口测试
-    };
-    // 页面加载时
+      } catch (err: any) {
+        console.log(err)
+        ElMessage.info(err || '信息表单填写不完整')
+
+      }
+    }
+
+    const initTestCast = () => {
+      if (route.query.id) {
+        useTestCaseApi().getTestCaseInfo({id: route.query.id})
+            .then(res => {
+              let data = res.data
+              let case_data = data.testcase
+              // url
+              let urlForm = {
+                id: data.id,
+                // resource: this.resource,
+                url: case_data.request.url,
+                method: case_data.request.method,
+                enabled_flag: data.enabled_flag,
+                base_url: '',
+              }
+              urlRef.value.initForm(urlForm)
+              // msg
+              let case_info = {
+                name: data.name,
+                config_id: data.config_id,
+                code_id: data.code_id,
+                priority: data.priority,
+                code: data.code,
+                id: data.id,
+                include: data.include,
+                module_id: data.module_id,
+                project_id: data.project_id,
+                run_type: data.run_type,
+                user_id: data.user_id,
+              }
+              // case_info.id = c_id
+              // 编辑赋值调用 详情
+              messagesRef.value.initForm(case_info)
+              // 编辑赋值调用 请求参数
+              requestBodyRef.value.initForm(case_data.request)
+              requestHeadersRef.value.initForm(case_data.request)
+              // extractValidate
+              let evForm = {
+                extract: case_data.extract,
+                validate: case_data.validate,
+              }
+              extractValidateRef.value.initForm(evForm)
+
+              //variablesParameters
+              let vpFrom = {
+                variables: case_data.variables,
+                parameters: case_data.parameters,
+                setup_hooks: case_data.setup_hooks,
+                teardown_hooks: case_data.teardown_hooks,
+                // hooks: case_data.hooks,
+              }
+              variablesParametersRef.value.initForm(vpFrom)
+              outputListRef.value.initForm(case_data.output)
+              if (case_data.skip_info) {
+                skipRef.value.initForm(case_data.skip_info)
+              }
+            })
+      }
+    }
+
+    // 返回到列表
+    const goBack = () => {
+      router.push({name: 'apiTestCase'})
+    }
+
     onMounted(() => {
-      // getMenuData();
-    });
+      initTestCast()
+    })
 
     return {
-      openDialog,
-      formRef,
-      onDialog,
-      saveOrUpdate,
+      urlRef,
+      messagesRef,
+      requestBodyRef,
+      requestHeadersRef,
+      extractValidateRef,
+      variablesParametersRef,
+      outputListRef,
+      skipRef,
+      store,
+      route,
+      router,
+      goBack,
+      saveOrUpdateOrDebug,
       ...toRefs(state),
     };
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.block-title {
+  position: relative;
+  margin-bottom: 12px;
+  padding-left: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  height: 28px;
+  line-height: 28px;
+  background: #f7f7fc;
+  color: #333333;
+}
+
+.block-title::before {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: 0;
+  width: 3px;
+  height: 14px;
+  background: #409eff;
+}
+
+
+::v-deep .page-header .el-page-header__icon .el-icon {
+  background-color: #3883fa;
+  border-radius: 50%;
+  color: white;
+}
+
+::v-deep .el-page-header .page-header {
+  margin-left: 0 !important;
+}
+
+::v-deep .save-update-card .el-card__body {
+  padding-top: 0;
+}
+</style>

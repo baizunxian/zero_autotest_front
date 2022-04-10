@@ -17,14 +17,14 @@ export function useEnvApi() {
     saveOrUpdate(data?: object) {
       return request({
         url: '/env/saveOrUpdate',
-        method: 'post',
+        method: 'POST',
         data
       })
     },
     deleted: (data?: object) => {
       return request({
         url: '/env/deleted',
-        method: 'post',
+        method: 'POST',
         data,
       });
     },

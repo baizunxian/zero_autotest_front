@@ -13,14 +13,14 @@ export function useLoginApi() {
 		signIn: (data: object) => {
 			return request({
 				url: '/user/login',
-				method: 'post',
+				method: 'POST',
 				data,
 			});
 		},
 		signOut: (params: object) => {
 			return request({
 				url: '/user/signOut',
-				method: 'post',
+				method: 'POST',
 				data: params,
 			});
 		},

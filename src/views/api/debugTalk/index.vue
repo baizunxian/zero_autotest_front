@@ -8,13 +8,23 @@
             placeholder="输入项目名查询"
             style="width: 200px;"
             class="filter-item"
-            @keyup.enter.native="getList"/>
-        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="getList">
+            @keyup.enter.native="getList">
+
+        </el-input>
+
+        <el-button class="ml10" type="primary" @click="getList">
+          <el-icon>
+            <ele-Search/>
+          </el-icon>
           查询
         </el-button>
-        <el-button class="filter-item" type="primary" icon="el-icon-s-flag" @click="onOpenSaveOrUpdate(null)">公共函数
+        <el-button class="ml10" type="warning" @click="onOpenSaveOrUpdate(null)">
+          <el-icon>
+            <ele-Guide/>
+          </el-icon>
+          公共函数
         </el-button>
-        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="openFuncDialog">公共函数列表
+        <el-button class="ml10" type="primary" icon="el-icon-search" @click="openFuncDialog">公共函数列表
         </el-button>
         <!--      <el-dialog-->
         <!--          title="函数列表"-->
@@ -66,6 +76,7 @@
         <!--      </el-dialog>-->
         <!--    </div>-->
       </div>
+
       <el-table
           v-loading="tableLoading"
           :data="listData"
@@ -81,13 +92,13 @@
           </template>
         </el-table-column>
         <el-table-column label="所属项目" prop="project_name" align="left" width="300">
-          <template #default="scope">
-            <span style="color: cadetblue;">{{ scope.row.project_name }}</span>
+          <template #default="{row}">
+            <span style="color: cadetblue;">{{ row.project_name }}</span>
           </template>
         </el-table-column>
         <el-table-column label="DebugTalk" prop="leader_user" align="center">
-          <template #default="scope">
-            <el-link type="primary" :underline="false" @click="onOpenSaveOrUpdate(scope.row)">debugtalk.py</el-link>
+          <template #default="{row}">
+            <el-button type="text" @click="onOpenSaveOrUpdate(row)">debugtalk.py</el-button>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" prop="creation_date" align="center" width="150"></el-table-column>

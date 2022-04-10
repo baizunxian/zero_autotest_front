@@ -17,14 +17,14 @@ export function useProjectApi() {
     saveOrUpdate(data?: object) {
       return request({
         url: '/project/saveOrUpdateProject',
-        method: 'post',
+        method: 'POST',
         data
       })
     },
     deleted: (data?: object) => {
       return request({
         url: '/project/deleteProject',
-        method: 'post',
+        method: 'POST',
         data,
       });
     },

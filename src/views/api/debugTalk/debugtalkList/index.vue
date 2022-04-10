@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
+    <div class="mb15">
       <el-input
           clearable
           v-model="listQuery.project_name"
@@ -8,7 +8,10 @@
           style="width: 200px;"
           class="filter-item"
           @keyup.enter.native="search"/>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="search">
+      <el-button v-waves class="filter-item" type="primary" @click="search">
+        <el-icon>
+          <ele-Search/>
+        </el-icon>
         查询
       </el-button>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-s-flag" @click="getCommon">公共函数</el-button>
@@ -16,7 +19,7 @@
       </el-button>
       <el-dialog
           title="函数列表"
-          :visible.sync="dialogFormVisible"
+          :visible="dialogFormVisible"
           width="80%"
           top="8vh"
           style="height: 100%">
@@ -39,23 +42,23 @@
             border
         >
           <el-table-column prop="func_name" label="函数名称" width="180">
-            <template slot-scope="{row}">
-              <el-link type="primary" :underline="false" @click="getCommon(row)">{{ row.func_name }}</el-link>
+            <template #default="{row}">
+              <el-button type="text" @click="getCommon(row)">{{ row.func_name }}</el-button>
             </template>
           </el-table-column>
           <el-table-column prop="func_args" label="函数参数" width="300">
-            <template slot-scope="{row}">
+            <template #default="{row}">
               <strong>{{ row.func_args }}</strong>
             </template>
           </el-table-column>
           <el-table-column prop="func_doc" label="函数说明">
-            <template slot-scope="{row}">
+            <template #default="{row}">
               <div style="white-space: pre-wrap; font-weight: bold" v-html="row.func_doc"></div>
             </template>
           </el-table-column>
           <el-table-column prop="" label="操作" width="100">
-            <template slot-scope="{row}">
-              <el-button size="mini" type="primary" icon="el-icon-caret-right" @click="showDebugFunc(row)">
+            <template #default="{row}">
+              <el-button type="primary" icon="el-icon-caret-right" @click="showDebugFunc(row)">
                 调试
               </el-button>
             </template>
@@ -118,17 +121,17 @@
         top='4vh'
     >
       <div class="filter-container">
-<!--        <el-input-->
-<!--            clearable-->
-<!--            v-model="debugFuncForm.func_content"-->
-<!--            placeholder="输入项目名查询"-->
-<!--            style="width: 50%"-->
-<!--            class="filter-item"-->
-<!--        />-->
-        <strong>{{debugFuncForm.func_content}}</strong>
+        <!--        <el-input-->
+        <!--            clearable-->
+        <!--            v-model="debugFuncForm.func_content"-->
+        <!--            placeholder="输入项目名查询"-->
+        <!--            style="width: 50%"-->
+        <!--            class="filter-item"-->
+        <!--        />-->
+        <strong>{{ debugFuncForm.func_content }}</strong>
         <el-form size="mini" style="width: 50%;" label-position="left" label-width="100px" :model="funcArgsInfo">
           <el-form-item v-for="(value , key) in funcArgsInfo" :key="key" :label="key">
-            <el-input v-model="funcArgsInfo[key]" ></el-input>
+            <el-input v-model="funcArgsInfo[key]"></el-input>
           </el-form-item>
         </el-form>
 

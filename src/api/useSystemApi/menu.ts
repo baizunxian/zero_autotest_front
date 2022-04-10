@@ -20,7 +20,7 @@ export function useMenuApi() {
     allMenu: (params?: object) => {
       return request({
         url: '/menu/allMenu',
-        method: 'post',
+        method: 'POST',
         params,
       });
     },
@@ -28,7 +28,7 @@ export function useMenuApi() {
     saveOrUpdate(data?: object) {
       return request({
         url: '/menu/saveOrUpdateMenu',
-        method: 'post',
+        method: 'POST',
         data
       })
     },
@@ -36,7 +36,7 @@ export function useMenuApi() {
     deleted(data?: object) {
       return request({
         url: '/menu/deleted',
-        method: 'post',
+        method: 'POST',
         data
       })
     }

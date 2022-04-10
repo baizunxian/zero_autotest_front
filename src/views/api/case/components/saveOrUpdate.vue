@@ -5,7 +5,7 @@
         <el-page-header
             class="page-header"
             :content="editType === 'create'? '新增用例':'更新用例'"
-            style="margin: 10px;"
+            style="margin: 10px 0;"
             @back="goBack"
         >
         </el-page-header>

@@ -31,9 +31,9 @@
               </template>
             </el-input>
           </el-form-item>
-<!--        </el-col>-->
+          <!--        </el-col>-->
 
-<!--        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">-->
+          <!--        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">-->
           <el-button type="primary" @click="saveOrUpdateCase('save')" class="title-button">保存</el-button>
           <el-button type="success" @click="onEnv">调试</el-button>
           <el-button type="warning">断言调试</el-button>

@@ -17,14 +17,14 @@ export function useTimedTasksApi() {
     saveOrUpdate(data?: object) {
       return request({
         url: '/timedTasks/saveOrUpdate',
-        method: 'post',
+        method: 'POST',
         data
       })
     },
     deleted: (data?: object) => {
       return request({
         url: '/timedTasks/deleted',
-        method: 'post',
+        method: 'POST',
         data,
       });
     },

@@ -1,10 +1,10 @@
 <template>
-  <div class="echart-pie-wrap">
+<!--  <div class="echart-pie-wrap">-->
     <div class="myEditorTop">[{{ isEdit ? '编辑' : '只读' }}] - [{{ debugTalkFrom.project_name }}]
       <el-button v-show="isEdit" type="success" @click="save" style="margin-left: 10px;">保存</el-button>
     </div>
     <div ref="debugTalkRef" class="debugTalk"></div>
-  </div>
+<!--  </div>-->
 </template>
 
 <script lang="ts">
@@ -17,6 +17,7 @@ import 'ace-builds/src-noconflict/ext-searchbox';
 import workerJsonUrl from 'ace-builds/src-noconflict/worker-json?url';
 import workerPythonUrl from 'ace-builds/src-noconflict/mode-python?url';
 import 'ace-builds/src-noconflict/theme-monokai'
+import 'ace-builds/src-noconflict/ext-language_tools';
 
 ace.config.setModuleUrl('ace/mode/json_worker', workerJsonUrl);
 ace.config.setModuleUrl('ace/mode/python', workerPythonUrl);
@@ -46,16 +47,16 @@ export default defineComponent({
         fontSize: 14,
         mode: "ace/mode/python",
         theme: "ace/theme/monokai",
-        enableBasicAutocompletion: true, // 启用基本自动完成
+        enableAutoIndent: true, // 启用基本自动完成
         enableSnippets: true, // 启用代码段
         enableLiveAutocompletion: true, // 启用实时自动完成
         printMarginColumn: 30,
         displayIndentGuides: true, // 显示参考线
-        enableEmmet: true, // 启用Emmet
+        // enableEmmet: true, // 启用Emmet
         tabSize: 4, // 标签大小
         useWorker: true, // 使用辅助对象
         showPrintMargin: false, //去除编辑器里的竖线
-        enableMultiselect: true, //     选中多处
+        // enableMultiselect: true, //     选中多处
         readOnly: false, // 是否只读
         showFoldWidgets: true, // 显示折叠部件
         fadeFoldWidgets: true, // 淡入折叠部件

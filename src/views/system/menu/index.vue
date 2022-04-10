@@ -17,7 +17,6 @@
         </el-button>
       </div>
       <el-table
-          border
           :data="menuList"
           v-loading="menuTableLoading"
           style="width: 100%"
@@ -25,7 +24,7 @@
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
         <el-table-column label="菜单名称" show-overflow-tooltip>
           <template #default="scope">
-            <SvgIcon v-if="scope.row.meta" :name="scope.row.meta.icon"/>
+            <SvgIcon :name="scope.row.icon"/>
             <span class="ml10">{{ scope.row.title }}</span>
           </template>
         </el-table-column>
@@ -63,7 +62,8 @@
         </el-table-column>
       </el-table>
     </el-card>
-    <save-or-update :menuList="menuList" @getList="getList" ref="saveOrUpdateRef"/>
+    <save-or-update :moduleName="moduleName" :menuList="menuList" :allMenuList="allMenuList" @getList="getList"
+                    ref="saveOrUpdateRef"/>
   </div>
 </template>
 
@@ -71,6 +71,7 @@
 import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {useMenuApi} from '/@/api/useSystemApi/menu';
 import {useStore} from '/@/store';
+import {RouteRecordRaw} from 'vue-router';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import saveOrUpdate from '/@/views/system/menu/components/saveOrUpdate.vue';
 
@@ -83,6 +84,7 @@ export default defineComponent({
     const state = reactive({
       moduleName: '菜单', // 模块名称
       menuList: [],
+      allMenuList: null,
       menuTableLoading: false,
       listQuery: {
         page: 1,
@@ -91,11 +93,32 @@ export default defineComponent({
       },
     });
 
+    // 递归组装菜单
+    const menuAssembly = (parent_menu: Array<object>, all_menu: Array<object>) => {
+      parent_menu.forEach(parent => {
+        all_menu.forEach(menu => {
+          if (menu.parent_id == parent.id) {
+            parent.children = parent.children ? parent.children : [];
+            parent.children.push(menu);
+          }
+        })
+        if (parent.children) menuAssembly(parent.children, all_menu);
+      })
+      state.menuList = parent_menu
+    };
+
     // 获取菜单列表
     const getList = async () => {
       state.menuTableLoading = true
-      let res = await useMenuApi().getAllMenus()
-      state.menuList = res.data
+      let res = await useMenuApi().allMenu()
+      state.allMenuList = res.data
+      let parent_menu = []
+      res.data.forEach(menu => {
+        if (!menu.parent_id) {
+          parent_menu.push(menu)
+        }
+      })
+      menuAssembly(parent_menu, res.data)
       state.menuTableLoading = false
     };
     // 打开新增菜单弹窗
@@ -103,22 +126,18 @@ export default defineComponent({
     //   addMenuRef.value.openDialog();
     // };
     // 打开编辑菜单弹窗
-    const onOpenSaveOrUpdate = (editType: string, row: any) => {
+    const onOpenSaveOrUpdate = (editType: string, row: RouteRecordRaw) => {
       saveOrUpdateRef.value.openDialog(editType, row);
     };
     // 删除当前行
-    const deleted = (row: any) => {
+    const deleted = (row: RouteRecordRaw) => {
       ElMessageBox.confirm(`此操作将永久删除路由：${row.path}, 是否继续?`, '提示', {
         confirmButtonText: '删除',
         cancelButtonText: '取消',
         type: 'warning',
       })
           .then(() => {
-            useMenuApi().deleted({id: row.id}).then(() => {
-              ElMessage.success('删除成功');
-              getList()
-            })
-
+            ElMessage.success('删除成功');
           })
           .catch(() => {
           });
@@ -128,7 +147,9 @@ export default defineComponent({
     })
 
     return {
+      // addMenuRef,
       saveOrUpdateRef,
+      // onOpenAddMenu,
       onOpenSaveOrUpdate,
       deleted,
       getList,
@@ -137,3 +158,4 @@ export default defineComponent({
   },
 });
 </script>
+
