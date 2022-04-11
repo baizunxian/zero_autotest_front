@@ -1,7 +1,7 @@
 <template>
   <div class="system-edit-menu-container">
     <el-dialog :title="editType === 'save'? '新增' : '修改'" v-model="isShowDialog" width="40%">
-      <el-form :model="form" :rules="rules" ref="formRef" size="default" label-width="80px">
+      <el-form :model="form" :rules="rules" ref="formRef" label-width="80px">
         <el-row :gutter="35">
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="模块名称" prop="name">
@@ -63,8 +63,8 @@
       </el-form>
       <template #footer>
 				<span class="dialog-footer">
-					<el-button @click="onDialog" size="default">取 消</el-button>
-					<el-button type="primary" @click="saveOrUpdate" size="default">保 存</el-button>
+					<el-button @click="onDialog">取 消</el-button>
+					<el-button type="primary" @click="saveOrUpdate">保 存</el-button>
 				</span>
       </template>
     </el-dialog>

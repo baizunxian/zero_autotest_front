@@ -1,7 +1,7 @@
 <template>
   <div class="system-edit-menu-container">
     <el-dialog :title="editType === 'save'? '新增' : '修改'" v-model="isShowDialog" width="769px">
-      <el-form :model="form" :rules="rules" size="default" label-width="80px">
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
         <el-row :gutter="35">
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="项目名称" prop="name">
@@ -49,8 +49,8 @@
       </el-form>
       <template #footer>
 				<span class="dialog-footer">
-					<el-button @click="onCancel" size="default">取 消</el-button>
-					<el-button type="primary" @click="saveOrUpdate" size="default">保 存</el-button>
+					<el-button @click="onCancel">取 消</el-button>
+					<el-button type="primary" @click="saveOrUpdate">保 存</el-button>
 				</span>
       </template>
     </el-dialog>
@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, toRefs} from 'vue';
+import {defineComponent, onMounted, reactive, toRefs, ref} from 'vue';
 import {useProjectApi} from "/@/api/useAutoApi/project";
 import {ElMessage} from "element-plus";
 
@@ -78,14 +78,14 @@ export default defineComponent({
         module_packages: null, // 配置信息
       }
     }
+    const formRef = ref()
     const state = reactive({
       isShowDialog: false,
       editType: '',
       // 参数请参考 `/src/router/route.ts` 中的 `dynamicRoutes` 路由菜单格式
       form: createForm(),
       rules: {
-        name: [{required: true, message: '请输入角色名称', trigger: 'blur'},],
-        role_type: [{required: true, message: '请选择角色类型', trigger: 'blur'},],
+        name: [{required: true, message: '请输入项目名称', trigger: 'blur'},],
       },
       menuData: [], // 上级菜单数据
     });
@@ -110,14 +110,18 @@ export default defineComponent({
     };
     // 新增
     const saveOrUpdate = () => {
-      useProjectApi().saveOrUpdate(state.form)
-          .then(() => {
-            ElMessage.success('操作成功');
-            emit('getList')
-            closeDialog(); // 关闭弹窗
-          })
-      console.log(state.form, 'state.menuForm')
-      // setBackEndControlRefreshRoutes() // 刷新菜单，未进行后端接口测试
+      formRef.value.validate((valid: any) => {
+        if (valid) {
+          useProjectApi().saveOrUpdate(state.form)
+              .then(() => {
+                ElMessage.success('操作成功');
+                emit('getList')
+                closeDialog(); // 关闭弹窗
+              })
+          console.log(state.form, 'state.menuForm')
+        }
+      })
+
     };
     // 页面加载时
     onMounted(() => {
@@ -125,6 +129,7 @@ export default defineComponent({
     });
 
     return {
+      formRef,
       openDialog,
       closeDialog,
       onCancel,
