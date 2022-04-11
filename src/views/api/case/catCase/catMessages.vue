@@ -70,10 +70,9 @@
           <template #default="{option}">
             <span
                 :title="option.name"
-                :draggable="!option.disabled">
-              <el-link target="_blank"
-                       @click.prevent="onCatTestCase(option.id)"
-                       type="success"
+                :draggable="!option.disabled"
+            >
+              <el-link target="_blank" @click.prevent="onCatTestCase(option.id)" type="success"
                        style="font-size: 12px">查看</el-link>
               {{ option.name }}
             </span>
@@ -82,21 +81,12 @@
       </el-col>
 
     </el-row>
+
   </el-form>
 
-  <el-dialog
-      v-model="showCaseInfo"
-      width="80%"
-      top="8vh"
-      destroy-on-close
-      ref="catCaseRef"
-      :close-on-click-modal="false">
-    <cat-case :case_id="catCaseId" @onCatTestCase="onCatTestCase"/>
-  </el-dialog>
 </template>
 
 <script lang="ts">
-import catCase from '/@/views/api/case/catCase/catCase.vue'
 import {useProjectApi} from '/@/api/useAutoApi/project'
 import {useModuleApi} from '/@/api/useAutoApi/module'
 import {useTestCaseApi} from '/@/api/useAutoApi/testcase'
@@ -105,12 +95,9 @@ import {defineComponent, onMounted, reactive, ref, toRefs} from "vue";
 
 export default defineComponent({
   name: 'case-url',
-  components: {
-    catCase,
-  },
-  setup() {
+  components: {},
+  setup(props, {emit}) {
     const formRef = ref()
-    const catCaseRef = ref()
     const createForm = () => {
       return {
         name: '',
@@ -125,10 +112,6 @@ export default defineComponent({
       }
     }
     const state = reactive({
-      // cat case info
-      showCaseInfo: false,
-      catCaseId: null,
-      // form
       isShowDialog: false,
       handleType: '',   //case 调用类型， 保存，调试
       // 表单及校验
@@ -244,10 +227,9 @@ export default defineComponent({
           })
     }
 
-    // cat case
+    // 查看用例 更新
     const onCatTestCase = (id) => {
-      state.catCaseId = id
-      state.showCaseInfo = true
+      emit('onCatTestCase', id)
     }
 
     onMounted(() => {
@@ -257,7 +239,6 @@ export default defineComponent({
       formRef,
       initForm,
       getFormData,
-      setCaseId,
       getProjectList,
       getModuleList,
       getCaseList,

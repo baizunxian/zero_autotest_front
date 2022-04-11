@@ -2,7 +2,7 @@
   <div>
     <el-card shadow="hover">
       <div class="mb15">
-        <el-input v-model="listQuery.name" placeholder="请输入模块名称" style="max-width: 180px"></el-input>
+        <el-input v-model="listQuery.name" placeholder="请输入套件名称" style="max-width: 180px"></el-input>
         <el-button type="primary" class="ml10" @click="getList">
           <el-icon>
             <ele-Search/>
@@ -20,21 +20,25 @@
           border
           v-loading="tableLoading"
           :data="listData"
+          stripe
+          highlight-current-row
           style="width: 100%">
-        <el-table-column label="模块名称" show-overflow-tooltip prop="name"></el-table-column>
-        <el-table-column label="归属项目" show-overflow-tooltip prop="project_name"></el-table-column>
-        <el-table-column label="测试人员" show-overflow-tooltip prop="test_user"></el-table-column>
-        <el-table-column label="开发人员" show-overflow-tooltip prop="dev_user"></el-table-column>
-        <el-table-column label="用例数" show-overflow-tooltip prop="case_count"></el-table-column>
-        <el-table-column label="描述" show-overflow-tooltip prop="simple_desc"></el-table-column>
-        <el-table-column label="其他信息" show-overflow-tooltip prop="other_desc"></el-table-column>
-        <el-table-column label="关联配置" show-overflow-tooltip prop="config_id"></el-table-column>
+        <el-table-column label="ID" show-overflow-tooltip prop="id"></el-table-column>
+        <el-table-column label="套件名称" show-overflow-tooltip prop="name"></el-table-column>
+        <el-table-column label="所属项目" show-overflow-tooltip prop="project_name"></el-table-column>
+        <el-table-column label="更新时间" show-overflow-tooltip prop="updation_date"></el-table-column>
+        <el-table-column label="更新人" show-overflow-tooltip prop="updated_by_name"></el-table-column>
+        <el-table-column label="创建时间" show-overflow-tooltip prop="creation_date"></el-table-column>
+        <el-table-column label="创建人" show-overflow-tooltip prop="created_by_name"></el-table-column>
         <el-table-column label="操作" width="100">
-          <template #default="scope">
-            <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"
-                       @click="onOpenSaveOrUpdate('update', scope.row)">修改
+          <template #default="{row}">
+            <el-button size="small" type="primary" icon="el-icon-caret-right" @click="runSuitePage(row)">
+            运行
+          </el-button>
+            <el-button size="small" type="text"
+                       @click="onOpenSaveOrUpdate('update', row)">修改
             </el-button>
-            <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text" @click="deleted(scope.row)">
+            <el-button size="small" type="text" @click="deleted(row)">
               删除
             </el-button>
           </template>
@@ -54,7 +58,7 @@
 <script lang="ts">
 import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import saveOrUpdate from '/@/views/api/module/components/saveOrUpdate.vue';
+import saveOrUpdate from '/@/views/api/caseSuite/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
 
@@ -70,7 +74,7 @@ import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
 
 
 export default defineComponent({
-  name: 'apiModule',
+  name: 'apiCaseSuite',
   components: {saveOrUpdate, Pagination},
   setup() {
     const saveOrUpdateRef = ref();
@@ -102,7 +106,7 @@ export default defineComponent({
 
     // 删除角色
     const deleted = (row: any) => {
-      ElMessageBox.confirm(`此操作将删除角色名称：“${row.name}”，是否继续?`, '提示', {
+      ElMessageBox.confirm(`此操作将删除：“${row.name}”，是否继续?`, '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',
