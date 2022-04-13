@@ -55,7 +55,7 @@ import Messages from '/@/views/api/configure/components/messages.vue'
 import RequestHeaders from '/@/views/api/configure/components/requestHeaders.vue'
 // import ExtractValidate from '/@/views/api/configure/components/extractValidate.vue'
 import VariablesParameters from '/@/views/api/configure/components/variablesParameters.vue'
-import {ElLoading, ElMessage} from "element-plus"
+import {ElMessage} from "element-plus"
 import {useStore} from "/@/store"
 import {useRoute, useRouter} from "vue-router"
 import {useTestCaseApi} from '/@/api/useAutoApi/testcase'
@@ -217,18 +217,17 @@ export default defineComponent({
   line-height: 28px;
   background: #f7f7fc;
   color: #333333;
-}
 
-.block-title::before {
-  content: '';
-  position: absolute;
-  top: 7px;
-  left: 0;
-  width: 3px;
-  height: 14px;
-  background: #409eff;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 0;
+    width: 3px;
+    height: 14px;
+    background: #409eff;
+  }
 }
-
 
 :deep(.page-header .el-page-header__icon .el-icon) {
   background-color: #3883fa;

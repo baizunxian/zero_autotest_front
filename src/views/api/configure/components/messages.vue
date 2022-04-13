@@ -8,7 +8,7 @@
         </el-form-item>
 
         <el-form-item label="所属项目" prop="project_id">
-          <el-select size="small" v-model="form.project_id" placeholder="选择请求方法" filterable style="width: 100%;"
+          <el-select size="small" v-model="form.project_id" placeholder="选择所属项目" filterable style="width: 100%;"
                      @change="selectProject">
             <el-option
                 v-for="project in projectList"

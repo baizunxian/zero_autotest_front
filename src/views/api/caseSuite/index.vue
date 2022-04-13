@@ -3,7 +3,7 @@
     <el-card shadow="hover">
       <div class="mb15">
         <el-input v-model="listQuery.name" placeholder="请输入套件名称" style="max-width: 180px"></el-input>
-        <el-button type="primary" class="ml10" @click="getList">
+        <el-button type="primary" class="ml10" @click="search">
           <el-icon>
             <ele-Search/>
           </el-icon>
@@ -32,9 +32,9 @@
         <el-table-column label="创建人" show-overflow-tooltip prop="created_by_name"></el-table-column>
         <el-table-column label="操作" width="100">
           <template #default="{row}">
-            <el-button size="small" type="primary" icon="el-icon-caret-right" @click="runSuitePage(row)">
-            运行
-          </el-button>
+            <el-button size="small" type="text" icon="el-icon-caret-right" @click="runSuitePage(row)">
+              运行
+            </el-button>
             <el-button size="small" type="text"
                        @click="onOpenSaveOrUpdate('update', row)">修改
             </el-button>
@@ -51,16 +51,51 @@
           :limit="listQuery.pageSize"
           @pagination="getList"/>
     </el-card>
-    <save-or-update ref="saveOrUpdateRef" @getList="getList"/>
+
+    <!--    运行   -->
+    <el-dialog
+        v-model="showRunPage"
+        width="600px"
+        top="8vh"
+        title="运行用例"
+        :close-on-click-modal="false">
+      <el-form
+          :model="runForm"
+          label-width="70px"
+
+      >
+        <el-form-item label="运行环境" prop="belong_project_id">
+          <el-select v-model="runForm.base_url" placeholder="选择环境" filterable style="width:100%">
+            <el-option :value="''" label="自带环境">自带环境</el-option>
+            <el-option
+                v-for="item in envList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.url">
+              <span style="float: left">{{ item.name }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="showRunPage = !showRunPage">取消</el-button>
+              <el-button type="primary" :loading="runCaseLoading" @click="runTestSuite">运行</el-button>
+            </span>
+      </template>
+    </el-dialog>
+
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import saveOrUpdate from '/@/views/api/caseSuite/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
-import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
+import {useTestSuiteApi} from "/@/api/useAutoApi/suite";
+import {useTestCaseApi} from "/@/api/useAutoApi/testcase";
+import {useRouter} from 'vue-router'
+import {useEnvApi} from "/@/api/useAutoApi/env";
 
 // 定义接口来定义对象的类型
 // interface TableData {
@@ -75,9 +110,10 @@ import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
 
 export default defineComponent({
   name: 'apiCaseSuite',
-  components: {saveOrUpdate, Pagination},
+  components: {Pagination},
   setup() {
     const saveOrUpdateRef = ref();
+    const router = useRouter();
     const state = reactive({
       listData: [],
       tableLoading: false,
@@ -87,11 +123,21 @@ export default defineComponent({
         pageSize: 20,
         name: '',
       },
+      // run
+      showRunPage: false,
+      runCaseLoading: false,
+      runForm: {
+        id: null,
+        base_url: '',
+        run_type: 'suite',
+      },
+      // env
+      envList: [],
     });
     // 初始化表格数据
     const getList = () => {
       state.tableLoading = true
-      useTimedTasksApi().getList(state.listQuery)
+      useTestSuiteApi().getList(state.listQuery)
           .then(res => {
             state.listData = res.data.rows
             state.total = res.data.rowTotal
@@ -99,9 +145,18 @@ export default defineComponent({
           })
     };
 
+     // 查询
+    const search = () => {
+      state.listQuery.page = 1
+      getList()
+    }
+
     // 新增或修改角色
     const onOpenSaveOrUpdate = (editType: string, row: any) => {
-      saveOrUpdateRef.value.openDialog(editType, row);
+      let query: any = {}
+      query.editType = editType
+      if (row) query.id = row.id
+      router.push({name: 'saveOrUpdateSuite', query: query})
     };
 
     // 删除角色
@@ -112,7 +167,7 @@ export default defineComponent({
         type: 'warning',
       })
           .then(() => {
-            useTimedTasksApi().deleted({id: row.id})
+            useTestSuiteApi().deleted({id: row.id})
                 .then(() => {
                   ElMessage.success('删除成功');
                   getList()
@@ -121,15 +176,42 @@ export default defineComponent({
           .catch(() => {
           });
     };
+
+    // 获取环境信息
+    const getEnvList = () => {
+      useEnvApi().getList({page: 1, pageSize: 1000})  // 请求数据写死，后面优化
+          .then(res => {
+            state.envList = res.data.rows
+          })
+    }
+
+    //runSuitePage
+    const runSuitePage = (row) => {
+      state.runForm.id = row.id
+      state.showRunPage = !state.showRunPage
+      getEnvList()
+    }
+
+    //runSuitePage
+    const runTestSuite = () => {
+      useTestCaseApi().runTestCase(state.runForm).then(res => {
+        console.log(res)
+      })
+    }
+
     // 页面加载时
     onMounted(() => {
       getList();
     });
     return {
       getList,
+      router,
       saveOrUpdateRef,
       onOpenSaveOrUpdate,
       deleted,
+      getEnvList,
+      runSuitePage,
+      runTestSuite,
       ...toRefs(state),
     };
   },

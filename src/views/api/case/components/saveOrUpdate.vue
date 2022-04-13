@@ -41,15 +41,15 @@
               <variables-parameters ref="variablesParametersRef"/>
             </el-tab-pane>
 
-            <el-tab-pane name='outputList'>
-              <template #label><strong>输出参数</strong></template>
-              <output-list ref="outputListRef"/>
-            </el-tab-pane>
+<!--            <el-tab-pane name='outputList'>-->
+<!--              <template #label><strong>输出参数</strong></template>-->
+<!--              <output-list ref="outputListRef"/>-->
+<!--            </el-tab-pane>-->
 
-            <el-tab-pane name='Skip'>
-              <template #label><strong>用例跳过条件</strong></template>
-              <skip ref="skipRef"/>
-            </el-tab-pane>
+<!--            <el-tab-pane name='Skip'>-->
+<!--              <template #label><strong>用例跳过条件</strong></template>-->
+<!--              <skip ref="skipRef"/>-->
+<!--            </el-tab-pane>-->
 
           </el-tabs>
         </div>
@@ -87,8 +87,8 @@ import RequestBody from '/@/views/api/case/components/requestBody.vue'
 import RequestHeaders from '/@/views/api/case/components/requestHeaders.vue'
 import ExtractValidate from '/@/views/api/case/components/extractValidate.vue'
 import VariablesParameters from '/@/views/api/case/components/variablesParameters.vue'
-import OutputList from '/@/views/api/case/components/outputList.vue'
-import Skip from '/@/views/api/case/components/skip.vue'
+// import OutputList from '/@/views/api/case/components/outputList.vue'
+// import Skip from '/@/views/api/case/components/skip.vue'
 import TestReport from '/@/views/api/Report/components/report.vue'
 import {ElLoading, ElMessage} from "element-plus"
 import {useStore} from "/@/store"
@@ -104,8 +104,8 @@ export default defineComponent({
     RequestHeaders,
     ExtractValidate,
     VariablesParameters,
-    OutputList,
-    Skip,
+    // OutputList,
+    // Skip,
     TestReport,
   },
   setup() {
@@ -326,18 +326,17 @@ export default defineComponent({
   line-height: 28px;
   background: #f7f7fc;
   color: #333333;
-}
 
-.block-title::before {
-  content: '';
-  position: absolute;
-  top: 7px;
-  left: 0;
-  width: 3px;
-  height: 14px;
-  background: #409eff;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 0;
+    width: 3px;
+    height: 14px;
+    background: #409eff;
+  }
 }
-
 
 :deep(.page-header .el-page-header__icon .el-icon) {
   background-color: #3883fa;

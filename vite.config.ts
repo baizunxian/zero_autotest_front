@@ -16,18 +16,18 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
 		plugins: [vue()],
 		root: process.cwd(),
 		resolve: { alias },
-		base: mode.command === 'serve' ? './' : env.VITE_PUBLIC_PATH,
+		base: mode.command === 'serve' ? '/' : env.VITE_PUBLIC_PATH,
 		server: {
 			host: '0.0.0.0',
 			port: env.VITE_PORT as unknown as number,
 			open: env.VITE_OPEN,
 			proxy: {
-				'/gitee': {
-					target: 'https://gitee.com',
-					ws: true,
-					changeOrigin: true,
-					rewrite: (path) => path.replace(/^\/gitee/, ''),
-				},
+				// '/gitee': {
+				// 	target: 'https://gitee.com',
+				// 	ws: true,
+				// 	changeOrigin: true,
+				// 	rewrite: (path) => path.replace(/^\/gitee/, ''),
+				// },
 			},
 		},
 		build: {

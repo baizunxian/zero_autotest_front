@@ -445,7 +445,6 @@ export default {
 }
 </script>
 
-<style scoped src='@/styles/extent.css'></style>
 
 <style lang="scss" scoped>
 

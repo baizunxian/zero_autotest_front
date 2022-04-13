@@ -146,7 +146,7 @@ export default defineComponent({
       runForm: {
         id: null,
         base_url: '',
-        run_type: 1,
+        run_type: 'case',
       },
       // report
       reportBody: {},

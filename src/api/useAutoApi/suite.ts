@@ -5,32 +5,32 @@ import request from '/@/utils/request';
  * @method getProjectList 获取项目列表
  * @method getMenuTest 获取后端动态路由菜单(test)
  */
-export function useReportApi() {
+export function useTestSuiteApi() {
   return {
     getList: (data?: object) => {
       return request({
-        url: '/report/list',
+        url: '/testSuites/list',
         method: 'POST',
         data,
       });
     },
     saveOrUpdate(data?: object) {
       return request({
-        url: '/report/saveOrUpdateProject',
+        url: '/testSuites/saveOrUpdate',
         method: 'POST',
         data
       })
     },
     deleted: (data?: object) => {
       return request({
-        url: '/report/deleted',
+        url: '/testSuites/deleted',
         method: 'POST',
         data,
       });
     },
-    getReportById: (data?: object) => {
+    getSuitesInfo: (data?: object) => {
       return request({
-        url: '/report/getReportById',
+        url: '/testSuites/getSuiteInfo',
         method: 'POST',
         data,
       });

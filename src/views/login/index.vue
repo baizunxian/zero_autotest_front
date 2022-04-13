@@ -9,22 +9,22 @@
     </div>
     <div class="login-content">
       <div class="login-content-main">
-        <h4 class="login-content-title ml15">{{ getThemeConfig.globalTitle }}后台模板</h4>
+        <h4 class="login-content-title ml15">{{ getThemeConfig.globalTitle }}</h4>
         <div v-if="!isScan">
           <el-tabs v-model="tabsActiveName">
             <el-tab-pane label="账号密码登录" name="account">
               <Account/>
             </el-tab-pane>
-            <el-tab-pane label="手机号登录" name="mobile">
-              <Mobile/>
-            </el-tab-pane>
+<!--            <el-tab-pane label="手机号登录" name="mobile">-->
+<!--              <Mobile/>-->
+<!--            </el-tab-pane>-->
           </el-tabs>
         </div>
-        <Scan v-if="isScan"/>
-        <div class="login-content-main-sacn" @click="isScan = !isScan">
-          <i class="iconfont" :class="isScan ? 'icon-diannao1' : 'icon-barcode-qr'"></i>
-          <div class="login-content-main-sacn-delta"></div>
-        </div>
+<!--        <Scan v-if="isScan"/>-->
+<!--        <div class="login-content-main-sacn" @click="isScan = !isScan">-->
+<!--          <i class="iconfont" :class="isScan ? 'icon-diannao1' : 'icon-barcode-qr'"></i>-->
+<!--          <div class="login-content-main-sacn-delta"></div>-->
+<!--        </div>-->
       </div>
     </div>
   </div>

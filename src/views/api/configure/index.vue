@@ -3,7 +3,7 @@
     <el-card shadow="hover">
       <div class="mb15">
         <el-input v-model="listQuery.name" placeholder="请输入配置名称" style="max-width: 180px"></el-input>
-        <el-button type="primary" class="ml10" @click="getList">
+        <el-button type="primary" class="ml10" @click="search">
           <el-icon>
             <ele-Search/>
           </el-icon>
@@ -46,12 +46,11 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination
-          v-show="total>0"
-          :total="total"
-          :page="listQuery.page"
-          :limit="listQuery.pageSize"
-          @pagination="getList"/>
+      <pagination :total="total"
+                  :hidden="total === 0"
+                  v-model:page="listQuery.page"
+                  v-model:limit="listQuery.pageSize"
+                  @pagination="getList"/>
     </el-card>
 
     <el-dialog
@@ -122,6 +121,12 @@ export default defineComponent({
           })
     };
 
+     // 查询
+    const search = () => {
+      state.listQuery.page = 1
+      getList()
+    }
+
     // 新增或修改
     const onOpenSaveOrUpdate = (editType: string, row: any | null) => {
       state.editType = editType
@@ -164,6 +169,7 @@ export default defineComponent({
     });
     return {
       getList,
+      search,
       saveOrUpdateRef,
       saveOrUpdate,
       onOpenSaveOrUpdate,

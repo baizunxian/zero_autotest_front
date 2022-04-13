@@ -3,8 +3,8 @@
     <el-pagination
       small
       :background="background"
-      :current-page="currentPage"
-      :page-size="pageSize"
+      v-model:current-page="currentPage"
+      v-model:page-size="pageSize"
       :layout="layout"
       :page-sizes="pageSizes"
       :total="total"

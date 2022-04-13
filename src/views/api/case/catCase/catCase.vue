@@ -340,16 +340,16 @@ export default defineComponent({
   line-height: 28px;
   background: #f7f7fc;
   color: #333333;
-}
 
-.block-title::before {
-  content: '';
-  position: absolute;
-  top: 7px;
-  left: 0;
-  width: 3px;
-  height: 14px;
-  background: #409eff;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 0;
+    width: 3px;
+    height: 14px;
+    background: #409eff;
+  }
 }
 
 

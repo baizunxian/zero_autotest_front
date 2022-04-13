@@ -8,11 +8,11 @@
             placeholder="输入项目名查询"
             style="width: 200px;"
             class="filter-item"
-            @keyup.enter.native="getList">
+            @keyup.enter.native="search">
 
         </el-input>
 
-        <el-button class="ml10" type="primary" @click="getList">
+        <el-button class="ml10" type="primary" @click="search">
           <el-icon>
             <ele-Search/>
           </el-icon>
@@ -111,7 +111,10 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination v-show="total>0" :total="total" :page="listQuery.page" :limit="listQuery.pageSize"
+      <pagination :total="total"
+                  :hidden="total === 0"
+                  v-model:page="listQuery.page"
+                  v-model:limit="listQuery.pageSize"
                   @pagination="getList"/>
 
     </el-card>
@@ -163,6 +166,12 @@ export default defineComponent({
           })
     };
 
+     // 查询
+    const search = () => {
+      state.listQuery.page = 1
+      getList()
+    }
+
     // 新增或修改角色
     const onOpenSaveOrUpdate = (row: any) => {
       let query = {}
@@ -200,6 +209,7 @@ export default defineComponent({
     });
     return {
       getList,
+      search,
       saveOrUpdateRef,
       onOpenSaveOrUpdate,
       deleted,

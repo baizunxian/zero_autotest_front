@@ -4,7 +4,8 @@ import {Session} from '/@/utils/storage';
 
 // 配置新建一个 axios 实例
 const service = axios.create({
-  baseURL: 'http://localhost:8012/api',
+  // baseURL: 'https://www.xiaobaicodes.com:8888/api',
+  baseURL: 'http://127.0.0.1:8012/api',
   timeout: 50000,
   headers: {'Content-Type': 'application/json'},
 });

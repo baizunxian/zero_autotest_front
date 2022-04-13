@@ -105,8 +105,9 @@
         </el-table-column>
       </el-table>
       <pagination :total="total"
-                  :page="listQuery.page"
-                  :limit="listQuery.pageSize"
+                  :hidden="total === 0"
+                  v-model:page="listQuery.page"
+                  v-model:limit="listQuery.pageSize"
                   @pagination="getList"/>
 
       <el-dialog
@@ -153,6 +154,7 @@ export default defineComponent({
       },
       // report
       reportBody: {},
+      reportID: '',
     });
 
     // 获取列表
@@ -187,8 +189,11 @@ export default defineComponent({
 
     const onOpenReport = (row: any) => {
       console.log('row----------', row)
-      state.reportBody = row.report_body
-      state.showReportDialog = !state.showReportDialog
+      useReportApi().getReportById({id: row.id})
+          .then((res: any) => {
+            state.reportBody = res.data.report_body
+            state.showReportDialog = !state.showReportDialog
+          })
     }
 
     // 获取列表

@@ -11,7 +11,7 @@
 
         <!--      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6" class="mb20">-->
         <el-form-item label="所属项目" prop="project_id">
-          <el-select size="small" v-model="form.project_id" placeholder="选择请求方法" filterable style="width: 100%;"
+          <el-select size="small" v-model="form.project_id" placeholder="选择所属项目" filterable style="width: 100%;"
                      @change="selectProject">
             <el-option
                 v-for="project in projectList"
@@ -154,7 +154,7 @@ export default defineComponent({
         pageSize: 1000,
         project_id: null,
       },
-      //config
+      //case
       caseList: [],
       caseQuery: {
         page: 1,
