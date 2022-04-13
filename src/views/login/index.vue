@@ -37,7 +37,7 @@ import Mobile from '/@/views/login/component/mobile.vue';
 import Scan from '/@/views/login/component/scan.vue';
 import {useStore} from '/@/store';
 
-import logoMini from '/@/assets/logo-mini.svg';
+import logoMini from '/@/assets/logo.png';
 import loginIconTwo from '/@/assets/login-icon-two.svg';
 
 // 定义接口来定义对象的类型
