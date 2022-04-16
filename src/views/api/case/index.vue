@@ -70,6 +70,13 @@
           label-width="70px"
 
       >
+        <el-form-item label="运行模式" prop="belong_project_id">
+          <el-select v-model="runForm.run_mode" placeholder="选择运行模式" filterable style="width:100%">
+            <el-option :value="1" label="同步运行(同步执行,等待执行结果)"></el-option>
+            <el-option :value="2" label="异步运行(异步执行用例,后台运行,执行结束后报告列表查看)"></el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="运行环境" prop="belong_project_id">
           <el-select v-model="runForm.base_url" placeholder="选择环境" filterable style="width:100%">
             <el-option :value="''" label="自带环境">自带环境</el-option>
@@ -147,6 +154,7 @@ export default defineComponent({
         id: null,
         base_url: '',
         run_type: 'case',
+        run_mode: 1,
       },
       // report
       reportBody: {},
@@ -207,11 +215,17 @@ export default defineComponent({
       state.runCaseLoading = !state.runCaseLoading;
       useTestCaseApi().runTestCase(state.runForm)
           .then(res => {
-            console.log(res)
-            ElMessage.success('运行成功');
-            state.showTestReportDialog = !state.showTestReportDialog;
-            state.reportBody = res.data
-            state.runCaseLoading = !state.runCaseLoading;
+            if (state.runForm.run_mode === 1) {
+              console.log(res)
+              ElMessage.success('运行成功');
+              state.showTestReportDialog = !state.showTestReportDialog;
+              state.reportBody = res.data
+              state.runCaseLoading = !state.runCaseLoading;
+            } else {
+              ElMessage.success(res.msg);
+              state.runCaseLoading = !state.runCaseLoading;
+            }
+
           })
           .catch((err: any) => {
             ElMessage.error(err.message);
