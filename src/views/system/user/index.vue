@@ -140,9 +140,9 @@ export default defineComponent({
         {fieldName: 'status', label: '用户状态', width: '', align: 'center', show: true},
         {fieldName: 'remarks', label: '备注', width: '', align: 'center', show: true},
         {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
-        {fieldName: 'updated_by', label: '更新人', width: '', align: 'center', show: true},
+        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
         {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
-        {fieldName: 'created_by', label: '创建人', width: '', align: 'center', show: true},
+        {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
       ],
       // list
       listData: [],

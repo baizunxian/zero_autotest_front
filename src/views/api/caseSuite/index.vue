@@ -50,10 +50,11 @@
 
         <el-table-column label="操作" width="150" align="center">
           <template #default="{row}">
-            <el-button size="small" type="text" icon="el-icon-caret-right" @click="runSuitePage(row)">
+            <el-button size="small" type="text" @click="runSuitePage(row)">
               运行
             </el-button>
-            <el-button size="small" type="text"
+            <el-button size="small"
+                       type="text"
                        @click="onOpenSaveOrUpdate('update', row)">修改
             </el-button>
             <el-button size="small" type="text" @click="deleted(row)">
@@ -137,10 +138,10 @@ export default defineComponent({
         {fieldName: 'id', label: 'ID', width: '55', align: 'center', show: true},
         {fieldName: 'name', label: '套件名称', width: '', align: 'center', show: true},
         {fieldName: 'project_name', label: '所属项目', width: '', align: 'center', show: true},
-        {fieldName: 'updation_date', label: '更新时间', width: '', align: 'center', show: true},
-        {fieldName: 'updated_by', label: '更新人', width: '', align: 'center', show: true},
-        {fieldName: 'creation_date', label: '创建时间', width: '', align: 'center', show: true},
-        {fieldName: 'created_by', label: '创建人', width: '', align: 'center', show: true},
+        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
+        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
+        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
+        {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
       ],
       // list
       listData: [],

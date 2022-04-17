@@ -49,19 +49,8 @@
             </template>
           </template>
         </el-table-column>
-        <!--        <el-table-column label="项目名称" show-overflow-tooltip prop="name" align="center"></el-table-column>-->
-        <!--        <el-table-column label="负责人" show-overflow-tooltip prop="responsible_name" align="center"></el-table-column>-->
-        <!--        <el-table-column label="测试人员" show-overflow-tooltip prop="test_user" align="center"></el-table-column>-->
-        <!--        <el-table-column label="开发人员" show-overflow-tooltip prop="dev_user" align="center"></el-table-column>-->
-        <!--        <el-table-column label="发布应用" show-overflow-tooltip prop="publish_app" align="center"></el-table-column>-->
-        <!--        <el-table-column label="描述" show-overflow-tooltip prop="simple_desc" align="center"></el-table-column>-->
-        <!--        <el-table-column label="其他信息" show-overflow-tooltip prop="other_desc" align="center"></el-table-column>-->
-        <!--        <el-table-column label="关联配置" show-overflow-tooltip prop="config_id" align="center"></el-table-column>-->
-        <!--        <el-table-column label="更新时间" show-overflow-tooltip prop="updation_date" align="center"></el-table-column>-->
-        <!--        <el-table-column label="更新人" show-overflow-tooltip prop="updated_by" align="center"></el-table-column>-->
-        <!--        <el-table-column label="创建时间" show-overflow-tooltip prop="creation_date" align="center"></el-table-column>-->
-        <!--        <el-table-column label="创建人" show-overflow-tooltip prop="created_by" align="center"></el-table-column>-->
-        <el-table-column label="操作" width="100">
+
+        <el-table-column label="操作" width="100" align="center">
           <template #default="{row}">
             <el-button size="small" type="text" @click="onOpenSaveOrUpdate('update', row)">
               修改
@@ -134,10 +123,10 @@ export default defineComponent({
         {fieldName: 'simple_desc', label: '描述', width: '', align: 'center', show: true},
         {fieldName: 'remarks', label: '备注', width: '', align: 'center', show: true},
         {fieldName: 'config_id', label: '关联配置', width: '', align: 'center', show: true},
-        {fieldName: 'updation_date', label: '更新时间', width: '', align: 'center', show: true},
-        {fieldName: 'updated_by', label: '更新人', width: '', align: 'center', show: true},
-        {fieldName: 'creation_date', label: '创建时间', width: '', align: 'center', show: true},
-        {fieldName: 'created_by', label: '创建人', width: '', align: 'center', show: true},
+        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
+        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
+        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
+        {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
       ],
       listData: [],
       tableLoading: false,

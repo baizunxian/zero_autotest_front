@@ -1,8 +1,8 @@
 {
 	"name": "zero_autotest",
 	"version": "1.0.0",
-	"description": "zero_autotest",
-	"author": "xiaobai",
+	"description": "一个自动化测试平台",
+	"author": "baizunxian",
 	"license": "MIT",
 	"scripts": {
 		"dev": "vite --force",

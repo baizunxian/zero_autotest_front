@@ -24,8 +24,8 @@
           </el-icon>
           公共函数
         </el-button>
-        <el-button class="ml10" type="primary" icon="el-icon-search" @click="openFuncDialog">公共函数列表
-        </el-button>
+<!--        <el-button class="ml10" type="primary" icon="el-icon-search" @click="openFuncDialog">公共函数列表-->
+<!--        </el-button>-->
         <!--      <el-dialog-->
         <!--          title="函数列表"-->
         <!--          :visible="dialogFormVisible"-->
@@ -117,13 +117,13 @@
         </el-table-column>
 
 
-        <el-table-column prop="" label="操作" width="120" align="center">
-          <template #default="scope">
-            <el-button type="text" icon="el-icon-s-order" @click="getList(scope.row)">
-              函数列表
-            </el-button>
-          </template>
-        </el-table-column>
+<!--        <el-table-column prop="" label="操作" width="120" align="center">-->
+<!--          <template #default="scope">-->
+<!--            <el-button type="text" icon="el-icon-s-order" @click="getList(scope.row)">-->
+<!--              函数列表-->
+<!--            </el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
       </el-table>
       <pagination :total="total"
                   :hidden="total === 0"
@@ -166,9 +166,9 @@ export default defineComponent({
         {fieldName: 'debug_talk', label: 'DebugTalk', width: '', align: 'center', show: true},
         {fieldName: 'module_name', label: '所属模块', width: '', align: 'center', show: true},
         {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
-        {fieldName: 'updated_by', label: '更新人', width: '', align: 'center', show: true},
-        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
-        {fieldName: 'created_by', label: '创建人', width: '', align: 'center', show: true},
+        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
+        // {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
+        // {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
       ],
       // list
       listData: [],

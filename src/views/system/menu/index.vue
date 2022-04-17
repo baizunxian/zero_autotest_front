@@ -57,38 +57,6 @@
           </template>
         </el-table-column>
 
-<!--        <el-table-column label="菜单名称" show-overflow-tooltip>-->
-<!--          <template #default="scope">-->
-<!--            <SvgIcon :name="scope.row.icon"/>-->
-<!--            <span class="ml10">{{ scope.row.title }}</span>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column prop="path" label="路由路径" show-overflow-tooltip></el-table-column>-->
-<!--        <el-table-column label="组件路径" show-overflow-tooltip>-->
-<!--          <template #default="scope">-->
-<!--            <span>{{ scope.row.component }}</span>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column label="权限标识" show-overflow-tooltip>-->
-<!--          <template #default="scope">-->
-<!--            <span>{{ scope.row.roles }}</span>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column label="路由名称" show-overflow-tooltip>-->
-<!--          <template #default="scope">-->
-<!--            <span>{{ scope.row.name }}</span>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column label="排序" show-overflow-tooltip width="80">-->
-<!--          <template #default="scope">-->
-<!--            {{ scope.row.sort }}-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column label="类型" show-overflow-tooltip width="80">-->
-<!--          <template #default="scope">-->
-<!--            <el-tag type="success" size="small">{{ scope.row.menu_type === 10 ? '菜单' : '按钮' }}</el-tag>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
         <el-table-column label="操作" show-overflow-tooltip width="140">
           <template #default="scope">
             <el-button size="small" type="text" @click="onOpenSaveOrUpdate('update', scope.row)">修改</el-button>
