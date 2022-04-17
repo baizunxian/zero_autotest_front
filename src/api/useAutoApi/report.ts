@@ -16,7 +16,7 @@ export function useReportApi() {
     },
     saveOrUpdate(data?: object) {
       return request({
-        url: '/report/saveOrUpdateProject',
+        url: '/report/saveOrUpdate',
         method: 'POST',
         data
       })

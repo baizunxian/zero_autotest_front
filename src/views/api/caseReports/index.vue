@@ -21,15 +21,15 @@
           v-loading="tableLoading"
           :data="listData"
           style="width: 100%">
-        <el-table-column label="模块名称" show-overflow-tooltip prop="name"></el-table-column>
-        <el-table-column label="归属项目" show-overflow-tooltip prop="project_name"></el-table-column>
-        <el-table-column label="测试人员" show-overflow-tooltip prop="test_user"></el-table-column>
-        <el-table-column label="开发人员" show-overflow-tooltip prop="dev_user"></el-table-column>
-        <el-table-column label="用例数" show-overflow-tooltip prop="case_count"></el-table-column>
-        <el-table-column label="描述" show-overflow-tooltip prop="simple_desc"></el-table-column>
-        <el-table-column label="其他信息" show-overflow-tooltip prop="other_desc"></el-table-column>
-        <el-table-column label="关联配置" show-overflow-tooltip prop="config_id"></el-table-column>
-        <el-table-column label="操作" width="100">
+        <el-table-column label="模块名称" show-overflow-tooltip prop="name" align="center"></el-table-column>
+        <el-table-column label="归属项目" show-overflow-tooltip prop="project_name" align="center"></el-table-column>
+        <el-table-column label="测试人员" show-overflow-tooltip prop="test_user" align="center"></el-table-column>
+        <el-table-column label="开发人员" show-overflow-tooltip prop="dev_user" align="center"></el-table-column>
+        <el-table-column label="用例数" show-overflow-tooltip prop="case_count" align="center"></el-table-column>
+        <el-table-column label="描述" show-overflow-tooltip prop="simple_desc" align="center"></el-table-column>
+        <el-table-column label="其他信息" show-overflow-tooltip prop="other_desc" align="center"></el-table-column>
+        <el-table-column label="关联配置" show-overflow-tooltip prop="config_id" align="center"></el-table-column>
+        <el-table-column label="操作" width="100" align="center">
           <template #default="scope">
             <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"
                        @click="onOpenSaveOrUpdate('update', scope.row)">修改

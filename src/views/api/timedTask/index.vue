@@ -17,6 +17,7 @@
         </el-button>
       </div>
       <el-table
+          border
           v-loading="tableLoading"
           :data="listData"
           style="width: 100%">
@@ -25,20 +26,37 @@
             {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
           </template>
         </el-table-column>
-        <el-table-column label="任务名称" show-overflow-tooltip prop="name"></el-table-column>
-        <el-table-column label="所属项目" show-overflow-tooltip prop="project_name"></el-table-column>
-        <el-table-column label="执行时间" show-overflow-tooltip prop="crontab_str"></el-table-column>
-        <el-table-column label="任务类型" show-overflow-tooltip prop="task_type">
-          <template #default="scope">
-            <el-tag type="success" v-if="scope.row.task_type === 2">模块</el-tag>
-            <el-tag type="success" v-if="scope.row.task_type === 3">套件</el-tag>
+
+        <el-table-column
+            v-for="field in fieldData"
+            :key="field.fieldName"
+            :label="field.label"
+            :align="field.align"
+            :width="field.width"
+            :show-overflow-tooltip="field.show"
+            :prop="field.fieldName"
+        >
+          <template #default="{row}">
+            <template v-if="field.fieldName === 'name'">
+              <el-button size="small"
+                         type="text"
+                         @click="onOpenSaveOrUpdate('update', row)">
+                {{ row[field.fieldName] }}
+              </el-button>
+            </template>
+
+            <template v-else-if="field.fieldName === 'task_type'">
+              <el-tag type="success" v-if="row.task_type === 2">模块</el-tag>
+              <el-tag type="success" v-else-if="row.task_type === 3">套件</el-tag>
+            </template>
+
+            <template v-else>
+              <span>{{ row[field.fieldName] }}</span>
+            </template>
+
           </template>
         </el-table-column>
-        <el-table-column label="备注" show-overflow-tooltip prop="description"></el-table-column>
-        <el-table-column label="更新时间" show-overflow-tooltip prop="updation_date"></el-table-column>
-        <el-table-column label="更新人" show-overflow-tooltip prop="updated_by_name"></el-table-column>
-        <el-table-column label="创建时间" show-overflow-tooltip prop="creation_date"></el-table-column>
-        <el-table-column label="创建人" show-overflow-tooltip prop="created_by_name"></el-table-column>
+
         <el-table-column label="操作" width="100">
           <template #default="scope">
             <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"
@@ -85,6 +103,18 @@ export default defineComponent({
   setup() {
     const saveOrUpdateRef = ref();
     const state = reactive({
+      fieldData: [
+        {fieldName: 'name', label: '任务名称', width: '', align: 'center', show: true},
+        {fieldName: 'project_name', label: '所属项目', width: '', align: 'center', show: true},
+        {fieldName: 'crontab_str', label: '执行时间', width: '', align: 'center', show: true},
+        {fieldName: 'task_type', label: '任务类型', width: '', align: 'center', show: true},
+        {fieldName: 'description', label: '备注', width: '', align: 'center', show: true},
+        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
+        {fieldName: 'updated_by', label: '更新人', width: '', align: 'center', show: true},
+        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
+        {fieldName: 'created_by', label: '创建人', width: '', align: 'center', show: true},
+      ],
+      // list
       listData: [],
       tableLoading: false,
       total: 0,

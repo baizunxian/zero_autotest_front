@@ -24,7 +24,7 @@
                 >
                 </el-option>
               </el-select>
-<!--              <el-input v-model="form.role_type" placeholder="请输入角色标识" clearable></el-input>-->
+              <!--              <el-input v-model="form.role_type" placeholder="请输入角色标识" clearable></el-input>-->
             </el-form-item>
           </el-col>
           <!--          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">-->
@@ -81,6 +81,7 @@ interface MenuDataTree {
 }
 
 interface RoleData {
+  id: string | number | null;
   name: string;
   role_type: number;
   menus: Array<number>;
@@ -105,6 +106,7 @@ export default defineComponent({
   setup(props, {emit}) {
     let createForm = () => {
       return {
+        id: null,  //
         name: '',  // 角色名称
         role_type: 10,   // 角色类型
         menus: [],    // 关联菜单

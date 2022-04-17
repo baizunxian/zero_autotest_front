@@ -74,6 +74,7 @@ export default defineComponent({
         test_user: '', // 测试负责人
         publish_app: '', // 关联应用
         simple_desc: '', // 简要描述
+        remarks: '', // 简要描述
         priority: '', // 优先级
         module_packages: null, // 配置信息
       }

@@ -17,6 +17,7 @@
         </el-button>
       </div>
       <el-table
+          border
           v-loading="tableLoading"
           :data="listData"
           style="width: 100%">
@@ -25,19 +26,32 @@
             {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
           </template>
         </el-table-column>
-        <el-table-column label="模块名称" show-overflow-tooltip prop="name"></el-table-column>
-        <el-table-column label="归属项目" show-overflow-tooltip prop="project_name"></el-table-column>
-        <el-table-column label="测试人员" show-overflow-tooltip prop="test_user"></el-table-column>
-        <el-table-column label="开发人员" show-overflow-tooltip prop="dev_user"></el-table-column>
-        <el-table-column label="用例数" show-overflow-tooltip prop="case_count"></el-table-column>
-        <el-table-column label="描述" show-overflow-tooltip prop="simple_desc"></el-table-column>
-        <el-table-column label="其他信息" show-overflow-tooltip prop="other_desc"></el-table-column>
-        <el-table-column label="关联配置" show-overflow-tooltip prop="config_id"></el-table-column>
-        <el-table-column label="更新时间" show-overflow-tooltip prop="updation_date"></el-table-column>
-        <el-table-column label="更新人" show-overflow-tooltip prop="updated_by_name"></el-table-column>
-        <el-table-column label="创建时间" show-overflow-tooltip prop="creation_date"></el-table-column>
-        <el-table-column label="创建人" show-overflow-tooltip prop="created_by_name"></el-table-column>
-        <el-table-column label="操作" width="100">
+
+        <el-table-column
+            v-for="field in fieldData"
+            :key="field.fieldName"
+            :label="field.label"
+            :align="field.align"
+            :width="field.width"
+            :show-overflow-tooltip="field.show"
+            :prop="field.fieldName"
+        >
+          <template #default="{row}">
+            <template v-if="field.fieldName === 'name'">
+              <el-button size="small"
+                         type="text"
+                         @click="onOpenSaveOrUpdate('update', row)">
+                {{ row[field.fieldName] }}
+              </el-button>
+            </template>
+
+            <template v-else>
+              {{ row[field.fieldName] }}
+            </template>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="操作" width="100" align="center">
           <template #default="scope">
             <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"
                        @click="onOpenSaveOrUpdate('update', scope.row)">修改
@@ -82,6 +96,20 @@ export default defineComponent({
   setup() {
     const saveOrUpdateRef = ref();
     const state = reactive({
+      fieldData: [
+        {fieldName: 'name', label: '模块名称', width: '', align: 'center', show: true},
+        {fieldName: 'project_name', label: '负责人', width: '', align: 'center', show: true},
+        {fieldName: 'test_user', label: '测试人员', width: '', align: 'center', show: true},
+        {fieldName: 'dev_user', label: '开发人员', width: '', align: 'center', show: true},
+        {fieldName: 'case_count', label: '用例数', width: '', align: 'center', show: true},
+        {fieldName: 'simple_desc', label: '描述', width: '', align: 'center', show: true},
+        {fieldName: 'remarks', label: '备注', width: '', align: 'center', show: true},
+        {fieldName: 'config_id', label: '关联配置', width: '', align: 'center', show: true},
+        {fieldName: 'updation_date', label: '更新时间', width: '', align: 'center', show: true},
+        {fieldName: 'updated_by', label: '更新人', width: '', align: 'center', show: true},
+        {fieldName: 'creation_date', label: '创建时间', width: '', align: 'center', show: true},
+        {fieldName: 'created_by', label: '创建人', width: '', align: 'center', show: true},
+      ],
       listData: [],
       tableLoading: false,
       total: 0,

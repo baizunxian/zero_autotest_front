@@ -91,18 +91,32 @@
             {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
           </template>
         </el-table-column>
-        <el-table-column label="所属项目" prop="project_name" align="left" width="300">
+
+        <el-table-column
+            v-for="field in fieldData"
+            :key="field.fieldName"
+            :label="field.label"
+            :align="field.align"
+            :width="field.width"
+            :show-overflow-tooltip="field.show"
+            :prop="field.fieldName"
+        >
           <template #default="{row}">
-            <span style="color: cadetblue;">{{ row.project_name }}</span>
+            <template v-if="field.fieldName === 'debug_talk'">
+              <el-button size="small"
+                         type="text"
+                         @click="onOpenSaveOrUpdate(row)">
+                debugtalk.py
+              </el-button>
+            </template>
+
+            <template v-else>
+              {{ row[field.fieldName] }}
+            </template>
           </template>
         </el-table-column>
-        <el-table-column label="DebugTalk" prop="leader_user" align="center">
-          <template #default="{row}">
-            <el-button type="text" @click="onOpenSaveOrUpdate(row)">debugtalk.py</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column label="创建时间" prop="creation_date" align="center" width="150"></el-table-column>
-        <el-table-column label="更新时间" prop="updation_date" align="center" width="150"></el-table-column>
+
+
         <el-table-column prop="" label="操作" width="120" align="center">
           <template #default="scope">
             <el-button type="text" icon="el-icon-s-order" @click="getList(scope.row)">
@@ -146,6 +160,17 @@ export default defineComponent({
     const saveOrUpdateRef = ref();
     const router = useRouter();
     const state = reactive({
+      fieldData: [
+        {fieldName: 'id', label: 'ID', width: '55', align: 'center', show: true},
+        {fieldName: 'project_name', label: '所属项目', width: '', align: 'center', show: true},
+        {fieldName: 'debug_talk', label: 'DebugTalk', width: '', align: 'center', show: true},
+        {fieldName: 'module_name', label: '所属模块', width: '', align: 'center', show: true},
+        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
+        {fieldName: 'updated_by', label: '更新人', width: '', align: 'center', show: true},
+        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
+        {fieldName: 'created_by', label: '创建人', width: '', align: 'center', show: true},
+      ],
+      // list
       listData: [],
       tableLoading: false,
       total: 0,
@@ -166,13 +191,13 @@ export default defineComponent({
           })
     };
 
-     // 查询
+    // 查询
     const search = () => {
       state.listQuery.page = 1
       getList()
     }
 
-    // 新增或修改角色
+    // 新增或修改
     const onOpenSaveOrUpdate = (row: any) => {
       let query = {}
       console.log('row', row)
