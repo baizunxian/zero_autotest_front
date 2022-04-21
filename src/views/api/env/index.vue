@@ -17,17 +17,36 @@
         </el-button>
       </div>
       <el-table
+          border
           v-loading="tableLoading"
           :data="listData"
           style="width: 100%">
-        <el-table-column label="环境名称" show-overflow-tooltip prop="name"></el-table-column>
-        <el-table-column label="URL" show-overflow-tooltip prop="url"></el-table-column>
-        <el-table-column label="备注" show-overflow-tooltip prop="remarks"></el-table-column>
-        <el-table-column label="更新时间" show-overflow-tooltip prop="updation_date"></el-table-column>
-        <el-table-column label="更新人" show-overflow-tooltip prop="created_by_name"></el-table-column>
-        <el-table-column label="创建时间" show-overflow-tooltip prop="creation_date"></el-table-column>
-        <el-table-column label="创建人" show-overflow-tooltip prop="updated_by_name"></el-table-column>
-        <el-table-column label="操作" width="100">
+
+        <el-table-column
+            v-for="field in fieldData"
+            :key="field.fieldName"
+            :label="field.label"
+            :align="field.align"
+            :width="field.width"
+            :show-overflow-tooltip="field.show"
+            :prop="field.fieldName"
+        >
+          <template #default="{row}">
+            <template v-if="field.fieldName === 'name'">
+              <el-button size="small"
+                         type="text"
+                         @click="onOpenSaveOrUpdate('update', row)">
+                {{ row[field.fieldName] }}
+              </el-button>
+            </template>
+
+            <template v-else>
+              {{ row[field.fieldName] }}
+            </template>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="操作" width="100" align="center">
           <template #default="scope">
             <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"
                        @click="onOpenSaveOrUpdate('update', scope.row)">修改
@@ -72,6 +91,16 @@ export default defineComponent({
   setup() {
     const saveOrUpdateRef = ref();
     const state = reactive({
+      fieldData: [
+        {fieldName: 'name', label: '环境名称', width: '', align: 'center', show: true},
+        {fieldName: 'url', label: 'URL', width: '', align: 'center', show: true},
+        {fieldName: 'remarks', label: '备注', width: '', align: 'center', show: true},
+        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
+        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
+        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
+        {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
+      ],
+      // list
       listData: [],
       tableLoading: false,
       total: 0,

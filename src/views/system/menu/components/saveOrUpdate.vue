@@ -151,6 +151,7 @@ export default defineComponent({
   setup(props, {emit}) {
     const createMenuForm = () => {
       return {
+        id: null, // 上级菜单
         parent_id: 0, // 上级菜单
         menu_type: 10, // 菜单类型  10 菜单  20 按钮
         name: '', // 路由名称

@@ -59,46 +59,47 @@
             {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
           </template>
         </el-table-column>
+        <el-table-column
+            v-for="field in fieldData"
+            :key="field.fieldName"
+            :label="field.label"
+            :align="field.align"
+            :width="field.width"
+            :show-overflow-tooltip="field.show"
+            :prop="field.fieldName"
+        >
+          <template #default="{row}">
+            <template v-if="field.fieldName === 'name'">
+              <el-button size="small"
+                         type="text"
+                         @click="onOpenReport(row)">
+                {{ row[field.fieldName] }}
+              </el-button>
+            </template>
 
-        <el-table-column label="报告名称" align="center" width="170" :show-overflow-tooltip="true">
-          <template #default="{row}">
-            <el-button type="text" @click="onOpenReport(row)">{{ row.name }}</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column label="任务类型" prop="type" align="center">
-          <template #default="scope">
-            <span v-if="scope.row.type === 'case'">用例</span>
-            <span v-if="scope.row.type === 'suite'">套件</span>
-            <span v-if="scope.row.type === 'module'">模块</span>
-            <span v-if="scope.row.type === 'project'">项目</span>
-            <span v-if="scope.row.type === 'acg'">自动用例</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="执行类型" prop="run_type" align="center">
-          <template #default="{row}">
-            <span>{{ row.run_type }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="运行用例/总计用例" prop="test_count" align="center" width="125">
-          <template #default="{row}">
-            <span>{{ row.run_test_count + ' / ' + row.run_test_count }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="运行结果" prop="status" align="center" width="75">
-          <template #default="{row}">
-            <el-tag type="success" v-if="row.success">通过</el-tag>
-            <el-tag type="danger" v-else>不通过</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="执行结果" prop="successes" align="center"></el-table-column>
-        <el-table-column label="成功用例" prop="successful_use_case" align="center"></el-table-column>
-        <el-table-column label="执行耗时(秒)" prop="duration" align="center" width="100"></el-table-column>
-        <el-table-column label="执行时间" prop="start_at" align="center" width="150"></el-table-column>
-        <el-table-column label="执行人" prop="execute_user_name" align="center"></el-table-column>
+            <template v-else-if="field.fieldName === 'run_mode'">
+              <span v-if=" row.run_mode === 'case'">用例</span>
+              <span v-else-if=" row.run_mode === 'suite'">套件</span>
+              <span v-else-if=" row.run_mode === 'module'">模块</span>
+              <span v-else-if=" row.run_mode === 'project'">项目</span>
+              <span v-else-if=" row.run_mode === 'acg'">自动用例</span>
+            </template>
 
-        <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
+            <template v-else-if="field.fieldName === 'status'">
+              <el-tag type="success" v-if="row.success">通过</el-tag>
+              <el-tag type="danger" v-else>不通过</el-tag>
+            </template>
+
+            <template v-else>
+              <span>{{ row[field.fieldName] }}</span>
+            </template>
+
+          </template>
+        </el-table-column>
+
+        <el-table-column label="操作" align="center" width="80">
           <template #default="{row}">
-            <el-button type="text" icon="el-icon-delete" @click="deleteReport(row)">
+            <el-button type="text" @click="deleteReport(row)">
               删除
             </el-button>
           </template>
@@ -137,6 +138,18 @@ export default defineComponent({
   components: {Pagination, TestReport},
   setup() {
     const state = reactive({
+      fieldData: [
+        {fieldName: 'name', label: '报告名称', width: '', align: 'center', show: true},
+        {fieldName: 'run_type', label: '任务类型', width: '', align: 'center', show: true},
+        {fieldName: 'run_test_count', label: '运行用例', width: '', align: 'center', show: true},
+        {fieldName: 'status', label: '运行结果', width: '', align: 'center', show: true},
+        {fieldName: 'successes', label: '执行结果', width: '', align: 'center', show: true},
+        {fieldName: 'successful_use_case', label: '成功用例', width: '', align: 'center', show: true},
+        {fieldName: 'duration', label: '执行耗时(秒)', width: '', align: 'center', show: true},
+        {fieldName: 'start_at', label: '执行时间', width: '150', align: 'center', show: true},
+        {fieldName: 'execute_user_name', label: '执行人', width: '', align: 'center', show: true},
+      ],
+      // list
       listData: [],
       showReportDialog: false,
       tableLoading: false,

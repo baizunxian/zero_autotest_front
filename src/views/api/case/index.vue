@@ -21,21 +21,33 @@
           v-loading="tableLoading"
           :data="listData"
           style="width: 100%">
-        <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column label="ID" show-overflow-tooltip prop="id" width="55"></el-table-column>
-        <el-table-column label="用例名" show-overflow-tooltip prop="name">
-          <template #default="scope">
-            <el-button type="text" @click="onOpenSaveOrUpdate('update', scope.row)">{{ scope.row.name }}</el-button>
+        <el-table-column type="selection" width="55" align="center"></el-table-column>
+
+        <el-table-column
+            v-for="field in fieldData"
+            :key="field.fieldName"
+            :label="field.label"
+            :align="field.align"
+            :width="field.width"
+            :show-overflow-tooltip="field.show"
+            :prop="field.fieldName"
+        >
+          <template #default="{row}">
+            <template v-if="field.fieldName === 'name'">
+              <el-button size="small"
+                         type="text"
+                         @click="onOpenSaveOrUpdate('update', row)">
+                {{ row[field.fieldName] }}
+              </el-button>
+            </template>
+
+            <template v-else>
+              {{ row[field.fieldName] }}
+            </template>
           </template>
         </el-table-column>
-        <el-table-column label="所属项目" show-overflow-tooltip prop="project_name"></el-table-column>
-        <el-table-column label="所属模块" show-overflow-tooltip prop="module_name"></el-table-column>
-        <el-table-column label="关联配置" show-overflow-tooltip prop="config_id"></el-table-column>
-        <el-table-column label="更新人" show-overflow-tooltip prop="created_by_name"></el-table-column>
-        <el-table-column label="更新时间" show-overflow-tooltip prop="updation_date"></el-table-column>
-        <el-table-column label="创建时间" show-overflow-tooltip prop="creation_date"></el-table-column>
-        <el-table-column label="创建人" show-overflow-tooltip prop="updated_by_name"></el-table-column>
-        <el-table-column label="操作" width="150">
+
+        <el-table-column label="操作" width="150" align="center">
           <template #default="scope">
             <el-button type="text"
                        @click="onOpenRunPage(scope.row)">运行
@@ -70,6 +82,13 @@
           label-width="70px"
 
       >
+        <el-form-item label="运行模式" prop="belong_project_id">
+          <el-select v-model="runForm.run_mode" placeholder="选择运行模式" filterable style="width:100%">
+            <el-option :value="1" label="同步运行(同步执行,等待执行结果)"></el-option>
+            <el-option :value="2" label="异步运行(异步执行用例,后台运行,执行结束后报告列表查看)"></el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="运行环境" prop="belong_project_id">
           <el-select v-model="runForm.base_url" placeholder="选择环境" filterable style="width:100%">
             <el-option :value="''" label="自带环境">自带环境</el-option>
@@ -130,7 +149,17 @@ export default defineComponent({
     const saveOrUpdateRef = ref();
     const router = useRouter();
     const state = reactive({
-
+      fieldData: [
+        {fieldName: 'id', label: 'ID', width: '80', align: 'center', show: true},
+        {fieldName: 'name', label: '用例名', width: '', align: 'center', show: true},
+        {fieldName: 'project_name', label: '所属项目', width: '', align: 'center', show: true},
+        {fieldName: 'module_name', label: '所属模块', width: '', align: 'center', show: true},
+        {fieldName: 'config_id', label: '关联配置', width: '', align: 'center', show: true},
+        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
+        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
+        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
+        {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
+      ],
       listData: [],
       tableLoading: false,
       total: 0,
@@ -147,6 +176,7 @@ export default defineComponent({
         id: null,
         base_url: '',
         run_type: 'case',
+        run_mode: 1,
       },
       // report
       reportBody: {},
@@ -207,11 +237,17 @@ export default defineComponent({
       state.runCaseLoading = !state.runCaseLoading;
       useTestCaseApi().runTestCase(state.runForm)
           .then(res => {
-            console.log(res)
-            ElMessage.success('运行成功');
-            state.showTestReportDialog = !state.showTestReportDialog;
-            state.reportBody = res.data
-            state.runCaseLoading = !state.runCaseLoading;
+            if (state.runForm.run_mode === 1) {
+              console.log(res)
+              ElMessage.success('运行成功');
+              state.showTestReportDialog = !state.showTestReportDialog;
+              state.reportBody = res.data
+              state.runCaseLoading = !state.runCaseLoading;
+            } else {
+              ElMessage.success(res.msg);
+              state.runCaseLoading = !state.runCaseLoading;
+            }
+
           })
           .catch((err: any) => {
             ElMessage.error(err.message);

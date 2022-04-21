@@ -28,10 +28,23 @@ export function useDebugTalkApi() {
         data,
       });
     },
-
     deleted: (data?: object) => {
       return request({
         url: '/debugTalk/deleted',
+        method: 'post',
+        data,
+      });
+    },
+    getFuncList: (data?: object) => {
+      return request({
+        url: '/debugTalk/getFuncList',
+        method: 'post',
+        data,
+      });
+    },
+    debugFunc: (data?: object) => {
+      return request({
+        url: '/debugTalk/debugFunc',
         method: 'post',
         data,
       });

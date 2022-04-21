@@ -17,14 +17,14 @@ export function useUserApi() {
     },
     saveOrUpdate(data?: object) {
       return request({
-        url: '/user/saveOrUpdateUser',
+        url: '/user/saveOrUpdate',
         method: 'POST',
         data
       })
     },
     deleted(data?: object) {
       return request({
-        url: '/user/delUser',
+        url: '/user/deleted',
         method: 'POST',
         data
       })

@@ -17,43 +17,46 @@
         </el-button>
       </div>
       <el-table
+          border
           :data="menuList"
           v-loading="menuTableLoading"
           style="width: 100%"
           row-key="path"
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
-        <el-table-column label="菜单名称" show-overflow-tooltip>
-          <template #default="scope">
-            <SvgIcon :name="scope.row.icon"/>
-            <span class="ml10">{{ scope.row.title }}</span>
+
+        <el-table-column
+            v-for="field in fieldData"
+            :key="field.fieldName"
+            :label="field.label"
+            :align="field.align"
+            :width="field.width"
+            :show-overflow-tooltip="field.show"
+            :prop="field.fieldName"
+        >
+          <template #default="{row}">
+            <template v-if="field.fieldName === 'title'">
+              <SvgIcon :name="row.icon"/>
+              <span class="ml10">{{ row.title }}</span>
+<!--              <el-button size="small"-->
+<!--                         type="text"-->
+<!--                         class="ml10"-->
+<!--                         @click="onOpenSaveOrUpdate('update', row)">-->
+<!--                {{ row[field.fieldName] }}-->
+<!--              </el-button>-->
+            </template>
+
+            <template v-else-if="field.fieldName === 'menu_type'">
+              <el-tag type="success" v-if="row.menu_type === 10">菜单</el-tag>
+              <el-tag type="info" v-else>按钮</el-tag>
+            </template>
+
+            <template v-else>
+              {{ row[field.fieldName] }}
+            </template>
+
           </template>
         </el-table-column>
-        <el-table-column prop="path" label="路由路径" show-overflow-tooltip></el-table-column>
-        <el-table-column label="组件路径" show-overflow-tooltip>
-          <template #default="scope">
-            <span>{{ scope.row.component }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="权限标识" show-overflow-tooltip>
-          <template #default="scope">
-            <span>{{ scope.row.roles }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="路由名称" show-overflow-tooltip>
-          <template #default="scope">
-            <span>{{ scope.row.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="排序" show-overflow-tooltip width="80">
-          <template #default="scope">
-            {{ scope.row.sort }}
-          </template>
-        </el-table-column>
-        <el-table-column label="类型" show-overflow-tooltip width="80">
-          <template #default="scope">
-            <el-tag type="success" size="small">{{ scope.row.menu_type === 10 ? '菜单' : '按钮' }}</el-tag>
-          </template>
-        </el-table-column>
+
         <el-table-column label="操作" show-overflow-tooltip width="140">
           <template #default="scope">
             <el-button size="small" type="text" @click="onOpenSaveOrUpdate('update', scope.row)">修改</el-button>
@@ -70,7 +73,6 @@
 <script lang="ts">
 import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {useMenuApi} from '/@/api/useSystemApi/menu';
-import {useStore} from '/@/store';
 import {RouteRecordRaw} from 'vue-router';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import saveOrUpdate from '/@/views/system/menu/components/saveOrUpdate.vue';
@@ -79,9 +81,22 @@ export default defineComponent({
   name: 'systemMenu',
   components: {saveOrUpdate},
   setup() {
-    const store = useStore();
     const saveOrUpdateRef = ref();
     const state = reactive({
+      fieldData: [
+        {fieldName: 'title', label: '菜单名称', width: '', align: 'center', show: true},
+        {fieldName: 'path', label: '路由路径', width: '', align: 'center', show: true},
+        {fieldName: 'component', label: '组件路径', width: '', align: 'center', show: true},
+        {fieldName: 'roles', label: '权限标识', width: '', align: 'center', show: true},
+        {fieldName: 'name', label: '路由名称', width: '', align: 'center', show: true},
+        {fieldName: 'sort', label: '排序', width: '', align: 'center', show: true},
+        {fieldName: 'menu_type', label: '类型', width: '', align: 'center', show: true},
+        // {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
+        // {fieldName: 'updated_by', label: '更新人', width: '', align: 'center', show: true},
+        // {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
+        // {fieldName: 'created_by', label: '创建人', width: '', align: 'center', show: true},
+      ],
+      // list
       moduleName: '菜单', // 模块名称
       menuList: [],
       allMenuList: null,

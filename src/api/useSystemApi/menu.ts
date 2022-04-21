@@ -27,7 +27,7 @@ export function useMenuApi() {
     // 新增修改
     saveOrUpdate(data?: object) {
       return request({
-        url: '/menu/saveOrUpdateMenu',
+        url: '/menu/saveOrUpdate',
         method: 'POST',
         data
       })

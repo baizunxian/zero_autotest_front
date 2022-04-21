@@ -16,16 +16,16 @@ export function useModuleApi() {
     },
     saveOrUpdate(data?: object) {
       return request({
-        url: '/module/saveOrUpdateModule',
+        url: '/module/saveOrUpdate',
         method: 'POST',
         data
       })
     },
-    deleted: (params?: object) => {
+    deleted: (data?: object) => {
       return request({
-        url: '/module/deleteModule',
+        url: '/module/deleted',
         method: 'POST',
-        params,
+        data,
       });
     },
   };

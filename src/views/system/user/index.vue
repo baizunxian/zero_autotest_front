@@ -27,20 +27,37 @@
             {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
           </template>
         </el-table-column>
-        <el-table-column prop="username" label="账户名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="nickname" label="用户昵称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="roles" label="关联角色" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="email" label="邮箱" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="status" label="用户状态" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="user_type" label="用户类型" show-overflow-tooltip>
-          <template #default="scope">
-            <el-tag type="success" v-if="scope.row.status">启用</el-tag>
-            <el-tag type="info" v-else>禁用</el-tag>
+
+        <el-table-column
+            v-for="field in fieldData"
+            :key="field.fieldName"
+            :label="field.label"
+            :align="field.align"
+            :width="field.width"
+            :show-overflow-tooltip="field.show"
+            :prop="field.fieldName"
+        >
+          <template #default="{row}">
+            <template v-if="field.fieldName === 'username'">
+              <el-button size="small"
+                         type="text"
+                         @click="onOpenSaveOrUpdate('update', row)">
+                {{ row[field.fieldName] }}
+              </el-button>
+            </template>
+
+            <template v-else-if="field.fieldName === 'status'">
+              <el-tag type="success" v-if="row.status">启用</el-tag>
+              <el-tag type="info" v-else>禁用</el-tag>
+            </template>
+
+            <template v-else>
+              {{ row[field.fieldName] }}
+            </template>
+
           </template>
         </el-table-column>
-        <el-table-column prop="remarks" label="用户描述" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="updation_date" label="更新时间" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="creation_date" label="创建时间" show-overflow-tooltip></el-table-column>
+
         <el-table-column label="操作" width="100">
           <template #default="scope">
             <el-button
@@ -99,6 +116,7 @@ interface listQueryRow {
 }
 
 interface StateRow {
+  fieldData: Array<any>;
   listData: Array<TableDataRow>;
   tableLoading: boolean;
   total: number;
@@ -114,6 +132,19 @@ export default defineComponent({
     const store = useStore();
     const userInfos = store.state.userInfos.userInfos;
     const state = reactive<StateRow>({
+      fieldData: [
+        {fieldName: 'username', label: '账户名称', width: '', align: 'center', show: true},
+        {fieldName: 'nickname', label: '用户昵称', width: '', align: 'center', show: true},
+        {fieldName: 'roles', label: '关联角色', width: '', align: 'center', show: true},
+        {fieldName: 'email', label: '邮箱', width: '', align: 'center', show: true},
+        {fieldName: 'status', label: '用户状态', width: '', align: 'center', show: true},
+        {fieldName: 'remarks', label: '备注', width: '', align: 'center', show: true},
+        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
+        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
+        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
+        {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
+      ],
+      // list
       listData: [],
       tableLoading: false,
       total: 0,

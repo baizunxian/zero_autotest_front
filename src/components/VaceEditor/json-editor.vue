@@ -1,6 +1,6 @@
 <script>
 import JsonEditor from "jsoneditor";
-import "/@/assets/jsoneditor/jsoneditor.min.css";
+import "/@/assets/jsoneditor/jsoneditor.css";
 
 export default {
   editor: null,

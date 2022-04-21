@@ -119,8 +119,8 @@ export default defineComponent({
     const requestHeadersRef = ref()
     const extractValidateRef = ref()
     const variablesParametersRef = ref()
-    const outputListRef = ref()
-    const skipRef = ref()
+    // const outputListRef = ref()
+    // const skipRef = ref()
     const state = reactive({
       isShowDialog: false,
       activeName: 'requestBody',
@@ -143,7 +143,7 @@ export default defineComponent({
         let headForm = requestHeadersRef.value.getFormData()
         let EVForm = extractValidateRef.value.getFormData()
         let VPForm = variablesParametersRef.value.getFormData()
-        let outputForm = outputListRef.value.getFormData()
+        // let outputForm = outputListRef.value.getFormData()
         // let skipForm = skipRef.value.getFormData()
 
         bodyForm.url = urlForm.url
@@ -176,7 +176,7 @@ export default defineComponent({
             teardown_hooks: VPForm.teardown_hooks,
             extract: EVForm.extract,
             validate: EVForm.validate,
-            output: outputForm
+            // output: outputForm
           },
         }
         console.log(urlForm, ' urlForm')
@@ -278,10 +278,10 @@ export default defineComponent({
                 // hooks: case_data.hooks,
               }
               variablesParametersRef.value.initForm(vpFrom)
-              outputListRef.value.initForm(case_data.output)
-              if (case_data.skip_info) {
-                skipRef.value.initForm(case_data.skip_info)
-              }
+              // outputListRef.value.initForm(case_data.output)
+              // if (case_data.skip_info) {
+              //   skipRef.value.initForm(case_data.skip_info)
+              // }
             })
       }
     }
@@ -302,8 +302,8 @@ export default defineComponent({
       requestHeadersRef,
       extractValidateRef,
       variablesParametersRef,
-      outputListRef,
-      skipRef,
+      // outputListRef,
+      // skipRef,
       store,
       route,
       router,

@@ -32,18 +32,8 @@
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="执行时间" prop="crontab_str">
               <el-input v-model="form.crontab_str" auto-complete="off" placeholder="crontab表达式 例如： 11 * * * *">
-<!--                <template #append>-->
-<!--                  <el-button v-if="!showCronBox"-->
-<!--                             icon="Search"-->
-<!--                             @click="showCronBox = true"-->
-<!--                             title="打开图形配置">-->
-
-<!--                  </el-button>-->
-<!--                  <el-button v-else icon="el-icon-arrow-up" @click="showCronBox = false" title="关闭图形配置"></el-button>-->
-<!--                </template>-->
               </el-input>
             </el-form-item>
-<!--            <cron v-if="showCronBox" v-model="form.crontab_str"></cron>-->
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
@@ -65,7 +55,7 @@
                     multiple
                     collapse-tags
                     v-model="form.case_ids"
-                    placeholder="选择请求方法"
+                    placeholder="选择模块"
                     filterable style="width: 100%;">
                   <el-option
                       v-for="module in moduleList"
@@ -87,7 +77,7 @@
                     multiple
                     collapse-tags
                     v-model="form.case_ids"
-                    placeholder="选择请求方法"
+                    placeholder="选择套件"
                     filterable style="width: 100%;"
                 >
                   <el-option
@@ -101,6 +91,13 @@
               </el-form-item>
             </el-col>
           </template>
+
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="备注" prop="description">
+              <el-input v-model="form.description" type="textarea" auto-complete="off" placeholder="备注">
+              </el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
       <template #footer>
@@ -125,12 +122,14 @@ export default defineComponent({
   setup(props, {emit}) {
     const createForm = () => {
       return {
+        id: null,
         name: '', // 项目名称
         project_id: null, // project
         responsible_name: '', // 负责人
         task_type: 2, // 默认模块类型
         case_ids: null, // id集合
         crontab_str: '', // 表达式
+        description: '', // 备注
       }
     }
     const formRef = ref()

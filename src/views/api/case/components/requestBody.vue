@@ -135,7 +135,7 @@
 <script lang="ts">
 import JsonEditorVue from '/@/components/VaceEditor/json-editor.vue'
 
-import {defineComponent, reactive, ref, toRefs, onMounted} from "vue";
+import {defineComponent, reactive, ref, toRefs} from "vue";
 //
 export default defineComponent({
   components: {JsonEditorVue},

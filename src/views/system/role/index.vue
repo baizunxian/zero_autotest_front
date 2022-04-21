@@ -26,6 +26,37 @@
             {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
           </template>
         </el-table-column>
+
+        <el-table-column
+            v-for="field in fieldData"
+            :key="field.fieldName"
+            :label="field.label"
+            :align="field.align"
+            :width="field.width"
+            :show-overflow-tooltip="field.show"
+            :prop="field.fieldName"
+        >
+          <template #default="{row}">
+            <template v-if="field.fieldName === 'name'">
+              <el-button size="small"
+                         type="text"
+                         @click="onOpenSaveOrUpdate('update', row)">
+                {{ row[field.fieldName] }}
+              </el-button>
+            </template>
+
+            <template v-else-if="field.fieldName === 'status'">
+              <el-tag type="success" v-if="row.status === 10">启用</el-tag>
+              <el-tag type="info" v-else>禁用</el-tag>
+            </template>
+
+            <template v-else>
+              {{ row[field.fieldName] }}
+            </template>
+
+          </template>
+        </el-table-column>
+
         <el-table-column prop="name" label="角色名称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="role_type" label="权限类型" show-overflow-tooltip></el-table-column>
         <el-table-column prop="status" label="角色状态" show-overflow-tooltip>
@@ -82,6 +113,18 @@ export default defineComponent({
   setup() {
     const saveOrUpdateRef = ref();
     const state = reactive({
+      fieldData: [
+        {fieldName: 'name', label: '角色名称', width: '', align: 'center', show: true},
+        {fieldName: 'role_type', label: '权限类型', width: '', align: 'center', show: true},
+        {fieldName: 'status', label: '角色状态', width: '', align: 'center', show: true},
+        {fieldName: 'description', label: '角色描述', width: '', align: 'center', show: true},
+        {fieldName: 'description', label: '备注', width: '', align: 'center', show: true},
+        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
+        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
+        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
+        {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
+      ],
+      // list
       listData: [],
       tableLoading: false,
       total: 0,

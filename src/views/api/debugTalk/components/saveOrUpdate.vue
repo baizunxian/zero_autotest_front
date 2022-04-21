@@ -1,10 +1,10 @@
 <template>
-<!--  <div class="echart-pie-wrap">-->
+  <div class="echart-pie-wrap">
     <div class="myEditorTop">[{{ isEdit ? '编辑' : '只读' }}] - [{{ debugTalkFrom.project_name }}]
-      <el-button v-show="isEdit" type="success" @click="save" style="margin-left: 10px;">保存</el-button>
+      <el-button v-show="isEdit" type="success" @click="saveOrUpdate" style="margin-left: 10px;">保存</el-button>
     </div>
     <div ref="debugTalkRef" class="debugTalk"></div>
-<!--  </div>-->
+  </div>
 </template>
 
 <script lang="ts">
@@ -12,14 +12,13 @@ import {defineComponent, onMounted, reactive, ref, toRefs} from "vue";
 import {useRoute} from 'vue-router'
 import {useDebugTalkApi} from "/@/api/useAutoApi/debugTalk";
 import ace from 'ace-builds'
-import 'ace-builds/src-noconflict/theme-chrome';
-import 'ace-builds/src-noconflict/ext-searchbox';
-import workerJsonUrl from 'ace-builds/src-noconflict/worker-json?url';
-import workerPythonUrl from 'ace-builds/src-noconflict/mode-python?url';
-import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-noconflict/ext-language_tools';
+import 'ace-builds/src-noconflict/theme-monokai'
+import 'ace-builds/src-noconflict/ext-searchbox';
+import 'ace-builds/src-noconflict/mode-javascript';
+import workerPythonUrl from 'ace-builds/src-noconflict/mode-python.js?url';
+import {ElMessage} from "element-plus/es";
 
-ace.config.setModuleUrl('ace/mode/json_worker', workerJsonUrl);
 ace.config.setModuleUrl('ace/mode/python', workerPythonUrl);
 
 export default defineComponent({
@@ -81,6 +80,16 @@ export default defineComponent({
       }
     }
 
+    // 新增
+    const saveOrUpdate = () => {
+      state.debugTalkFrom.debug_talk = state.editor.getValue()
+      useDebugTalkApi().saveOrUpdate(state.debugTalkFrom)
+          .then(() => {
+            ElMessage.success('操作成功');
+          })
+      // setBackEndControlRefreshRoutes() // 刷新菜单，未进行后端接口测试
+    };
+
     onMounted(() => {
       initData()
     })
@@ -89,6 +98,7 @@ export default defineComponent({
       initEditor,
       initData,
       debugTalkRef,
+      saveOrUpdate,
       ...toRefs(state),
     };
   },
@@ -111,7 +121,8 @@ export default defineComponent({
   }
 
 }
+
 .debugTalk {
-    height: calc(100vh - 45px - 84px - 30px);
-  }
+  height: calc(100vh - 45px - 84px);
+}
 </style>
