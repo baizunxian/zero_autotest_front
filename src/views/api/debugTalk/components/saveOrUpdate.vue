@@ -1,10 +1,10 @@
 <template>
-  <!--  <div class="echart-pie-wrap">-->
-  <div class="myEditorTop">[{{ isEdit ? '编辑' : '只读' }}] - [{{ debugTalkFrom.project_name }}]
-    <el-button v-show="isEdit" type="success" @click="saveOrUpdate" style="margin-left: 10px;">保存</el-button>
+  <div class="echart-pie-wrap">
+    <div class="myEditorTop">[{{ isEdit ? '编辑' : '只读' }}] - [{{ debugTalkFrom.project_name }}]
+      <el-button v-show="isEdit" type="success" @click="saveOrUpdate" style="margin-left: 10px;">保存</el-button>
+    </div>
+    <div ref="debugTalkRef" class="debugTalk"></div>
   </div>
-  <div ref="debugTalkRef" class="debugTalk"></div>
-  <!--  </div>-->
 </template>
 
 <script lang="ts">
@@ -123,6 +123,6 @@ export default defineComponent({
 }
 
 .debugTalk {
-  height: calc(100vh - 45px - 84px - 30px);
+  height: calc(100vh - 45px - 84px);
 }
 </style>

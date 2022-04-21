@@ -47,9 +47,8 @@
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item command="/home">首页</el-dropdown-item>
-          <el-dropdown-item command="wareHouse">代码仓库</el-dropdown-item>
-          <el-dropdown-item command="/404">404</el-dropdown-item>
-          <el-dropdown-item command="/401">401</el-dropdown-item>
+          <el-dropdown-item command="backend">后端代码仓库</el-dropdown-item>
+          <el-dropdown-item command="front">前端代码仓库</el-dropdown-item>
           <el-dropdown-item divided command="logOut">退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </template>
@@ -151,8 +150,10 @@ export default defineComponent({
             })
             .catch(() => {
             });
-      } else if (path === 'wareHouse') {
+      } else if (path === 'backend') {
         window.open('https://github.com/baizunxian/zero_autotest_backend');
+      } else if (path === 'front') {
+        window.open('https://github.com/baizunxian/zero_autotest_front');
       } else {
         router.push(path);
       }

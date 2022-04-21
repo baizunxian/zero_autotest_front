@@ -24,58 +24,104 @@
           </el-icon>
           公共函数
         </el-button>
-<!--        <el-button class="ml10" type="primary" icon="el-icon-search" @click="openFuncDialog">公共函数列表-->
-<!--        </el-button>-->
-        <!--      <el-dialog-->
-        <!--          title="函数列表"-->
-        <!--          :visible="dialogFormVisible"-->
-        <!--          width="80%"-->
-        <!--          top="8vh"-->
-        <!--          style="height: 100%">-->
-        <!--        <div class="filter-container">-->
-        <!--          <el-input-->
-        <!--              clearable-->
-        <!--              v-model="funcQuery.func_name"-->
-        <!--              placeholder="输入函数名查询"-->
-        <!--              style="width: 200px;"-->
-        <!--              class="filter-item"-->
-        <!--              @keyup.enter.native="search"/>-->
-
-        <!--          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="getFuncList">查询-->
-        <!--          </el-button>-->
-        <!--        </div>-->
-        <!--        <el-table-->
-        <!--            :data="tableData"-->
-        <!--            :key="tableKey2"-->
-        <!--            height="480"-->
-        <!--            border-->
-        <!--        >-->
-        <!--          <el-table-column prop="func_name" label="函数名称" width="180">-->
-        <!--            <template #default="scope">-->
-        <!--              <el-link type="primary" :underline="false" @click="getCommon(row)">{{ row.func_name }}</el-link>-->
-        <!--            </template>-->
-        <!--          </el-table-column>-->
-        <!--          <el-table-column prop="func_args" label="函数参数" width="300">-->
-        <!--            <template #default="scope">-->
-        <!--              <strong>{{ row.func_args }}</strong>-->
-        <!--            </template>-->
-        <!--          </el-table-column>-->
-        <!--          <el-table-column prop="func_doc" label="函数说明">-->
-        <!--            <template #default="scope">-->
-        <!--              <div style="white-space: pre-wrap; font-weight: bold" v-html="row.func_doc"></div>-->
-        <!--            </template>-->
-        <!--          </el-table-column>-->
-        <!--          <el-table-column prop="" label="操作" width="100">-->
-        <!--            <template #default="scope">-->
-        <!--              <el-button size="mini" type="primary" icon="el-icon-caret-right" @click="showDebugFunc(row)">-->
-        <!--                调试-->
-        <!--              </el-button>-->
-        <!--            </template>-->
-        <!--          </el-table-column>-->
-        <!--        </el-table>-->
-        <!--      </el-dialog>-->
-        <!--    </div>-->
+        <!--        函数列表-->
+        <el-button class="ml10" type="primary" @click="openFuncList">公共函数列表
+        </el-button>
       </div>
+      <!--函数列表-->
+      <el-dialog
+          title="函数列表"
+          v-model="debugFuncListShow"
+          width="80%"
+          top="8vh"
+          style="height: 100%">
+        <div class="mb15">
+          <el-input
+              clearable
+              v-model="funcQuery.func_name"
+              placeholder="输入函数名查询"
+              style="width: 200px;"
+              class="filter-item"
+              @keyup.enter.native="search"/>
+
+          <el-button class="ml10" type="primary" @click="getFuncList">
+            <el-icon>
+              <ele-Search/>
+            </el-icon>
+            查询
+          </el-button>
+        </div>
+        <!--          函数列表-->
+        <el-table
+            :data="funcList"
+            :key="0"
+            border
+            fit
+            highlight-current-row
+            style="width: 100%;"
+        >
+          <el-table-column prop="func_name" label="函数名称" width="180">
+            <template #default="{row}">
+              <el-link type="primary" :underline="false" @click="getCommon(row)">{{ row.func_name }}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column prop="func_args" label="函数参数" width="300">
+            <template #default="{row}">
+              <strong>{{ row.func_args }}</strong>
+            </template>
+          </el-table-column>
+          <el-table-column prop="func_doc" label="函数说明">
+            <template #default="{row}">
+              <div style="white-space: pre-wrap; font-weight: bold" v-html="row.func_doc"></div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="" label="操作" width="100">
+            <template #default="{row}">
+              <el-button type="text" icon="el-icon-caret-right" @click="showDebugFunc(row)">
+                调试
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
+      <!--函数调试-->
+      <el-dialog
+          lock-scroll
+          title="函数调试"
+          v-if="debugFuncShow"
+          v-model="debugFuncShow"
+          width="80%"
+          destroy-on-close
+          :close-on-click-modal="false"
+          center
+          append-to-body
+          top='4'
+      >
+        <div class="filter-container">
+          <div class="mb15">
+            <strong>{{ debugFuncForm.func_parse_str }}</strong>
+            <div style="white-space: pre-wrap; font-weight: bold" v-html="debugFuncForm.func_doc"></div>
+          </div>
+
+          <el-form size="mini" style="width: 50%;" label-position="left" label-width="100px" :model="funcArgsInfo">
+            <el-form-item v-for="(value , key) in funcArgsInfo" :key="key" :label="key">
+              <el-input v-model="funcArgsInfo[key]"></el-input>
+            </el-form-item>
+          </el-form>
+
+          <el-button class="filter-item" type="primary" icon="el-icon-caret-right" @click="debugFunc">
+            执行
+          </el-button>
+
+          <json-viewer
+              :value="debugFuncResult"
+              :expand-depth="5"
+              copyable
+              :boxed="true"
+              sort
+          />
+        </div>
+      </el-dialog>
 
       <el-table
           v-loading="tableLoading"
@@ -117,14 +163,15 @@
         </el-table-column>
 
 
-<!--        <el-table-column prop="" label="操作" width="120" align="center">-->
-<!--          <template #default="scope">-->
-<!--            <el-button type="text" icon="el-icon-s-order" @click="getList(scope.row)">-->
-<!--              函数列表-->
-<!--            </el-button>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <!--        <el-table-column prop="" label="操作" width="120" align="center">-->
+        <!--          <template #default="scope">-->
+        <!--            <el-button type="text" icon="el-icon-s-order" @click="getList(scope.row)">-->
+        <!--              函数列表-->
+        <!--            </el-button>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
       </el-table>
+
       <pagination :total="total"
                   :hidden="total === 0"
                   v-model:page="listQuery.page"
@@ -142,6 +189,9 @@ import Pagination from '/@/components/Pagination/index.vue';
 import {useDebugTalkApi} from "/@/api/useAutoApi/debugTalk";
 import {useRouter} from 'vue-router'
 
+import "vue3-json-viewer/dist/index.css"
+import {JsonViewer} from 'vue3-json-viewer'
+
 // 定义接口来定义对象的类型
 // interface TableData {
 //   roleName: string;
@@ -155,7 +205,7 @@ import {useRouter} from 'vue-router'
 
 export default defineComponent({
   name: 'apiDebugTalk',
-  components: {Pagination},
+  components: {Pagination, JsonViewer},
   setup() {
     const saveOrUpdateRef = ref();
     const router = useRouter();
@@ -179,6 +229,22 @@ export default defineComponent({
         pageSize: 20,
         project_name: '',
       },
+
+      // funcInfo
+      debugFuncResult: null,  // 函数运行结果
+      funcList: [],      // 函数列表
+      debugFuncListShow: false,
+      debugFuncShow: false,
+      funcQuery: {
+        id: null,
+        func_name: '',
+      },
+      funcArgsInfo: {},  // 函数参数
+      debugFuncForm: {
+        id: null,
+        func_parse_str: '',
+        func_name: '',
+      }
     });
     // 初始化表格数据
     const getList = () => {
@@ -228,6 +294,41 @@ export default defineComponent({
           .catch(() => {
           });
     };
+
+    // 打开函数列表页面
+    const openFuncList = (row: any) => {
+      state.funcQuery.id = null
+      if (row) state.funcQuery.id = row.id
+      state.debugFuncListShow = !state.debugFuncListShow
+      getFuncList()
+    }
+    //获取函数列表
+    const getFuncList = () => {
+      useDebugTalkApi().getFuncList(state.funcQuery)
+          .then(res => {
+            state.funcList = res.data
+          })
+    }
+    //函数页面初始化
+    const showDebugFunc = (row) => {
+      state.debugFuncResult = ''
+      state.funcArgsInfo = []
+      state.funcArgsInfo = row.args_info
+      state.debugFuncShow = !state.debugFuncShow
+      state.debugFuncForm.func_parse_str = row.func_name + row.func_args
+      state.debugFuncForm.func_name = row.func_name
+      state.debugFuncForm.func_doc = row.func_doc
+      state.debugFuncForm.args_info = state.funcArgsInfo
+    }
+    // 函数调试
+    const debugFunc = () => {
+      state.debugFuncResult = ''
+      state.debugFuncForm.id = state.funcQuery.id
+      useDebugTalkApi().debugFunc(state.debugFuncForm)
+          .then(res => {
+            state.debugFuncResult = res.data.result
+          })
+    }
     // 页面加载时
     onMounted(() => {
       getList();
@@ -237,6 +338,10 @@ export default defineComponent({
       search,
       saveOrUpdateRef,
       onOpenSaveOrUpdate,
+      openFuncList,
+      getFuncList,
+      showDebugFunc,
+      debugFunc,
       deleted,
       ...toRefs(state),
     };
