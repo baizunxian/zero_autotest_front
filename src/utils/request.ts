@@ -6,7 +6,7 @@ import {BaseUrl} from '/@/config/config';
 // 配置新建一个 axios 实例
 const service = axios.create({
   baseURL: BaseUrl,
-  timeout: 50000,
+  timeout: 500000,
   headers: {'Content-Type': 'application/json'},
 });
 
