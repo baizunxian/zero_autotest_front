@@ -5,6 +5,7 @@
       <el-radio label="data">data</el-radio>
       <el-radio label="json">json</el-radio>
       <el-radio label="params">params</el-radio>
+      <el-radio label="form-data">form-data</el-radio>
       <!--      <el-radio label="form-data">form-data</el-radio>-->
     </el-radio-group>
 
@@ -128,8 +129,84 @@
         </el-table>
       </div>
     </div>
+    <!--    form-data-->
+    <div v-if="requestForm.dataType === 'form-data'">
+      <div>
+        <el-button class="filter-item" type="primary" @click="addFormData">Add FromData</el-button>
+        <el-button class="filter-item" type="primary" @click="addFormData1">Add FromData</el-button>
+      </div>
+      <div>
+        <el-table
+            ref="formDataRef"
+            :data="formData"
+            tooltip-effect="dark"
+            border
+            style="width: 100%"
+        >
+          <el-table-column header-align='center'>
+            <template #header>
+              <strong style="font-size: 14px;">参数名</strong>
+            </template>
+            <template #default="{row}">
+              <el-input v-model="row.key"></el-input>
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="type" width="120" header-align='center'>
+            <template #header>
+              <strong style="font-size: 14px;">参数类型</strong>
+            </template>
+            <template #default="{row}">
+              <el-select v-model="row.type" placeholder="请选择">
+                <el-option
+                    v-for="item in formDatatypeOptions"
+                    :key="item"
+                    :label="item"
+                    :value="item">
+                </el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="value" header-align='center'>
+            <template #header>
+              <strong style="font-size: 14px;">参数值</strong>
+            </template>
+            <template #default="{row, $index}">
+              <div class="file-input-container">
+                <div class="file-input">
+                  <input type="file" ref="fileInputRef" @change="test" class="file-input__native">
+                  <div v-if="!fileData.name" @click="selectFile" class="file-input__fake">
+                    <span>Select Files</span>
+                  </div>
+                  <div class="file-input__name">
+                    <div class="file-input__name__title" :title="fileData.name">{{fileData.name}}</div>
+                    <el-button size="small" type="text" @click="deletedFile()">
+                      <el-icon>
+                        <ele-Delete/>
+                      </el-icon>
+                    </el-button>
+                  </div>
+                </div>
+              </div>
+              <!--              <input @change="test($event)" v-if="row.type === 'File'" type="file" :id="$index + 'files'">-->
+              <!--              <input v-if="row.type === 'File'" :id="$index + 'files'" type="file" v-model="row.value"></input>-->
+              <!--              <input v-if="row.type === 'File'" :id="$index + 'files'" type="file"></input>-->
+
+              <!--              <el-input v-else v-model="row.value"></el-input>-->
+            </template>
+          </el-table-column>
+          <el-table-column align="center" width="50" class-name="small-padding fixed-width">
+            <template #default="{row, $index}">
+              <el-link :underline="false" type="primary" @click="deleteParams(row, $index)"><i
+                  class="el-icon-delete"></i></el-link>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
   </el-form>
-<!--  <App></App>-->
+  <!--  <App></App>-->
 </template>
 
 <script lang="ts">
@@ -143,17 +220,25 @@ export default defineComponent({
   setup() {
     const formRef = ref()
     const aceEditorRef = ref()
+    const formDataRef = ref()
+    const fileInputRef = ref()
 
     const state = reactive({
       requestForm: {
         dataType: 'json',
         headers: {},
       },
+      // body
       bodyData: [],
       jsonData: {key: 'value'},
       paramsData: [],
       hasJsonFlag: false,
       dataTypeOptions: ['string', 'int', 'float', 'boolean'],
+
+      // formData
+      formData: [{key: 'test', type: 'File', value: ''}],
+      formDatatypeOptions: ['Text', 'File'],
+      fileData: {},
 
     });
 
@@ -213,7 +298,20 @@ export default defineComponent({
     const deleteParams = (index: number) => {
       state.paramsData.splice(index, 1)
     }
+    // formData
+    const test = (e: any) => {
+      state.fileData = e.target.files[0]
+      console.log(formDataRef.value)
+      console.log(e.target.files[0])
+    }
+    const deletedFile = () => {
+      fileInputRef.value.value = ''
+      state.fileData = {}
+    }
 
+    const selectFile = () => {
+      fileInputRef.value.click()
+    }
     // onMounted(() => {
     //   editorInit()
     // })
@@ -227,7 +325,12 @@ export default defineComponent({
       deleteData,
       addParams,
       deleteParams,
+      deletedFile,
       aceEditorRef,
+      formDataRef,
+      fileInputRef,
+      selectFile,
+      test,
       ...toRefs(state),
     }
 //
@@ -321,10 +424,11 @@ table {
   background: #FFF
 }
 
-.json-editor-vue  {
+.json-editor-vue {
   .jsoneditor {
     border: 0;
   }
+
   .jsoneditor-menu {
     border-bottom: 0;
     background-color: #ebebeb;
@@ -339,14 +443,15 @@ table {
     }
 
   }
-  button {
-      outline: none;
-      background-color: #5bc0de;
 
-      &:hover {
-        background-color: #5bc0de;
-      }
+  button {
+    outline: none;
+    background-color: #5bc0de;
+
+    &:hover {
+      background-color: #5bc0de;
     }
+  }
 }
 
 json-editor-vue .jsoneditor {
@@ -378,5 +483,56 @@ json-editor-vue .jsoneditor {
   line-height: 28px;
   background: #f7f7fc;
   color: #333333;
+}
+
+
+.file-input-container {
+  display: inline-block;
+  max-width: 100%;
+
+  .file-input {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-xs);
+
+    .file-input__native {
+      opacity: 0;
+      position: absolute;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .file-input__fake {
+      position: relative;
+      height: 20px;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .file-input__name {
+      box-sizing: border-box;
+      display: flex;
+      min-width: 0;
+      height: 20px;
+      align-items: center;
+      border-radius: 4px;
+      border: 1px solid;
+      font-size: var(--text-size-m);
+      font-family: var(--text-family-default);
+      color: var(--content-color-primary);
+      background-color: transparent;
+      padding: var(--spacing-xs) 2px;
+
+      .file-input__name__title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
 }
 </style>
