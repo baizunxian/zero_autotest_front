@@ -12,7 +12,7 @@ const env = getEnv()
 
 export const initConfig = () => {
   if (env === 'prd') {
-    url = 'https://xiaobaicodes.com:8012'
+    url = 'https://xiaobaicodes.com:8888'
   } else {
     url = 'http://127.0.0.1:8012'
   }
