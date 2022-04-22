@@ -1,12 +1,12 @@
 import axios from 'axios';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import {Session} from '/@/utils/storage';
+import {BaseUrl} from '/@/config/config';
 
 // 配置新建一个 axios 实例
 const service = axios.create({
-  // baseURL: 'https://www.xiaobaicodes.com:8888/api',
-  baseURL: 'http://127.0.0.1:8012/api',
-  timeout: 50000,
+  baseURL: BaseUrl,
+  timeout: 500000,
   headers: {'Content-Type': 'application/json'},
 });
 
