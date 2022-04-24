@@ -5,20 +5,16 @@
       <el-row>
         <el-col :span="12" style="padding-left: 5px; padding-right: 5px; width: 100%">
           <div style="border: 1px solid rgb(220, 218, 226); padding: 10px; border-radius: 4px; width: 100%">
-            <div class="suites_chart" ref="suitesChartRef" style="width: 100%; height: 100px;"></div>
-            <div class="tip">
-              <p>{{ reportTestCaseData.testcase.stat.testcases.success }} 套件通过</p>
-              <p>{{ reportTestCaseData.testcase.stat.testcases.fail }} 套件失败</p>
-            </div>
+            <div class="suites_chart" ref="suitesChartRef" style="width: 100%; height: 120px;"></div>
           </div>
         </el-col>
         <el-col :span="12" style="padding-left: 5px; padding-right: 5px; width: 100%">
           <div style="border: 1px solid rgb(220, 218, 226); padding: 10px; border-radius: 4px; width: 100%">
-            <div ref="stepChartRef" style="width: 100%; height: 100px;"></div>
-            <div class="tip">
-              <p>{{ reportTestCaseData.testcase.stat.teststeps.successes }} 用例通过</p>
-              <p>{{ reportTestCaseData.testcase.stat.teststeps.failures }} 用例失败</p>
-            </div>
+            <div ref="stepChartRef" style="width: 100%; height: 120px;"></div>
+            <!--            <div class="tip">-->
+            <!--              <p>{{ reportTestCaseData.testcase.stat.teststeps.successes }} 用例通过</p>-->
+            <!--              <p>{{ reportTestCaseData.testcase.stat.teststeps.failures }} 用例失败</p>-->
+            <!--            </div>-->
           </div>
         </el-col>
       </el-row>
@@ -447,10 +443,12 @@ export default defineComponent({
       stepECharts.setOption({
         title: {
           text: '用例结果',
-          subtext: '动态数据',
+          subtext: `${state.reportTestCaseData.testcase.stat.teststeps.successes} 用例通过
+          \n${state.reportTestCaseData.testcase.stat.teststeps.failures} 用例失败`,
           x: 'left',
           textStyle: {
-            color: '#111'
+            color: '#000000',
+            fontSize: '16',
           }
         },
         tooltip: {
@@ -458,28 +456,28 @@ export default defineComponent({
           formatter: '{a} <br/>{b} : {c} ({d}%)'
         },
         legend: {
-          show: true,
-          orient: 'vertical',
+          top: '0%',
           left: 'right',
-          data: ['成功', '失败'],
-          textStyle: {
-            fontSize: 12,
-            color: '#111'
-          }
+          data: ['成功', '失败']
         },
         series: [
           {
-            name: '测试结果',
+            name: '用例结果',
             type: 'pie',
-            radius: ['50%', '70%'],
-            center: ['50%', '60%'],
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 10,
+              borderWidth: 2
+            },
             label: {
-              show: false
+              show: false,
+              position: 'center'
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: '15',
+                fontSize: '20',
                 fontWeight: 'bold'
               }
             },
@@ -488,26 +486,20 @@ export default defineComponent({
             },
             data: [
               {
-                value: state.reportTestCaseData.testcase.stat.teststeps.successes,
                 name: '成功',
-                itemStyle: {color: '#00af00'}
+                itemStyle: {color: '#91cc75'},
+                value: state.reportTestCaseData.testcase.stat.teststeps.successes,
               },
               {
-                value: state.reportTestCaseData.testcase.stat.teststeps.failures,
                 name: '失败',
-                itemStyle: {color: '#F7464A'}
+                itemStyle: {color: '#ee6666'},
+                value: state.reportTestCaseData.testcase.stat.teststeps.failures,
               },
-            ],
-            itemStyle: {
-              emphasis: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              }
-            }
+            ]
           }
         ]
       })
+      // let option =
     }
     // 套件图
     const initSuitesData = () => {
@@ -515,10 +507,11 @@ export default defineComponent({
       suiteECharts.setOption({
         title: {
           text: '套件结果',
-          subtext: '动态数据',
+          subtext: `${state.reportTestCaseData.testcase.stat.testcases.success} 套件通过
+          \n${state.reportTestCaseData.testcase.stat.testcases.fail} 套件失败`,
           x: 'left',
           textStyle: {
-            color: '#111'
+            color: '#000000'
           }
         },
         tooltip: {
@@ -526,28 +519,28 @@ export default defineComponent({
           formatter: '{a} <br/>{b} : {c} ({d}%)'
         },
         legend: {
-          show: true,
-          orient: 'vertical',
+          top: '0%',
           left: 'right',
-          data: ['成功', '失败'],
-          textStyle: {
-            fontSize: 12,
-            color: '#111'
-          }
+          data: ['成功', '失败']
         },
         series: [
           {
-            name: '测试结果',
+            name: '套件结果',
             type: 'pie',
-            radius: ['50%', '70%'],
-            center: ['50%', '60%'],
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 10,
+              borderWidth: 2
+            },
             label: {
-              show: false
+              show: false,
+              position: 'center'
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: '15',
+                fontSize: '20',
                 fontWeight: 'bold'
               }
             },
@@ -558,21 +551,14 @@ export default defineComponent({
               {
                 value: state.reportTestCaseData.testcase.stat.testcases.success,
                 name: '成功',
-                itemStyle: {color: '#00af00'}
+                itemStyle: {color: '#91cc75'}
               },
               {
                 value: state.reportTestCaseData.testcase.stat.testcases.fail,
                 name: '失败',
-                itemStyle: {color: '#F7464A'}
+                itemStyle: {color: '#ee6666'}
               },
-            ],
-            itemStyle: {
-              emphasis: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              }
-            }
+            ]
           }
         ]
       })
