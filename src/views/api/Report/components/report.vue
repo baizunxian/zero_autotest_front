@@ -59,7 +59,7 @@
 
                       </el-icon>
                       <el-icon v-if="!scope.data.step_datas && !scope.data.success"
-                               style="color: #ee422e;  vertical-align:bottom; height: 100%; display: inline-block;">
+                               style="color: #ee6666;  vertical-align:bottom; height: 100%; display: inline-block;">
                         <ele-CircleCloseFilled></ele-CircleCloseFilled>
                       </el-icon>
                       <span v-if="!scope.data.step_datas" style="padding-left: 5px">{{ scope.data.name }}</span>
@@ -75,19 +75,29 @@
         <el-col v-show="nodeStepData.name" :span="18" style="padding-left: 5px; padding-right: 5px;">
           <div style="border: 1px solid rgb(220, 218, 226); padding: 10px; border-radius: 4px;">
             <div class="box-height">
+
               <!--      step title        -->
               <div class="step">
-                <h2 class="step__header">
-                  <div class="step__header__tab">
-                    <el-tag class="ml-2" :type="nodeStepData.success? 'success': 'danger'">
-                      {{ nodeStepData.success ? '通过' : '不通过' }}
-                    </el-tag>
-                  </div>
-                  <div class="step__header__name">
-                    <span>{{ reportTestCaseData.step.name }}</span>
-                  </div>
-                </h2>
+                <div>
+                  <h2 class="step__header">
+                    <div class="step__header__tab">
+                      <el-tag class="ml-2" :type="nodeStepData.success? 'success': 'danger'" effect="dark">
+                        {{ nodeStepData.success ? '通过' : '不通过' }}
+                      </el-tag>
+                    </div>
+                    <div class="step__header__name">
+                      <span>{{ reportTestCaseData.step.name }}</span>
+                    </div>
+                  </h2>
+                </div>
+                <div style="padding-bottom: 5px">
+                  <el-tag type="success" effect="dark">执行用时 {{ reportTestCaseData.step.stat.elapsed_ms }}</el-tag>
+                  <el-tag type="success" effect="dark" style="margin-left: 5px">响应时间
+                    {{ reportTestCaseData.step.stat.response_time_ms }}
+                  </el-tag>
+                </div>
               </div>
+
               <!--   request       -->
               <div class="request">
                 <div class="request__header">
@@ -226,8 +236,6 @@
                         />
                       </td>
                     </tr>
-
-
                     </tbody>
                   </table>
                 </div>
@@ -247,40 +255,22 @@
                       <td class="table__parameter">错误[error_massage]</td>
                       <td class="table__content">
                         <pre>{{ reportTestCaseData.step.message }}</pre>
-                        <!--/*                        <span style="color: red">{{ reportTestCaseData.step.message }}</span>*/-->
-                        <!--                        <json-viewer-->
-                        <!--                            :value="reportTestCaseData.step.message"-->
-                        <!--                            :expand-depth="5"-->
-                        <!--                            copyable-->
-                        <!--                            style="color: red"-->
-                        <!--                            :boxed="true"-->
-                        <!--                            sort-->
-                        <!--                        />-->
                       </td>
                     </tr>
 
                     <tr>
                       <td class="table__parameter">校验[validators]</td>
-                      <!--                      <td class="table__content">-->
-
                       <td class='timestamp' v-if="!reportTestCaseData.step.validators.validate_extractor">无校验</td>
                       <td class='step-details' v-else>
-                        <div v-for="validator in reportTestCaseData.step.validators.validate_extractor"
-                             :key="guid2() + validator.check_result + 'validators'">
-                          <el-tag :type="validator.check_result === 'pass'? 'success':'danger'"
-                                  effect="dark">
+                        <div style="padding: 1px 0"
+                             v-for="validator in reportTestCaseData.step.validators.validate_extractor"
+                             :key="guid2() + validator.check_result">
+                          <el-tag :type="validator.check_result === 'pass'? 'success':'danger'" effect="dark">
                             {{ validator.check_result }}
                           </el-tag>
                           <strong> {{ validator.check }} {{ validator.comparator }}:</strong>
                           {{ [validator.expect, validator.check_value] }}
                         </div>
-                        <!--                        <json-viewer-->
-                        <!--                            :value="reportTestCaseData.step.validators"-->
-                        <!--                            :expand-depth="5"-->
-                        <!--                            copyable-->
-                        <!--                            :boxed="true"-->
-                        <!--                            sort-->
-                        <!--                        />-->
                       </td>
                     </tr>
 
@@ -632,13 +622,14 @@ td {
 }
 
 .step {
+  border-bottom: 1px solid #eceff1;
+
   .step__header {
     padding: 0 0 10px;
     width: 100%;
     display: flex;
     position: relative;
     margin: 7px 0 0;
-    border-bottom: 1px solid #eceff1;
     font-size: 20px;
     font-weight: 700;
 
