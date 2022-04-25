@@ -189,7 +189,7 @@
               <strong style="font-size: 14px;">参数值</strong>
             </template>
             <template #default="{row, $index}">
-              <el-input size="small" v-if="row.type === 'Text'" v-model="row.value"></el-input>
+              <el-input size="small" v-if="row.type === 'text'" v-model="row.value"></el-input>
               <div v-else class="file-input-container">
                 <div class="file-input">
                   <input size="small" type="file" :id="'selectFile' + $index" @change="fileChange($event, row)"
