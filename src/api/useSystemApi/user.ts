@@ -8,6 +8,19 @@ import request from '/@/utils/request';
  */
 export function useUserApi() {
   return {
+    signIn: (data: object) => {
+      return request({
+        url: '/user/login',
+        method: 'POST',
+        data,
+      });
+    },
+    logout: () => {
+      return request({
+        url: '/user/logout',
+        method: 'POST',
+      });
+    },
     getList: (data?: object) => {
       return request({
         url: '/user/list',

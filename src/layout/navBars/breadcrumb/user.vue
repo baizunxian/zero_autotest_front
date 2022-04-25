@@ -12,11 +12,11 @@
         </el-dropdown-menu>
       </template>
     </el-dropdown>
-<!--    <div class="layout-navbars-breadcrumb-user-icon" @click="onSearchClick">-->
-<!--      <el-icon title="菜单搜索">-->
-<!--        <ele-Search/>-->
-<!--      </el-icon>-->
-<!--    </div>-->
+    <!--    <div class="layout-navbars-breadcrumb-user-icon" @click="onSearchClick">-->
+    <!--      <el-icon title="菜单搜索">-->
+    <!--        <ele-Search/>-->
+    <!--      </el-icon>-->
+    <!--    </div>-->
     <div class="layout-navbars-breadcrumb-user-icon" @click="onLayoutSetingClick">
       <i class="icon-skin iconfont" title="布局配置"></i>
     </div>
@@ -58,15 +58,16 @@
 </template>
 
 <script lang="ts">
-import {ref, getCurrentInstance, computed, reactive, toRefs, onMounted, defineComponent} from 'vue';
+import {computed, defineComponent, getCurrentInstance, onMounted, reactive, ref, toRefs} from 'vue';
 import {useRouter} from 'vue-router';
-import {ElMessageBox, ElMessage} from 'element-plus';
+import {ElMessage, ElMessageBox} from 'element-plus';
 import screenfull from 'screenfull';
 import {resetRoute} from '/@/router';
 import {useStore} from '/@/store';
-import {Session, Local} from '/@/utils/storage';
+import {Local, Session} from '/@/utils/storage';
 import UserNews from '/@/layout/navBars/breadcrumb/userNews.vue';
 import Search from '/@/layout/navBars/breadcrumb/search.vue';
+import {useUserApi} from '/@/api/useSystemApi/user'
 
 export default defineComponent({
   name: 'layoutBreadcrumbUser',
@@ -129,12 +130,11 @@ export default defineComponent({
             if (action === 'confirm') {
               instance.confirmButtonLoading = true;
               instance.confirmButtonText = '退出中';
-              setTimeout(() => {
+              useUserApi().logout()
+              .then(() => {
                 done();
-                setTimeout(() => {
-                  instance.confirmButtonLoading = false;
-                }, 300);
-              }, 700);
+                instance.confirmButtonLoading = false;
+              })
             } else {
               done();
             }
@@ -144,9 +144,10 @@ export default defineComponent({
               Session.clear(); // 清除缓存/token等
               await resetRoute(); // 删除/重置路由
               ElMessage.success('安全退出成功！');
-              setTimeout(() => {
-                window.location.href = ''; // 去登录页
-              }, 500);
+              window.location.href = ''; // 去登录页
+              // setTimeout(() => {
+              //   window.location.href = ''; // 去登录页
+              // }, 500);
             })
             .catch(() => {
             });
