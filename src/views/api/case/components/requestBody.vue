@@ -5,13 +5,20 @@
       <el-radio label="data">data</el-radio>
       <el-radio label="json">json</el-radio>
       <el-radio label="params">params</el-radio>
-      <el-radio label="form-data">form-data</el-radio>
+      <el-radio label="form_data">form-data</el-radio>
       <!--      <el-radio label="form-data">form-data</el-radio>-->
     </el-radio-group>
 
     <!---------------------------params------------------------------------>
     <div v-if="requestForm.dataType === 'data'">
-      <el-button size="small" class="filter-item" type="primary" @click="addData">Add Data</el-button>
+      <div class="block-title">
+        <el-button size="small" type="text" @click="addData" title="add data">
+          <el-icon>
+            <ele-CirclePlusFilled></ele-CirclePlusFilled>
+          </el-icon>
+          add
+        </el-button>
+      </div>
       <div>
         <el-table
             ref="bodyDataTableRef"
@@ -73,8 +80,13 @@
 
     <!---------------------------params------------------------------------>
     <div v-if="requestForm.dataType === 'params'">
-      <div>
-        <el-button size="small" class="filter-item" type="primary" @click="addParams">Add Params</el-button>
+      <div class="block-title">
+        <el-button size="small" type="text" @click="addParams" title="add params">
+          <el-icon>
+            <ele-CirclePlusFilled></ele-CirclePlusFilled>
+          </el-icon>
+          add
+        </el-button>
       </div>
       <div>
         <el-table
@@ -130,10 +142,14 @@
       </div>
     </div>
     <!--    form-data-->
-    <div v-if="requestForm.dataType === 'form-data'">
-      <div>
-        <el-button class="filter-item" type="primary" @click="addFormData">Add FromData</el-button>
-        <el-button class="filter-item" type="primary" @click="addFormData1">Add FromData</el-button>
+    <div v-if="requestForm.dataType === 'form_data'">
+      <div class="block-title">
+        <el-button size="small" type="text" @click="addFormData" title="add fromData">
+          <el-icon>
+            <ele-CirclePlusFilled></ele-CirclePlusFilled>
+          </el-icon>
+          add
+        </el-button>
       </div>
       <div>
         <el-table
@@ -148,7 +164,7 @@
               <strong style="font-size: 14px;">参数名</strong>
             </template>
             <template #default="{row}">
-              <el-input v-model="row.key"></el-input>
+              <el-input size="small" v-model="row.key"></el-input>
             </template>
           </el-table-column>
 
@@ -157,7 +173,7 @@
               <strong style="font-size: 14px;">参数类型</strong>
             </template>
             <template #default="{row}">
-              <el-select v-model="row.type" placeholder="请选择">
+              <el-select size="small" v-model="row.type" placeholder="请选择">
                 <el-option
                     v-for="item in formDatatypeOptions"
                     :key="item"
@@ -173,17 +189,25 @@
               <strong style="font-size: 14px;">参数值</strong>
             </template>
             <template #default="{row, $index}">
-              <div class="file-input-container">
+              <el-input size="small" v-if="row.type === 'text'" v-model="row.value"></el-input>
+              <div v-else class="file-input-container">
                 <div class="file-input">
-                  <input type="file" ref="fileInputRef" @change="test" class="file-input__native">
-                  <div v-if="!fileData.name" @click="selectFile" class="file-input__fake">
-                    <span>Select Files</span>
-                  </div>
-                  <div class="file-input__name">
-                    <div class="file-input__name__title" :title="fileData.name">{{fileData.name}}</div>
-                    <el-button size="small" type="text" @click="deletedFile()">
+                  <input size="small" type="file" :id="'selectFile' + $index" @change="fileChange($event, row)"
+                         class="file-input__native">
+
+                  <el-button v-if="!row.value.name" type="info" size="small" @click="selectFile($index)">选择文件
+                  </el-button>
+                  <!--                  <el-button v-else :title="fileData.name">{{ fileData.name }}-->
+                  <!--                    <el-icon>-->
+                  <!--                        <ele-Delete/>-->
+                  <!--                      </el-icon>-->
+                  <!--                  </el-button>-->
+                  <div v-else class="file-input__name">
+                    <div class="file-input__name__title" :title="row.value.name">{{ row.value.name }}</div>
+                    <el-button class="file-input__name__delete-icon" size="small" type="text"
+                               @click="deletedFile(row, $index)">
                       <el-icon>
-                        <ele-Delete/>
+                        <ele-Close/>
                       </el-icon>
                     </el-button>
                   </div>
@@ -196,12 +220,17 @@
               <!--              <el-input v-else v-model="row.value"></el-input>-->
             </template>
           </el-table-column>
+
           <el-table-column align="center" width="50" class-name="small-padding fixed-width">
-            <template #default="{row, $index}">
-              <el-link :underline="false" type="primary" @click="deleteParams(row, $index)"><i
-                  class="el-icon-delete"></i></el-link>
+            <template #default="{$index}">
+              <el-button size="small" type="text" @click="deleteFormData($index)">
+                <el-icon>
+                  <ele-Delete/>
+                </el-icon>
+              </el-button>
             </template>
           </el-table-column>
+
         </el-table>
       </div>
     </div>
@@ -213,6 +242,7 @@
 import JsonEditorVue from '/@/components/VaceEditor/json-editor.vue'
 
 import {defineComponent, reactive, ref, toRefs} from "vue";
+import {useFileApi} from '/@/api/useSystemApi/file'
 //
 export default defineComponent({
   components: {JsonEditorVue},
@@ -221,7 +251,6 @@ export default defineComponent({
     const formRef = ref()
     const aceEditorRef = ref()
     const formDataRef = ref()
-    const fileInputRef = ref()
 
     const state = reactive({
       requestForm: {
@@ -236,8 +265,8 @@ export default defineComponent({
       dataTypeOptions: ['string', 'int', 'float', 'boolean'],
 
       // formData
-      formData: [{key: 'test', type: 'File', value: ''}],
-      formDatatypeOptions: ['Text', 'File'],
+      formData: [],
+      formDatatypeOptions: ['text', 'file'],
       fileData: {},
 
     });
@@ -247,7 +276,8 @@ export default defineComponent({
       // aceEditorRef.value.initData(state.jsonData)
     }
     // 初始化表单
-    const initForm = (formData) => {
+    const initForm = (formData: any) => {
+      console.log(formData, ' formData')
       state.requestForm.dataType = formData.type
       if (formData.type === 'json') {
         state.jsonData = formData.json
@@ -263,6 +293,9 @@ export default defineComponent({
       if (formData.type === 'data') {
         state.bodyData = formData.data
       }
+      if (formData.type === 'form_data') {
+        state.formData = formData.form_data ? formData.form_data : []
+      }
     }
 
 
@@ -274,11 +307,14 @@ export default defineComponent({
         // if (!state.hasJsonFlag) throw new Error('json 格式错误!')
         requestData.json = state.jsonData
       }
-      if (state.requestForm.type === 'data') {
+      if (state.requestForm.dataType === 'data') {
         requestData.data = state.bodyData
       }
-      if (state.requestForm.type === 'params') {
+      if (state.requestForm.dataType === 'params') {
         requestData.params = state.paramsData
+      }
+      if (state.requestForm.dataType === 'form_data') {
+        requestData.form_data = state.formData
       }
       state.hasJsonFlag = true
       return requestData
@@ -298,19 +334,39 @@ export default defineComponent({
     const deleteParams = (index: number) => {
       state.paramsData.splice(index, 1)
     }
-    // formData
-    const test = (e: any) => {
-      state.fileData = e.target.files[0]
-      console.log(formDataRef.value)
-      console.log(e.target.files[0])
-    }
-    const deletedFile = () => {
-      fileInputRef.value.value = ''
-      state.fileData = {}
-    }
 
-    const selectFile = () => {
-      fileInputRef.value.click()
+    // formData
+    const addFormData = () => {
+      state.formData.push({key: 'test', type: 'Text', value: ''})
+    }
+    // 选择文件时触发，上传文件，回写地址
+    const fileChange = (e: any, row: any) => {
+      state.fileData = e.target.files[0]
+      let file: any = e.target.files[0]
+      let formData = new FormData
+      formData.append('name', file.name)
+      formData.append('file', file)
+      useFileApi().upload(formData)
+          .then((res: any) => {
+            row.value = {abspath: res.data.abspath, name: res.data.name}
+          })
+
+    }
+    // 删除文件处理
+    const deletedFile = (row: any, index: number) => {
+      let fileRef = document.getElementById('selectFile' + index)
+      useFileApi().deleted({name: row.value.name})
+      row.value = {}
+      if (fileRef) fileRef.value = ''
+    }
+    // 删除
+    const deleteFormData = (index: number) => {
+      state.formData.splice(index, 1)
+    }
+    // 选择文件
+    const selectFile = (index: number) => {
+      let fileRef = document.getElementById('selectFile' + index)
+      if (fileRef) fileRef.click()
     }
     // onMounted(() => {
     //   editorInit()
@@ -328,9 +384,10 @@ export default defineComponent({
       deletedFile,
       aceEditorRef,
       formDataRef,
-      fileInputRef,
+      deleteFormData,
       selectFile,
-      test,
+      fileChange,
+      addFormData,
       ...toRefs(state),
     }
 //
@@ -511,26 +568,49 @@ json-editor-vue .jsoneditor {
       text-overflow: ellipsis;
       white-space: nowrap;
       cursor: pointer;
+      background-color: #F2F2F2;
+      min-width: 100px;
+      color: #6B6B6B;
+      font-weight: 600;
+
+      &:hover {
+        color: #212121;
+        background-color: #E6E6E;
+      }
+    }
+
+    .btn {
+      box-sizing: border-box;
+      border-radius: 4px;
     }
 
     .file-input__name {
       box-sizing: border-box;
       display: flex;
       min-width: 0;
-      height: 20px;
+      height: 24px;
       align-items: center;
       border-radius: 4px;
-      border: 1px solid;
-      font-size: var(--text-size-m);
-      font-family: var(--text-family-default);
-      color: var(--content-color-primary);
+      border: 1px solid #E6E6E6;
+      font-size: 12px;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica, Arial, sans-serif;
+      color: #212121;
       background-color: transparent;
-      padding: var(--spacing-xs) 2px;
+      padding: 4px 2px;
 
       .file-input__name__title {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+      }
+
+      .file-input__name__delete-icon {
+        display: flex;
+        align-items: center;
+        margin-left: 8px;
+        padding-right: 2px;
+        cursor: pointer;
+        color: #212121;
       }
     }
   }

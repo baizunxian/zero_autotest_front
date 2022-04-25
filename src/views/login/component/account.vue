@@ -28,21 +28,21 @@
         </template>
       </el-input>
     </el-form-item>
-<!--    <el-form-item class="login-animation3">-->
-<!--      <el-col :span="15">-->
-<!--        <el-input type="text" maxlength="4" placeholder="请输入验证码" v-model="ruleForm.code" clearable autocomplete="off">-->
-<!--          <template #prefix>-->
-<!--            <el-icon class="el-input__icon">-->
-<!--              <ele-Position/>-->
-<!--            </el-icon>-->
-<!--          </template>-->
-<!--        </el-input>-->
-<!--      </el-col>-->
-<!--      <el-col :span="1"></el-col>-->
-<!--      <el-col :span="8">-->
-<!--        <el-button class="login-content-code">1234</el-button>-->
-<!--      </el-col>-->
-<!--    </el-form-item>-->
+    <!--    <el-form-item class="login-animation3">-->
+    <!--      <el-col :span="15">-->
+    <!--        <el-input type="text" maxlength="4" placeholder="请输入验证码" v-model="ruleForm.code" clearable autocomplete="off">-->
+    <!--          <template #prefix>-->
+    <!--            <el-icon class="el-input__icon">-->
+    <!--              <ele-Position/>-->
+    <!--            </el-icon>-->
+    <!--          </template>-->
+    <!--        </el-input>-->
+    <!--      </el-col>-->
+    <!--      <el-col :span="1"></el-col>-->
+    <!--      <el-col :span="8">-->
+    <!--        <el-button class="login-content-code">1234</el-button>-->
+    <!--      </el-col>-->
+    <!--    </el-form-item>-->
     <el-form-item class="login-animation4">
       <el-button type="primary" class="login-content-submit" round @click="onSignIn" :loading="loading.signIn">
         <span>登 录</span>
@@ -59,7 +59,7 @@ import {initBackEndControlRoutes} from '/@/router/backEnd';
 import {useStore} from '/@/store';
 import {Session} from '/@/utils/storage';
 import {formatAxis} from '/@/utils/formatTime';
-import {useLoginApi} from '/@/api/useSystemApi/login';
+import {useUserApi} from '/@/api/useSystemApi/user';
 
 export default defineComponent({
   name: 'loginAccount',
@@ -86,65 +86,30 @@ export default defineComponent({
     const onSignIn = async () => {
       // 模拟数据
       state.loading.signIn = true;
-      let defaultRoles: Array<string> = [];
-      let defaultAuthBtnList: Array<string> = [];
-      // admin 页面权限标识，对应路由 meta.roles，用于控制路由的显示/隐藏
-      let adminRoles: Array<string> = ['admin'];
-      // admin 按钮权限标识
-      let adminAuthBtnList: Array<string> = ['btn.add', 'btn.del', 'btn.edit', 'btn.link'];
-      // test 页面权限标识，对应路由 meta.roles，用于控制路由的显示/隐藏
-      let testRoles: Array<string> = ['common'];
-      // test 按钮权限标识
-      let testAuthBtnList: Array<string> = ['btn.add', 'btn.link'];
+      // let defaultRoles: Array<string> = [];
+      // let defaultAuthBtnList: Array<string> = [];
+      // // admin 页面权限标识，对应路由 meta.roles，用于控制路由的显示/隐藏
+      // let adminRoles: Array<string> = ['admin'];
+      // // admin 按钮权限标识
+      // let adminAuthBtnList: Array<string> = ['btn.add', 'btn.del', 'btn.edit', 'btn.link'];
+      // // test 页面权限标识，对应路由 meta.roles，用于控制路由的显示/隐藏
+      // let testRoles: Array<string> = ['common'];
+      // // test 按钮权限标识
+      // let testAuthBtnList: Array<string> = ['btn.add', 'btn.link'];
       // 不同用户模拟不同的用户权限
-      useLoginApi().signIn({username: state.ruleForm.userName, password: state.ruleForm.password})
+      useUserApi().signIn({username: state.ruleForm.userName, password: state.ruleForm.password})
           .then(async res => {
             Session.set('token', res.data.token);
             Session.set('userInfo', res.data);
-            store.dispatch('userInfos/setUserInfos', res.data);
+            await store.dispatch('userInfos/setUserInfos', res.data);
             await initBackEndControlRoutes();
-            // await initFrontEndControlRoutes();
             signInSuccess();
-          }).catch(e => {
+          })
+          .catch((e: any) => {
+            console.log('错误信息： ', e)
             state.loading.signIn = false;
-            console.log(e)
-      })
+          })
 
-      // if (state.ruleForm.userName === 'admin') {
-      // 	defaultRoles = adminRoles;
-      // 	defaultAuthBtnList = adminAuthBtnList;
-      // } else {
-      // 	defaultRoles = testRoles;
-      // 	defaultAuthBtnList = testAuthBtnList;
-      // }
-      // // 用户信息模拟数据
-      // const userInfos = {
-      // 	userName: state.ruleForm.userName,
-      // 	photo:
-      // 		state.ruleForm.userName === 'admin'
-      // 			? 'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1813762643,1914315241&fm=26&gp=0.jpg'
-      // 			: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=317673774,2961727727&fm=26&gp=0.jpg',
-      // 	time: new Date().getTime(),
-      // 	roles: defaultRoles,
-      // 	authBtnList: defaultAuthBtnList,
-      // };
-      // // 存储 token 到浏览器缓存
-      // Session.set('token', Math.random().toString(36).substr(0));
-      // // 存储用户信息到浏览器缓存
-      // Session.set('userInfo', userInfos);
-      // // 1、请注意执行顺序(存储用户信息到vuex)
-      // store.dispatch('userInfos/setUserInfos', userInfos);
-      // if (!store.state.themeConfig.themeConfig.isRequestRoutes) {
-      //   // 前端控制路由，2、请注意执行顺序
-      //   await initFrontEndControlRoutes();
-      //   signInSuccess();
-      // } else {
-      //   // 模拟后端控制路由，isRequestRoutes 为 true，则开启后端控制路由
-      //   // 添加完动态路由，再进行 router 跳转，否则可能报错 No match found for location with path "/"
-      //   await initBackEndControlRoutes();
-      //   // 执行完 initBackEndControlRoutes，再执行 signInSuccess
-      //   signInSuccess();
-      // }
     };
     // 登录成功后的跳转
     const signInSuccess = () => {
