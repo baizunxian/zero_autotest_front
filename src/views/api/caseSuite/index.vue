@@ -223,7 +223,7 @@ export default defineComponent({
 
     //runSuitePage
     const runTestSuite = () => {
-      useTestCaseApi().runTestCase(state.runForm).then(res => {
+      useTestCaseApi().runTestCaseNew(state.runForm).then(res => {
         console.log(res)
       })
     }

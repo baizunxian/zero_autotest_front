@@ -31,9 +31,7 @@
               </template>
             </el-input>
           </el-form-item>
-          <!--        </el-col>-->
 
-          <!--        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">-->
           <el-button type="primary" @click="saveOrUpdateCase('save')" class="title-button">保存</el-button>
           <el-button type="success" @click="onEnv">调试</el-button>
           <el-button type="warning">断言调试</el-button>
@@ -105,7 +103,7 @@ export default defineComponent({
     const state = reactive({
       isShowDialog: false,
       handleType: '',   //case 调用类型， 保存，调试
-      methodList: ['POST', 'GET', 'PUT', 'DELETE'],
+      methodList: ['POST', 'GET', 'PUT', 'HEAD', 'DELETE', 'OPTIONS'],
       // 表单及校验
       form: createForm(),
       rules: {
@@ -205,7 +203,7 @@ export default defineComponent({
     margin-left: 10px;
   }
 
- :deep(.el-input-group__prepend) {
+  :deep(.el-input-group__prepend) {
     // color: #909399;
     font-weight: 1000;
   }

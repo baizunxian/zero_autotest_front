@@ -35,9 +35,23 @@ export function useTestCaseApi() {
         data,
       });
     },
+     runTestCaseNew: (data?: object) => {
+      return request({
+        url: '/testcase/runTestCaseNew',
+        method: 'POST',
+        data,
+      });
+    },
     debugTestCase: (data?: object) => {
       return request({
         url: '/testcase/debugTestCase',
+        method: 'POST',
+        data,
+      });
+    },
+    debugTestCaseNew: (data?: object) => {
+      return request({
+        url: '/testcase/debugTestCaseNew',
         method: 'POST',
         data,
       });

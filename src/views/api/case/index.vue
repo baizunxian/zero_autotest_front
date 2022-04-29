@@ -235,7 +235,7 @@ export default defineComponent({
     // 运行测试用例
     const runTestCase = () => {
       state.runCaseLoading = !state.runCaseLoading;
-      useTestCaseApi().runTestCase(state.runForm)
+      useTestCaseApi().runTestCaseNew(state.runForm)
           .then(res => {
             if (state.runForm.run_mode === 1) {
               console.log(res)
