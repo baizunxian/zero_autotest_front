@@ -115,6 +115,7 @@
           v-model="showReportDialog"
           width="80%"
           top="8vh"
+          title="报告详情"
           destroy-on-close
           :close-on-click-modal="false">
         <test-report :reportBody="reportBody"/>
