@@ -108,6 +108,7 @@ export default defineComponent({
         {fieldName: 'project_name', label: '所属项目', width: '', align: 'center', show: true},
         {fieldName: 'crontab_str', label: '执行时间', width: '', align: 'center', show: true},
         {fieldName: 'task_type', label: '任务类型', width: '', align: 'center', show: true},
+        {fieldName: 'enabled', label: '任务状态', width: '', align: 'center', show: true},
         {fieldName: 'description', label: '备注', width: '', align: 'center', show: true},
         {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
         {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},

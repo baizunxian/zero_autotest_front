@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <el-card shadow="hover" style="height: 100%;">
+<!--    <el-card shadow="hover" style="height: 100%;">-->
 
       <el-row>
         <el-col :span="12" style="padding-left: 5px; padding-right: 5px; width: 100%">
@@ -317,7 +317,7 @@
         </el-col>
 
       </el-row>
-    </el-card>
+<!--    </el-card>-->
   </div>
 </template>
 
