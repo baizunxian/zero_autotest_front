@@ -77,21 +77,13 @@
               </el-button>
             </template>
 
-            <template v-else-if="field.fieldName === 'run_mode'">
-              <span v-if=" row.run_mode === 'case'">用例</span>
-              <span v-else-if=" row.run_mode === 'suite'">套件</span>
-              <span v-else-if=" row.run_mode === 'module'">模块</span>
-              <span v-else-if=" row.run_mode === 'project'">项目</span>
-              <span v-else-if=" row.run_mode === 'acg'">自动用例</span>
-            </template>
-
             <template v-else-if="field.fieldName === 'status'">
               <el-tag type="success" v-if="row.success">通过</el-tag>
               <el-tag type="danger" v-else>不通过</el-tag>
             </template>
 
             <template v-else>
-              <span>{{ row[field.fieldName] }}</span>
+              <span>{{ field.lookupCode?formatLookup(field.lookupCode, row[field.fieldName]): row[field.fieldName]  }}</span>
             </template>
 
           </template>
@@ -132,6 +124,7 @@ import TestReport from '/@/views/api/Report/components/report.vue';
 import {useReportApi} from '/@/api/useAutoApi/report';
 import {defineComponent, onMounted, reactive, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus'
+import {formatLookup} from '/@/utils/lookup'
 
 
 export default defineComponent({
@@ -141,10 +134,11 @@ export default defineComponent({
     const state = reactive({
       fieldData: [
         {fieldName: 'name', label: '报告名称', width: '', align: 'center', show: true},
-        {fieldName: 'run_type', label: '任务类型', width: '', align: 'center', show: true},
-        {fieldName: 'run_test_count', label: '运行用例', width: '', align: 'center', show: true},
         {fieldName: 'status', label: '运行结果', width: '', align: 'center', show: true},
-        {fieldName: 'successes', label: '执行结果', width: '', align: 'center', show: true},
+        {fieldName: 'run_type',label: '任务类型',width: '',align: 'center',show: true,lookupCode: 'api_report_run_type'},
+        {fieldName: 'run_mode',label: '运行模式',width: '',align: 'center',show: true,lookupCode: 'api_report_run_mode'},
+        {fieldName: 'run_test_count', label: '运行用例', width: '', align: 'center', show: true},
+        // {fieldName: 'successes', label: '执行结果', width: '', align: 'center', show: true},
         {fieldName: 'successful_use_case', label: '成功用例', width: '', align: 'center', show: true},
         {fieldName: 'duration', label: '执行耗时(秒)', width: '', align: 'center', show: true},
         {fieldName: 'start_at', label: '执行时间', width: '150', align: 'center', show: true},
@@ -219,6 +213,7 @@ export default defineComponent({
       onOpenReport,
       search,
       deleteReport,
+      formatLookup,
       ...toRefs(state),
     };
   }

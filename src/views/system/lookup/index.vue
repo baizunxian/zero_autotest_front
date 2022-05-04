@@ -215,6 +215,7 @@ import {ElMessage, ElMessageBox} from 'element-plus';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useLookupApi} from '/@/api/useSystemApi/lookup';
 import {useStore} from "/@/store";
+import {formatLookup} from "/@/utils/lookup";
 
 
 export default defineComponent({
@@ -225,6 +226,7 @@ export default defineComponent({
     const lookupFormRef = ref();
     const store = useStore();
     const userInfos = store.state.userInfos.userInfos;
+    const lookupInfo = store.state.lookup.lookup;
     const state = reactive({
       fieldData: [
         {fieldName: 'code', label: '编码', width: '', align: 'center', show: true},
@@ -319,7 +321,7 @@ export default defineComponent({
 
     // 删除
     const deleted = (row: any) => {
-      ElMessageBox.confirm(`此操作将删除账户名称：“${row.username}”，是否继续?`, '提示', {
+      ElMessageBox.confirm('此操作将永久删除, 是否继续?', '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',
@@ -397,6 +399,8 @@ export default defineComponent({
     // 页面加载时
     onMounted(() => {
       getList();
+      console.log(formatLookup('test', '80'))
+      console.log('lookupInfo', lookupInfo)
     });
     return {
       getList,
@@ -414,6 +418,7 @@ export default defineComponent({
       deletedLookupValue,
       store,
       userInfos,
+      formatLookup,
       ...toRefs(state),
     };
   },

@@ -28,5 +28,12 @@ export function useTimedTasksApi() {
         data,
       });
     },
+    taskSwitch: (data?: object) => {
+      return request({
+        url: '/timedTasks/taskSwitch',
+        method: 'POST',
+        data,
+      });
+    },
   };
 }

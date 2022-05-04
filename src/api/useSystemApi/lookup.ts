@@ -11,6 +11,13 @@ import request from '/@/utils/request';
  */
 export function useLookupApi() {
   return {
+    getAllLookup: () => {
+      return request({
+        url: '/lookup/getAllLookup',
+        method: 'POST',
+        data: {}
+      });
+    },
     getLookupList: (data: object) => {
       return request({
         url: '/lookup/getLookupList',

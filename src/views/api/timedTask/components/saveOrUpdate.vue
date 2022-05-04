@@ -37,18 +37,18 @@
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="套件类型" prop="task_type">
-              <el-radio-group v-model="form.task_type" size="small" @change="radioChange">
+            <el-form-item label="套件类型" prop="run_type">
+              <el-radio-group v-model="form.run_type" size="small" @change="radioChange">
                 <!-- <el-radio :label="1" border>项目</el-radio> -->
-                <el-radio :label="2" border>模块</el-radio>
-                <el-radio :label="3" border>套件</el-radio>
+                <el-radio label="module" border>模块</el-radio>
+                <el-radio label="suite" border>套件</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
 
 
           <!--          项目-->
-          <template v-if="form.task_type === 2">
+          <template v-if="form.run_type === 'module'">
             <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
               <el-form-item label="关联模块" prop="case_ids">
                 <el-select
@@ -70,7 +70,7 @@
           </template>
 
           <!--          套件-->
-          <template v-if="form.task_type === 3">
+          <template v-if="form.run_type === 'suite'">
             <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
               <el-form-item label="关联套件" prop="module_ids">
                 <el-select
@@ -116,6 +116,7 @@ import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
 import {ElMessage} from "element-plus";
 import {useProjectApi} from "/@/api/useAutoApi/project";
 import {useModuleApi} from "/@/api/useAutoApi/module";
+import {useTestSuiteApi} from "/@/api/useAutoApi/suite";
 
 export default defineComponent({
   name: 'saveOrUpdateTimedTasks',
@@ -126,8 +127,8 @@ export default defineComponent({
         name: '', // 项目名称
         project_id: null, // project
         responsible_name: '', // 负责人
-        task_type: 2, // 默认模块类型
-        case_ids: null, // id集合
+        run_type: 'module', // 默认模块类型
+        case_ids: [], // id集合
         crontab_str: '', // 表达式
         description: '', // 备注
       }
@@ -178,15 +179,23 @@ export default defineComponent({
           })
     };
 
+    // 获取套件
+    const getSuitesList = () => {
+      useTestSuiteApi().getList(state.suiteListQuery)
+          .then(res => {
+            state.suiteList = res.data.rows
+          })
+    };
+
     // 选择项目
-    const selectProject = (project_id: string | number) => {
+    const selectProject = (project_id: any) => {
       state.form.case_ids = []
-      if (state.form.task_type === 2) {
+      if (state.form.run_type === 'module') {
         state.moduleListQuery.project_id = project_id
         getModuleList()
-      } else if (state.form.task_type === 3) {
+      } else if (state.form.run_type === 'suite') {
         state.suiteListQuery.project_id = project_id
-        // getSuitesList()
+        getSuitesList()
       }
 
     }
@@ -207,7 +216,7 @@ export default defineComponent({
     // };
 
     // 切换运行类型时清空
-    const radioChange = (val: string | number) => {
+    const radioChange = () => {
       state.form.case_ids = []
     }
 
@@ -217,13 +226,14 @@ export default defineComponent({
       state.editType = type
       if (row) {
         state.form = JSON.parse(JSON.stringify(row));
-        if (row.task_type === 2) {
+        if (row.run_type === 'module') {
           state.moduleListQuery.project_id = row.project_id
           getModuleList()
         }
-        // else if (row.task_type === 2) {
-        //
-        // }
+        else if (row.run_type === 'suite') {
+          state.suiteListQuery.project_id = row.project_id
+          getSuitesList()
+        }
       } else {
         state.form = createForm()
       }
@@ -257,6 +267,7 @@ export default defineComponent({
       selectProject,
       getProjectList,
       getModuleList,
+      getSuitesList,
       openDialog,
       radioChange,
       formRef,
