@@ -73,6 +73,7 @@
 
     <!--    运行   -->
     <el-dialog
+        draggable
         v-model="showRunPage"
         width="600px"
         top="8vh"

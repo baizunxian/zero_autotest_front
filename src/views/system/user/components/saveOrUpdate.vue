@@ -1,6 +1,7 @@
 <template>
   <div class="system-edit-user-container">
     <el-dialog
+        draggable
         :title="editType === 'save'? `新增` : `修改`"
         v-model="isShowDialog" width="769px">
       <el-form :model="form" :rules="rules" ref="userFormRef" size="default" label-width="90px">

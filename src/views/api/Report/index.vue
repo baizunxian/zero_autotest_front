@@ -104,6 +104,7 @@
                   @pagination="getList"/>
 
       <el-dialog
+          draggable
           v-model="showReportDialog"
           width="80%"
           top="8vh"

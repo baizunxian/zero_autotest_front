@@ -92,8 +92,10 @@
 
     <!--    编辑数据字典    -->
     <el-dialog
+        draggable
         :title="lookupEditType === 'save'? `新增` : `修改`"
         v-model="isShowLookupDialog"
+        top="15vh"
         width="500px">
       <el-form :model="lookupForm" :rules="lookupRules" ref="lookupFormRef" size="default" label-width="90px">
         <el-row :gutter="35">

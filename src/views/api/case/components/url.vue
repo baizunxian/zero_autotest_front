@@ -41,6 +41,7 @@
     </el-form>
 
     <el-dialog
+        draggable
         v-model="showEnv"
         width="600px"
         top="8vh"

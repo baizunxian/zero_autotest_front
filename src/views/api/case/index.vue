@@ -72,6 +72,7 @@
     <save-or-update ref="saveOrUpdateRef" @getList="getList"/>
 
     <el-dialog
+        draggable
         v-model="showRunPage"
         width="600px"
         top="8vh"
@@ -111,6 +112,7 @@
     </el-dialog>
 
     <el-dialog
+        draggable
         v-model="showTestReportDialog"
         width="80%"
         top="8vh"

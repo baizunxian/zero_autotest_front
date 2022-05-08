@@ -30,6 +30,7 @@
       </div>
       <!--函数列表-->
       <el-dialog
+          draggable
           title="函数列表"
           v-model="debugFuncListShow"
           width="80%"
@@ -86,6 +87,7 @@
       </el-dialog>
       <!--函数调试-->
       <el-dialog
+          draggable
           lock-scroll
           title="函数调试"
           v-if="debugFuncShow"

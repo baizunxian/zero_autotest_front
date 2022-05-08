@@ -68,6 +68,7 @@
     <!--        top='4vh'-->
     <!--    >-->
     <el-dialog
+        draggable
         v-model="showTestReportDialog"
         width="80%"
         top="8vh"
