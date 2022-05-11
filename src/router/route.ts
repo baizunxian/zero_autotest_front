@@ -122,9 +122,9 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
                         },
                     },
                     {
-                        path: '/system/dic',
+                        path: '/system/lookup',
                         name: 'systemDic',
-                        component: () => import('/@/views/system/dic/index.vue'),
+                        component: () => import('/@/views/system/lookup/index.vue'),
                         meta: {
                             title: '字典管理',
                             isLink: '',

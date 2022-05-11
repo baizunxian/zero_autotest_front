@@ -72,6 +72,7 @@
     <save-or-update ref="saveOrUpdateRef" @getList="getList"/>
 
     <el-dialog
+        draggable
         v-model="showRunPage"
         width="600px"
         top="8vh"
@@ -111,6 +112,7 @@
     </el-dialog>
 
     <el-dialog
+        draggable
         v-model="showTestReportDialog"
         width="80%"
         top="8vh"
@@ -235,7 +237,7 @@ export default defineComponent({
     // 运行测试用例
     const runTestCase = () => {
       state.runCaseLoading = !state.runCaseLoading;
-      useTestCaseApi().runTestCase(state.runForm)
+      useTestCaseApi().runTestCaseNew(state.runForm)
           .then(res => {
             if (state.runForm.run_mode === 1) {
               console.log(res)

@@ -163,24 +163,24 @@
 
 /* Dialog 对话框
 ------------------------------- */
-.el-overlay {
-	overflow: hidden;
-	.el-overlay-dialog {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: unset !important;
-		width: 100%;
-		height: 100%;
-		.el-dialog {
-			margin: 0 auto !important;
-			position: absolute;
-			.el-dialog__body {
-				padding: 20px !important;
-			}
-		}
-	}
-}
+//.el-overlay {
+//	overflow: hidden;
+//	.el-overlay-dialog {
+//		//display: flex;
+//		//align-items: center;
+//		//justify-content: center;
+//		//position: unset !important;
+//		//width: 100%;
+//		//height: 100%;
+//		.el-dialog {
+//			margin: 0 auto !important;
+//			position: absolute;
+//			.el-dialog__body {
+//				//padding: 20px !important;
+//			}
+//		}
+//	}
+//}
 .el-dialog__body {
 	max-height: calc(90vh - 111px) !important;
 	overflow-y: auto;

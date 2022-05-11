@@ -85,6 +85,7 @@
   </el-form>
 
   <el-dialog
+      draggable
       v-model="showCaseInfo"
       width="80%"
       top="8vh"

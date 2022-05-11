@@ -31,6 +31,7 @@ export async function initBackEndControlRoutes() {
   if (!Session.get('token')) return false;
   // 触发初始化用户信息
   store.dispatch('userInfos/setUserInfos');
+  store.dispatch('lookup/setLookup');
   // 获取路由菜单数据
   const res = await getBackEndControlRoutes();
   // 存储接口原始路由（未处理component），根据需求选择使用

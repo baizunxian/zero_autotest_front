@@ -73,6 +73,7 @@
 
     <!--    运行   -->
     <el-dialog
+        draggable
         v-model="showRunPage"
         width="600px"
         top="8vh"
@@ -223,7 +224,7 @@ export default defineComponent({
 
     //runSuitePage
     const runTestSuite = () => {
-      useTestCaseApi().runTestCase(state.runForm).then(res => {
+      useTestCaseApi().runTestCaseNew(state.runForm).then(res => {
         console.log(res)
       })
     }

@@ -66,6 +66,7 @@
     </el-card>
 
     <el-dialog
+        draggable
         v-model="showSaveOrUpdate"
         width="80%"
         top="8vh"

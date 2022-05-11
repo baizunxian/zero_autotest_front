@@ -68,6 +68,7 @@
     <!--        top='4vh'-->
     <!--    >-->
     <el-dialog
+        draggable
         v-model="showTestReportDialog"
         width="80%"
         top="8vh"
@@ -208,7 +209,7 @@ export default defineComponent({
             background: 'rgba(0, 0, 0, 0.8)',
             customClass: 'loading-class'
           })
-          useTestCaseApi().debugTestCase(testCaseForm)
+          useTestCaseApi().debugTestCaseNew(testCaseForm)
               .then(res => {
                 state.reportBody = res.data
                 console.log(res, 'this.res')
