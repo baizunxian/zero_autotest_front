@@ -178,7 +178,7 @@ export default defineComponent({
 
     // 删除用户
     const deleted = (row: TableDataRow) => {
-      ElMessageBox.confirm(`此操作将删除账户名称：“${row.username}”，是否继续?`, '提示', {
+      ElMessageBox.confirm('是否删除该条数据, 是否继续?', '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',

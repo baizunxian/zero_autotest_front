@@ -146,7 +146,7 @@ export default defineComponent({
     };
     // 删除当前行
     const deleted = (row: RouteRecordRaw) => {
-      ElMessageBox.confirm(`此操作将永久删除路由：${row.path}, 是否继续?`, '提示', {
+      ElMessageBox.confirm('是否删除该条数据, 是否继续?', '提示', {
         confirmButtonText: '删除',
         cancelButtonText: '取消',
         type: 'warning',

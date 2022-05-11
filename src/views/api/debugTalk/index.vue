@@ -30,6 +30,7 @@
       </div>
       <!--函数列表-->
       <el-dialog
+          draggable
           title="函数列表"
           v-model="debugFuncListShow"
           width="80%"
@@ -86,6 +87,7 @@
       </el-dialog>
       <!--函数调试-->
       <el-dialog
+          draggable
           lock-scroll
           title="函数调试"
           v-if="debugFuncShow"
@@ -279,7 +281,7 @@ export default defineComponent({
 
     // 删除角色
     const deleted = (row: any) => {
-      ElMessageBox.confirm(`此操作将删除角色名称：“${row.name}”，是否继续?`, '提示', {
+      ElMessageBox.confirm('是否删除该条数据, 是否继续?', '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',

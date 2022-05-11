@@ -45,24 +45,22 @@
               </el-button>
             </template>
 
-            <template v-else-if="field.fieldName === 'task_type'">
-              <el-tag type="success" v-if="row.task_type === 2">模块</el-tag>
-              <el-tag type="success" v-else-if="row.task_type === 3">套件</el-tag>
-            </template>
-
             <template v-else>
-              <span>{{ row[field.fieldName] }}</span>
+              <span>{{ field.lookupCode? formatLookup(field.lookupCode, row[field.fieldName]): row[field.fieldName]}}</span>
             </template>
 
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="100">
-          <template #default="scope">
-            <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"
-                       @click="onOpenSaveOrUpdate('update', scope.row)">修改
+        <el-table-column label="操作" width="150">
+          <template #default="{row}">
+            <el-button size="small" type="text"
+                       @click="taskSwitch(row)">{{ row.enabled ? '停止' : '启动' }}
             </el-button>
-            <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text" @click="deleted(scope.row)">
+            <el-button size="small" type="text"
+                       @click="onOpenSaveOrUpdate('update', row)">修改
+            </el-button>
+            <el-button size="small" type="text" @click="deleted(row)">
               删除
             </el-button>
           </template>
@@ -85,6 +83,7 @@ import {ElMessage, ElMessageBox} from 'element-plus';
 import saveOrUpdate from '/@/views/api/timedTask/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useTimedTasksApi} from "/@/api/useAutoApi/timedTasks";
+import {formatLookup} from "/@/utils/lookup";
 
 // 定义接口来定义对象的类型
 // interface TableData {
@@ -107,7 +106,8 @@ export default defineComponent({
         {fieldName: 'name', label: '任务名称', width: '', align: 'center', show: true},
         {fieldName: 'project_name', label: '所属项目', width: '', align: 'center', show: true},
         {fieldName: 'crontab_str', label: '执行时间', width: '', align: 'center', show: true},
-        {fieldName: 'task_type', label: '任务类型', width: '', align: 'center', show: true},
+        {fieldName: 'run_type', label: '任务类型', width: '', align: 'center', show: true, lookupCode: 'api_report_run_type'},
+        {fieldName: 'enabled', label: '任务状态', width: '', align: 'center', show: true, lookupCode: 'api_timed_task_status'},
         {fieldName: 'description', label: '备注', width: '', align: 'center', show: true},
         {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
         {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
@@ -140,9 +140,18 @@ export default defineComponent({
       saveOrUpdateRef.value.openDialog(editType, row);
     };
 
+    // 新增或修改角色
+    const taskSwitch = (row: any) => {
+      useTimedTasksApi().taskSwitch({id: row.id})
+      .then(() => {
+        ElMessage.success('操作成功！');
+        getList()
+      })
+    };
+
     // 删除角色
     const deleted = (row: any) => {
-      ElMessageBox.confirm(`此操作将删除角色名称：“${row.name}”，是否继续?`, '提示', {
+      ElMessageBox.confirm('是否删除该条数据, 是否继续?', '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',
@@ -166,6 +175,8 @@ export default defineComponent({
       saveOrUpdateRef,
       onOpenSaveOrUpdate,
       deleted,
+      taskSwitch,
+      formatLookup,
       ...toRefs(state),
     };
   },

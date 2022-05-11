@@ -72,6 +72,7 @@
     <save-or-update ref="saveOrUpdateRef" @getList="getList"/>
 
     <el-dialog
+        draggable
         v-model="showRunPage"
         width="600px"
         top="8vh"
@@ -111,6 +112,7 @@
     </el-dialog>
 
     <el-dialog
+        draggable
         v-model="showTestReportDialog"
         width="80%"
         top="8vh"
@@ -203,7 +205,7 @@ export default defineComponent({
 
     // 删除角色
     const deleted = (row: any) => {
-      ElMessageBox.confirm(`此操作将删除角色名称：“${row.name}”，是否继续?`, '提示', {
+      ElMessageBox.confirm('是否删除该条数据, 是否继续?', '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',
@@ -235,7 +237,7 @@ export default defineComponent({
     // 运行测试用例
     const runTestCase = () => {
       state.runCaseLoading = !state.runCaseLoading;
-      useTestCaseApi().runTestCase(state.runForm)
+      useTestCaseApi().runTestCaseNew(state.runForm)
           .then(res => {
             if (state.runForm.run_mode === 1) {
               console.log(res)

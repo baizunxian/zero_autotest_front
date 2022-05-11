@@ -1,6 +1,7 @@
 <template>
   <div class="system-edit-role-container">
-    <el-dialog :title="editType === 'save'? `新增` : `修改`" v-model="isShowDialog" width="769px">
+    <el-dialog
+        draggable :title="editType === 'save'? `新增` : `修改`" v-model="isShowDialog" width="769px">
       <el-form :model="form" :rules="rules" label-width="90px" ref="formRef">
         <el-row :gutter="35">
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
@@ -59,8 +60,8 @@
       </el-form>
       <template #footer>
 				<span class="dialog-footer">
-					<el-button @click="onCancel" size="default">取 消</el-button>
-					<el-button type="primary" @click="saveOrUpdate" size="default">保 存</el-button>
+					<el-button @click="onCancel">取 消</el-button>
+					<el-button type="primary" @click="saveOrUpdate">保 存</el-button>
 				</span>
       </template>
     </el-dialog>
