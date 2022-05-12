@@ -42,8 +42,12 @@
               <el-button size="small"
                          type="text"
                          @click="onOpenSaveOrUpdate('update', row)">
-                {{ row[field.fieldName] }}
+                {{ row.username }}
               </el-button>
+            </template>
+
+            <template v-else-if="field.fieldName === 'roles'">
+              <el-tag v-for="item in row.roles" :key="item" style="margin-right: 2px">{{handleRoles(item)}}</el-tag>
             </template>
 
             <template v-else-if="field.fieldName === 'status'">
@@ -81,17 +85,18 @@
                   v-model:limit="listQuery.pageSize"
                   @pagination="getList"/>
     </el-card>
-    <save-or-update @getList="getList" ref="saveOrUpdateRef"/>
+    <save-or-update @getList="getList" :roleList="roleList" ref="saveOrUpdateRef"/>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
+import {defineComponent, h, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import saveOrUpdate from '/@/views/system/user/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useUserApi} from '/@/api/useSystemApi/user';
 import {useStore} from "/@/store";
+import {useRolesApi} from "/@/api/useSystemApi/roles";
 
 // 定义接口来定义对象的类型
 interface TableDataRow {
@@ -121,6 +126,8 @@ interface StateRow {
   tableLoading: boolean;
   total: number;
   listQuery: listQueryRow;
+  roleList: Array<any>;
+  roleQuery: listQueryRow;
 }
 
 
@@ -153,6 +160,12 @@ export default defineComponent({
         pageSize: 20,
         username: '',
       },
+      //rule
+      roleList: [],
+      roleQuery: {
+        page: 1,
+        pageSize: 100,
+      }
     });
     // 获取用户数据
     const getList = () => {
@@ -162,6 +175,13 @@ export default defineComponent({
             state.listData = res.data.rows
             state.total = res.data.rowTotal
             state.tableLoading = false
+          })
+    };
+
+    const getRolesList = () => {
+      useRolesApi().getList(state.roleQuery)
+          .then((res: any) => {
+            state.roleList = res.data.rows
           })
     };
 
@@ -193,9 +213,14 @@ export default defineComponent({
           .catch(() => {
           });
     };
+
+    const handleRoles = (role: number) => {
+      return state.roleList.find(e => e.id == role) ? state.roleList.find(e => e.id == role).name : ''
+    }
     // 页面加载时
     onMounted(() => {
       getList();
+      getRolesList()
     });
     return {
       getList,
@@ -205,6 +230,8 @@ export default defineComponent({
       deleted,
       store,
       userInfos,
+      getRolesList,
+      handleRoles,
       ...toRefs(state),
     };
   },

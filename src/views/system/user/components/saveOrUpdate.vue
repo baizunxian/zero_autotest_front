@@ -22,9 +22,13 @@
 
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="关联角色" prop="roles">
-              <el-select v-model="form.roles" placeholder="请选择" clearable class="w100">
-                <el-option label="超级管理员" value="admin"></el-option>
-                <el-option label="普通用户" value="common"></el-option>
+              <el-select v-model="form.roles" multiple placeholder="请选择" clearable class="w100">
+                <el-option
+                    v-for="item in roleList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -94,7 +98,7 @@ const createForm = () => {
 
 export default defineComponent({
   name: 'systemEditUser',
-  props: ['moduleName'],
+  props: ['roleList'],
   setup(props, {emit}) {
     const userFormRef = ref()
     const state = reactive({
@@ -103,6 +107,7 @@ export default defineComponent({
       form: createForm(),
       rules: {
         username: [{required: true, message: '请输入用户名称', trigger: 'blur'},],
+        roles: [{required: true, message: '请选择角色', trigger: 'blur'},],
         nickname: [{required: true, message: '请输入用户昵称', trigger: 'blur'},],
       }
     });

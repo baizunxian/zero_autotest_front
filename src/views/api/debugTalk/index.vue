@@ -95,18 +95,16 @@
           width="80%"
           destroy-on-close
           :close-on-click-modal="false"
-          center
           append-to-body
-          top='4'
       >
-        <div class="filter-container">
+        <div>
           <div class="mb15">
             <strong>{{ debugFuncForm.func_parse_str }}</strong>
             <div style="white-space: pre-wrap; font-weight: bold" v-html="debugFuncForm.func_doc"></div>
           </div>
 
           <el-form size="mini" style="width: 50%;" label-position="left" label-width="100px" :model="funcArgsInfo">
-            <el-form-item v-for="(value , key) in funcArgsInfo" :key="key" :label="key">
+            <el-form-item v-for="key in funcArgsInfo" :key="key" :label="key">
               <el-input v-model="funcArgsInfo[key]"></el-input>
             </el-form-item>
           </el-form>
@@ -268,13 +266,11 @@ export default defineComponent({
     // 新增或修改
     const onOpenSaveOrUpdate = (row: any) => {
       let query = {}
-      console.log('row', row)
       if (row) {
         query.id = row.id
       } else {
         query.common = 'common'
       }
-      console.log('query', query)
       router.push({name: 'saveOrUpdateDebugTalk', query: query})
       // saveOrUpdateRef.value.openDialog(editType, row);
     };
