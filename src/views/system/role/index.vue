@@ -57,17 +57,6 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="name" label="角色名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="role_type" label="权限类型" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="status" label="角色状态" show-overflow-tooltip>
-          <template #default="scope">
-            <el-tag type="success" v-if="scope.row.status === 10">启用</el-tag>
-            <el-tag type="info" v-else>禁用</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="description" label="角色描述" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="updation_date" label="更新时间" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="creation_date" label="创建时间" show-overflow-tooltip></el-table-column>
         <el-table-column label="操作" width="100">
           <template #default="scope">
             <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"
