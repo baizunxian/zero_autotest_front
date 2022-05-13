@@ -1,9 +1,14 @@
 <template>
   <el-main class="layout-main">
+    <!--    <el-scrollbar-->
+    <!--        class="layout-scrollbar"-->
+    <!--        ref="layoutScrollbarRef"-->
+    <!--        :style="{ padding: currentRouteMeta.isLink && currentRouteMeta.isIframe ? 0 : '', transition: 'padding 0.3s ease-in-out' }"-->
+    <!--    >-->
     <el-scrollbar
         class="layout-scrollbar"
         ref="layoutScrollbarRef"
-        :style="{ padding: currentRouteMeta.isLink && currentRouteMeta.isIframe ? 0 : '', transition: 'padding 0.3s ease-in-out' }"
+        :style="{ padding: currentRouteMeta.isLink && currentRouteMeta.isIframe ? 0 : ''}"
     >
       <LayoutParentView :style="{ minHeight: `calc(100vh - ${headerHeight})` }"/>
       <Footer v-if="getThemeConfig.isFooter"/>
@@ -42,8 +47,8 @@ export default defineComponent({
     // 设置 main 的高度
     const initHeaderHeight = () => {
       let {isTagsview} = store.state.themeConfig.themeConfig;
-      // if (isTagsview) return (state.headerHeight = `84px`);
-      if (isTagsview) return (state.headerHeight = `114px`);
+      if (isTagsview) return (state.headerHeight = `84px`);
+      // if (isTagsview) return (state.headerHeight = `114px`);
       else return (state.headerHeight = `50px`);
     };
     // 初始化获取当前路由 meta，用于设置 iframes padding
