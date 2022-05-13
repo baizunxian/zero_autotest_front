@@ -1,13 +1,13 @@
 <template>
   <div class="home-container" style="height: 100%;">
-    <el-row style='height: 9%; margin-bottom: 10px'>
+    <el-row style='margin-bottom: 10px'>
       <el-col :span='24' class='common'>
         <count-statistics :data="countInfo" />
       </el-col>
     </el-row>
 
     <!--    top, 运行分析-->
-    <el-row style='margin-bottom: 10px ; height: 50%'>
+    <el-row style='margin-bottom: 10px ; height: 30%'>
       <el-col :span='6' class='common'>
         <top-statistics :data='topInfo'/>
       </el-col>

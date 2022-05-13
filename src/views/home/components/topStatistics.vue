@@ -1,17 +1,18 @@
 <template>
-  <el-card class="box-card" style="margin-right: 8px">
+  <el-card class="box-card h100" style="margin-right: 8px">
     <el-tabs v-model="activeName">
       <el-tab-pane label="项目用例数TOP" name="first">
-        <div ref="pcns" id="pcns">
+        <div style="width: 100%" ref="pcns" id="pcns">
           <el-table
               :data="data.pcns_data"
               stripe
               :show-header="false"
+              style="width: 100%"
               >
             <el-table-column
                 prop="name"
                 label="项目"
-                width="180">
+                width="auto">
               <template #default="{row, $index}">
                 <svg-icon style="font-size: 18px;" v-if="$index === 0" class-name="gold_medal" icon-class="gold_medal"/>
                 <svg-icon style="font-size: 18px;" v-if="$index === 1" class-name="silver_medal"
@@ -46,7 +47,7 @@
           <el-table-column
               prop="username"
               label="创建人"
-              width="180">
+              width="auto">
             <template #default="{row, $index}">
               <svg-icon style="font-size: 18px;" v-if="$index === 0" class-name="gold_medal" icon-class="gold_medal"/>
               <svg-icon style="font-size: 18px;" v-if="$index === 1" class-name="silver_medal"
@@ -96,7 +97,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-:deep(.el-card ) {
+:deep(.el-card__body ) {
   padding: 0 5px;
   height: 100%;
 }

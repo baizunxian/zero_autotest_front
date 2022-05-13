@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <el-row>
+  <div class="h100">
+    <el-row  class="h100">
       <el-col :span="4" class="common" v-for="(tool, index) in list" :key="index">
         <div class="item" @click="clickToPage(tool.full_path)">
           <SvgIcon :name="tool.icon" :size="34"/>
