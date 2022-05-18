@@ -3,7 +3,8 @@
     <router-view v-slot="{ Component }">
       <!--			<transition :name="setTransitionName" mode="out-in">-->
       <keep-alive :include="keepAliveNameList">
-        <component :is="Component" :key="refreshRouterViewKey" class="w100 h100" :style="{ minHeight }"/>
+        <component :is="Component" :key="refreshRouterViewKey" class="w100 h100"
+                   :style="{ minHeight }"/>
       </keep-alive>
       <!--			</transition>-->
     </router-view>

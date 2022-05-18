@@ -18,6 +18,12 @@ https://gitee.com/xb_xiaobai/zero_autotest_front
 
 #### 🚧 安装 cnpm、yarn
 
+```bash
+# node 版本
+node -v 
+v14.17.5
+```
+
 - 复制代码(桌面 cmd 运行) `npm install -g cnpm --registry=https://registry.npm.taobao.org`
 - 复制代码(桌面 cmd 运行) `npm install -g yarn`
 
@@ -47,7 +53,7 @@ yarn build
 #### 💯 学习交流加 微信 群
 
 - 微信群
-<img src="https://img.xiaobaicodes.com/img/webwxgetmsgimg.jpg" width="220" height="220" alt="zero autotest 交流群" title="zero autotest 交流群"/>
+<img src="https://img.xiaobaicodes.com/img%2FSnipaste_2022-05-18_10-41-13.png" width="220" height="220" alt="zero autotest 交流群" title="zero autotest 交流群"/>
   
 #### 💌 支持作者
 

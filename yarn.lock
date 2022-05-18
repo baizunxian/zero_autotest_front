@@ -979,6 +979,11 @@ constant-case@^3.0.4:
     tslib "^2.0.3"
     upper-case "^2.0.2"
 
+countup@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/countup/-/countup-1.8.2.tgz#021ccc6a6f964540c6b27ed64681af27fb55f010"
+  integrity sha1-AhzMam+WRUDGsn7WRoGvJ/tV8BA=
+
 crelt@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/crelt/-/crelt-1.0.5.tgz#57c0d52af8c859e354bace1883eb2e1eb182bb94"

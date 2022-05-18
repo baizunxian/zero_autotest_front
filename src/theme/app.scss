@@ -59,6 +59,7 @@ body,
 		padding: 0 !important;
 	}
 	.layout-main {
+		height: 100%;
 		padding: 0 !important;
 		overflow: hidden;
 		width: 100%;
@@ -66,6 +67,9 @@ body,
 	}
 	.el-scrollbar {
 		width: 100%;
+	}
+	.el-scrollbar__view {
+		height: 100%;
 	}
 	// 此字段多次用到，建议不删除，如需修改，请重写覆盖样式
 	.layout-view-bg-white {
