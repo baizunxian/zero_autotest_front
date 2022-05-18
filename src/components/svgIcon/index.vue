@@ -28,7 +28,7 @@ export default {
   },
   setup(props: SvgIconProps) {
     // 定义变量
-    const linesString: any[] = ['https', 'http', '/src', '/assets', import.meta.env.VITE_PUBLIC_PATH];
+    const linesString: any[] = ['https', 'http', '/src', '/assets', 'assets', import.meta.env.VITE_PUBLIC_PATH];
     const onLineStyle: string = `font-size: ${props.size}px;color: ${props.color}`;
     const localsStyle: string = `width: ${props.size}px;height: ${props.size}px`;
     const eleSetStyle = {class: 'el-icon', style: onLineStyle};
