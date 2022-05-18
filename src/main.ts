@@ -9,7 +9,6 @@ import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import '/@/theme/index.scss';
 import mitt from 'mitt';
-// import JsonViewer from 'vue3-json-viewer'
 
 const app = createApp(App);
 

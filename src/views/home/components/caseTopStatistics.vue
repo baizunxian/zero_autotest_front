@@ -1,25 +1,26 @@
 <template>
-  <el-card class="box-card h100" style="margin-right: 8px">
+  <el-card class="box-card h100" style="margin-right: 8px;" ref="cardRef">
     <el-tabs v-model="activeName">
-      <el-tab-pane label="项目用例数TOP" name="first">
-        <div style="width: 100%" ref="pcns" id="pcns">
+      <el-tab-pane label="项目用例数TOP" name="first" class="h100">
+        <div ref="pcnsRef" id="pcns">
           <el-table
+              class="h100"
               :data="data.pcns_data"
               stripe
+              :max-height="tableHeight"
               :show-header="false"
-              style="width: 100%"
-              >
+          >
             <el-table-column
                 prop="name"
                 label="项目"
                 width="auto">
               <template #default="{row, $index}">
-                <svg-icon style="font-size: 18px;" v-if="$index === 0" class-name="gold_medal" icon-class="gold_medal"/>
-                <svg-icon style="font-size: 18px;" v-if="$index === 1" class-name="silver_medal"
-                          icon-class="silver_medal"/>
-                <svg-icon style="font-size: 18px;" v-if="$index === 2" class-name="bronze_medal"
-                          icon-class="bronze_medal"/>
-                {{ row.name }}
+                <div class="top-content">
+                  <SvgIcon class="top-row" v-if="$index === 0" :name="gold_medal"/>
+                  <SvgIcon class="top-row" v-if="$index === 1" :name="silver_medal"/>
+                  <SvgIcon class="top-row" v-if="$index === 2" :name="bronze_medal"/>
+                  <span class="top-row">{{ row.name }}</span>
+                </div>
               </template>
             </el-table-column>
 
@@ -27,10 +28,7 @@
                 prop="case_num"
                 align="right"
                 label="用例总数">
-              <template #default="{row, $index}">
-                <span v-if="$index === 0">
-                  <svg-icon class-name="search-icon" icon-class="gold_modal"/>
-                </span>
+              <template #default="{row}">
                 {{ row.case_num }}条
               </template>
             </el-table-column>
@@ -42,6 +40,7 @@
         <el-table
             :data="data.ucns_data"
             stripe
+            :max-height="tableHeight"
             :show-header="false"
             style="width: 100%">
           <el-table-column
@@ -49,12 +48,13 @@
               label="创建人"
               width="auto">
             <template #default="{row, $index}">
-              <svg-icon style="font-size: 18px;" v-if="$index === 0" class-name="gold_medal" icon-class="gold_medal"/>
-              <svg-icon style="font-size: 18px;" v-if="$index === 1" class-name="silver_medal"
-                        icon-class="silver_medal"/>
-              <svg-icon style="font-size: 18px;" v-if="$index === 2" class-name="bronze_medal"
-                        icon-class="bronze_medal"/>
-              {{ row.username }}
+              <div class="top-content">
+
+                <SvgIcon class="top-row" style="font-size: 18px;" v-if="$index === 0" :name="gold_medal"/>
+                <SvgIcon class="top-row" style="font-size: 18px;" v-if="$index === 1" :name="silver_medal"/>
+                <SvgIcon class="top-row" style="font-size: 18px;" v-if="$index === 2" :name="bronze_medal"/>
+                <span class="top-row">{{ row.username }}</span>
+              </div>
             </template>
           </el-table-column>
 
@@ -78,7 +78,10 @@
 
 
 <script lang="ts">
-import {defineComponent, reactive, toRefs} from 'vue';
+import {computed, defineComponent, reactive, ref, toRefs} from 'vue';
+import gold_medal from "/@/icons/indexSvg/gold_medal.svg";
+import silver_medal from "/@/icons/indexSvg/silver_medal.svg";
+import bronze_medal from "/@/icons/indexSvg/bronze_medal.svg";
 
 export default defineComponent({
   name: 'top',
@@ -86,10 +89,22 @@ export default defineComponent({
     data: Object
   },
   setup() {
+    const cardRef = ref()
+    const pcnsRef = ref()
     const state = reactive({
       activeName: 'first',
     });
+
+    const tableHeight = computed(() => {
+      return window.innerHeight - (window.innerHeight * 0.7) - 100
+    })
     return {
+      cardRef,
+      pcnsRef,
+      tableHeight,
+      gold_medal,
+      silver_medal,
+      bronze_medal,
       ...toRefs(state),
     };
   },
@@ -99,6 +114,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 :deep(.el-card__body ) {
   padding: 0 5px;
+  height: 100%;
+}
+
+:deep(.el-tabs__content) {
   height: 100%;
 }
 
@@ -114,5 +133,18 @@ export default defineComponent({
   color: #000000;
   font-weight: 600;
 }
+
+.top-content {
+  vertical-align: middle;
+  box-sizing: border-box;
+  display: block;
+
+  .top-row {
+    display: inline-block;
+    box-sizing: border-box;
+    vertical-align: middle;
+  }
+}
+
 
 </style>

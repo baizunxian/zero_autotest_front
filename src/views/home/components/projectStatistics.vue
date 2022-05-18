@@ -1,41 +1,44 @@
 <template>
-  <el-card class="box-card" style="height: 100%">
-    <v-chart theme="ovilia-green" :options="option" style="height: 100%; width: 100%;"/>
+  <el-card class="box-card" style="height: 100%; margin-right: 8px" ref="cardRef">
+    <div ref="echartsRef" :style="{height: `${height}px`}"></div>
   </el-card>
 </template>
 
 <script>
-import * as ECharts from 'vue-echarts/components/ECharts.vue'
+import * as ECharts from 'echarts'
 import light from 'echarts/lib/theme/light.js'
-import {defineComponent, reactive, toRefs} from "vue";
+import {defineComponent, markRaw, onMounted, reactive, ref, toRefs, watch} from "vue";
 
 ECharts.registerTheme('ovilia-green', light) //引入主题
 export default defineComponent({
-  name: 'moduleStatistic',
+  name: 'extTop', // 执行排行
   props: {
     data: Object
   },
-  setup() {
-    const state = reactive({
-      option: this.initOption()
-    })
 
-    const initOption = () => {
+  setup(props) {
+    const echartsRef = ref()
+    const cardRef = ref()
+    const state = reactive({
+      height: 0,
+      echartsInfo: null,
+    });
+
+    const initData = () => {
       let module_list = []
-      let coverage_rate_list = []
       let successes_rate_list = []
       let pass_rate_list = []
-      this.data.product_statistic.forEach(e => {
-        module_list.push(e.product_name)
-        coverage_rate_list.push(e.coverage_rate ? e.coverage_rate : 0)
+      props.data.forEach(e => {
+        module_list.push(e.project_name)
         successes_rate_list.push(e.successes_rate ? e.successes_rate : 0)
         pass_rate_list.push(e.pass_rate ? e.pass_rate : 0)
       })
-      return {
+
+      state.echartsInfo = markRaw(ECharts.init(echartsRef.value))
+      state.echartsInfo.setOption({
         tooltip: {
           confine: true,
           trigger: 'axis',
-
           axisPointer: {
             type: 'shadow'
           }
@@ -43,13 +46,15 @@ export default defineComponent({
         title: {
           text: '产品数据统计',
           textStyle: {
-            fontSize: 16
+            color: '#000000',
+            fontSize: 14,
           },
         },
         grid: {
-          left: '1%',
-          right: '1%',
-          bottom: '1%',
+          left: '4%',
+          right: '4%',
+          bottom: '4%',
+          top: '15%',
           containLabel: true
         },
         legend: {
@@ -57,9 +62,6 @@ export default defineComponent({
         },
         toolbox: {
           show: true,
-          orient: 'vertical',
-          left: 'right',
-          top: 'center',
           feature: {
             mark: {show: true},
             dataView: {show: true, readOnly: false},
@@ -102,6 +104,7 @@ export default defineComponent({
           {
             name: '成功率',
             type: 'bar',
+            barWidth: 20,
             emphasis: {
               focus: 'series'
             },
@@ -110,40 +113,46 @@ export default defineComponent({
           {
             name: '通过率',
             type: 'bar',
+            barWidth: 20,
             emphasis: {
               focus: 'series'
             },
             data: pass_rate_list
           },
-          {
-            name: '覆盖率',
-            type: 'bar',
-            barGap: 0,
-            // label: labelOption,
-            emphasis: {
-              focus: 'series'
-            },
-            data: coverage_rate_list
-          },
         ]
-      }
+      })
+
     };
+    const initEchartsResizeFun = () => {
+      state.echartsInfo.resize()
+    };
+
+    watch(
+        () => props.data,
+        (val) => {
+          if (val) initData()
+        }
+    );
+
+    onMounted(() => {
+      state.height = cardRef.value.$el.offsetHeight * 0.9
+      window.addEventListener('resize', initEchartsResizeFun);
+    })
+
     return {
-      initOption,
+      initData,
+      echartsRef,
+      cardRef,
       ...toRefs(state),
     };
   }
 });
+
 </script>
 
-<style scoped>
-.box-card {
-  padding: 5px;
-}
-
-::v-deep .el-card__body {
-  padding: 8px;
-  height: 100%;
+<style lang="scss" scoped>
+:deep(.el-card__body) {
+  padding: 0;
 }
 
 </style>

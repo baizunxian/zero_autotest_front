@@ -11,7 +11,10 @@
       </el-input>
     </el-form-item>
     <el-form-item class="login-animation2">
-      <el-input :type="isShowPassword ? 'text' : 'password'" placeholder="密码：123456" v-model="ruleForm.password"
+      <el-input :type="isShowPassword ? 'text' : 'password'"
+                placeholder="密码：123456"
+                v-model="ruleForm.password"
+                @keyup.enter.native="onSignIn"
                 autocomplete="off">
         <template #prefix>
           <el-icon class="el-input__icon">
@@ -44,7 +47,7 @@
     <!--      </el-col>-->
     <!--    </el-form-item>-->
     <el-form-item class="login-animation4">
-      <el-button type="primary" class="login-content-submit" round @click="onSignIn" :loading="loading.signIn">
+      <el-button type="primary" class="login-content-submit" @keyup.enter.native="onSignIn" round @click="onSignIn" :loading="loading.signIn">
         <span>登 录</span>
       </el-button>
     </el-form-item>
