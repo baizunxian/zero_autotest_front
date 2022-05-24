@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container">
+  <div class="login-container" ref='vantaRef'>
     <div class="login-icon-group">
       <div class="login-icon-group-title">
         <img :src="logoMini"/>
@@ -15,51 +15,80 @@
             <el-tab-pane label="账号密码登录" name="account">
               <Account/>
             </el-tab-pane>
-<!--            <el-tab-pane label="手机号登录" name="mobile">-->
-<!--              <Mobile/>-->
-<!--            </el-tab-pane>-->
+            <!--            <el-tab-pane label="手机号登录" name="mobile">-->
+            <!--              <Mobile/>-->
+            <!--            </el-tab-pane>-->
           </el-tabs>
         </div>
-<!--        <Scan v-if="isScan"/>-->
-<!--        <div class="login-content-main-sacn" @click="isScan = !isScan">-->
-<!--          <i class="iconfont" :class="isScan ? 'icon-diannao1' : 'icon-barcode-qr'"></i>-->
-<!--          <div class="login-content-main-sacn-delta"></div>-->
-<!--        </div>-->
+        <!--        <Scan v-if="isScan"/>-->
+        <!--        <div class="login-content-main-sacn" @click="isScan = !isScan">-->
+        <!--          <i class="iconfont" :class="isScan ? 'icon-diannao1' : 'icon-barcode-qr'"></i>-->
+        <!--          <div class="login-content-main-sacn-delta"></div>-->
+        <!--        </div>-->
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, reactive, toRefs} from 'vue';
+import {computed, defineComponent, onBeforeUnmount, onMounted, reactive, ref, toRefs} from 'vue';
 import Account from '/@/views/login/component/account.vue';
-import Mobile from '/@/views/login/component/mobile.vue';
-import Scan from '/@/views/login/component/scan.vue';
 import {useStore} from '/@/store';
 
 import logoMini from '/@/assets/logo.png';
 import loginIconTwo from '/@/assets/login-icon-two.svg';
 
+// import BIRDS from 'vanta/src/vanta.birds.js'
+// import '/@/assets/three/three.js'
+
 // 定义接口来定义对象的类型
 interface LoginState {
   tabsActiveName: string;
   isScan: boolean;
+  vantaEffect: any;
 }
 
 export default defineComponent({
   name: 'loginIndex',
-  components: {Account, Mobile, Scan},
+  components: {Account},
   setup() {
     const store = useStore();
+    const vantaRef = ref();
     const state = reactive<LoginState>({
       tabsActiveName: 'account',
       isScan: false,
+      vantaEffect: null,
     });
     // 获取布局配置信息
     const getThemeConfig = computed(() => {
       return store.state.themeConfig.themeConfig;
     });
+    onMounted(() => {
+      // state.vantaEffect = BIRDS({
+      //   el: vantaRef.value,
+      //   THREE: window.THREE,
+      //   mouseControls: true,
+      //   touchControls: true,
+      //   gyroControls: false,
+      //   minHeight: 200.00,
+      //   minWidth: 200.00,
+      //   scale: 1.00,
+      //   scaleMobile: 1.00,
+      //   birdSize: 0.80,
+      //   wingSpan: 17.00,
+      //   speedLimit: 3.00,
+      //   alignment: 18.00,
+      //   cohesion: 19.00,
+      //   quantity: 3.00,
+      //   backgroundColor: 0x5050c
+      // })
+    })
+
+    onBeforeUnmount(() => {
+      // if (state.vantaEffect) state.vantaEffect.destroy()
+    })
     return {
+      vantaRef,
       logoMini,
       loginIconTwo,
       getThemeConfig,

@@ -34,7 +34,7 @@
 
           <el-button type="primary" @click="saveOrUpdateCase('save')" class="title-button">保存</el-button>
           <el-button type="success" @click="onEnv">调试</el-button>
-          <el-button type="warning">断言调试</el-button>
+<!--          <el-button type="warning">断言调试</el-button>-->
         </el-col>
       </el-row>
 

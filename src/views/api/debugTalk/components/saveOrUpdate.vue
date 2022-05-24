@@ -3,7 +3,13 @@
     <div class="myEditorTop">[{{ isEdit ? '编辑' : '只读' }}] - [{{ debugTalkFrom.project_name }}]
       <el-button v-show="isEdit" type="success" @click="saveOrUpdate" style="margin-left: 10px;">保存</el-button>
     </div>
-    <div ref="debugTalkRef" class="debugTalk"></div>
+    <v-ace-editor value=""/>
+    <v-ace-editor
+        ref="jsonEditorRef"
+        v-model:value="debugTalkFrom.debug_talk"
+        :options="options"
+        class="debugTalk"
+    ></v-ace-editor>
   </div>
 </template>
 
@@ -11,19 +17,13 @@
 import {defineComponent, onMounted, reactive, ref, toRefs} from "vue";
 import {useRoute} from 'vue-router'
 import {useDebugTalkApi} from "/@/api/useAutoApi/debugTalk";
-import ace from 'ace-builds'
-import 'ace-builds/src-noconflict/ext-language_tools';
-import 'ace-builds/src-noconflict/theme-monokai'
-import 'ace-builds/src-noconflict/ext-searchbox';
-import 'ace-builds/src-noconflict/mode-javascript';
-import workerPythonUrl from 'ace-builds/src-noconflict/mode-python.js?url';
 import {ElMessage} from "element-plus/es";
+import {VAceEditor} from '/@/components/VaceEditor/index.js';
 
-ace.config.setModuleUrl('ace/mode/python', workerPythonUrl);
 
 export default defineComponent({
   name: 'saveOrUpdateDebugTalk',
-  components: {},
+  components: {VAceEditor},
   setup() {
     const debugTalkRef = ref()
     const route = useRoute()
@@ -36,13 +36,7 @@ export default defineComponent({
         debug_talk: '',
         project_name: ''
       },
-      // headers
-
-    });
-
-    // 初始化Editor
-    const initEditor = (data: any = '') => {
-      state.editor = ace.edit(debugTalkRef.value, {
+      options: {
         fontSize: 14,
         mode: "ace/mode/python",
         theme: "ace/theme/monokai",
@@ -62,10 +56,10 @@ export default defineComponent({
         wrap: true, //换行
         animatedScroll: true,
         navigateWithinSoftTabs: true,
-      })
+      },
+      // headers
 
-      state.editor.session.setValue(data)
-    }
+    });
 
     const initData = () => {
       if (route.query) {
@@ -75,14 +69,13 @@ export default defineComponent({
               state.debugTalkFrom.project_name = res.data.project_name
               state.debugTalkFrom.id = res.data.id
               state.isEdit = res.data.edit
-              initEditor(state.debugTalkFrom.debug_talk)
+              // initEditor(state.debugTalkFrom.debug_talk)
             })
       }
     }
 
     // 新增
     const saveOrUpdate = () => {
-      state.debugTalkFrom.debug_talk = state.editor.getValue()
       useDebugTalkApi().saveOrUpdate(state.debugTalkFrom)
           .then(() => {
             ElMessage.success('操作成功');
@@ -95,7 +88,6 @@ export default defineComponent({
     })
 
     return {
-      initEditor,
       initData,
       debugTalkRef,
       saveOrUpdate,
