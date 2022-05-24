@@ -2,7 +2,10 @@
   <el-form inline ref="request-form" label-width="50px" size="mini" label-position="right">
     <div class="block-title">
       <el-button size="small" type="text" @click="addHeaders" title="添加header">
-        <el-icon><ele-CirclePlusFilled></ele-CirclePlusFilled></el-icon>add
+        <el-icon>
+          <ele-CirclePlusFilled></ele-CirclePlusFilled>
+        </el-icon>
+        add
       </el-button>
       <el-button type="text" @click="bulkEdit" title="文本编辑">
         {{ showBulk ? "KeyValueEdit" : "BulkEdit" }}
@@ -78,14 +81,40 @@ export default defineComponent({
       }
     }
 
+    // updateHeader {key: 'test', value:'test'}
+    const updateHeader = (headerData: any, remove: any) => {
+      if (remove) {
+        if (state.headersData.length > 0) {
+          state.headersData.forEach((data: any, index: number) => {
+            if (data.key.toLowerCase() === headerData.key.toLowerCase()) {
+              deleteHeaders(index)
+            }
+          })
+        }
+      } else {
+        if (state.headersData.length > 0) {
+          state.headersData.forEach((data: any) => {
+            if (data.key.toLowerCase() === headerData.key.toLowerCase()) {
+              data.value = headerData.value
+            } else {
+              state.headersData.push(headerData)
+            }
+          })
+        } else {
+          state.headersData.push(headerData)
+        }
+      }
+
+    }
+
     // 获取表单数据
     const getFormData = () => {
-      let headers = {}
+      let headers: any = {}
       if (state.showBulk) {
         bulkToKeyValue()
       }
       if (state.headersData.length > 0) {
-        state.headersData.forEach(data => {
+        state.headersData.forEach((data: any) => {
           if (data.key != '') {
             headers[data.key] = data.value
           }
@@ -154,6 +183,7 @@ export default defineComponent({
       addHeaders,
       deleteHeaders,
       bulkEdit,
+      updateHeader,
       ...toRefs(state),
     };
   },

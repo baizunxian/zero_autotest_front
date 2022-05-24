@@ -1,83 +1,78 @@
 <template>
   <el-form inline ref="request-form" :model="requestForm" label-width="50px" size="mini" label-position="right">
     <!-- data -->
-    <el-radio-group size="small" v-model="requestForm.dataType" class="radio-group">
-      <el-radio label="data">data</el-radio>
-      <el-radio label="json">json</el-radio>
-      <el-radio label="params">params</el-radio>
-      <el-radio label="form_data">form-data</el-radio>
-      <!--      <el-radio label="form-data">form-data</el-radio>-->
-    </el-radio-group>
-
-    <!---------------------------params------------------------------------>
-    <div v-if="requestForm.dataType === 'data'">
-      <div class="block-title">
-        <el-button size="small" type="text" @click="addData" title="add data">
-          <el-icon>
-            <ele-CirclePlusFilled></ele-CirclePlusFilled>
-          </el-icon>
-          add
-        </el-button>
-      </div>
+    <div style="border-bottom: 1px solid #E6E6E6; display: flex; justify-content: space-between">
       <div>
-        <el-table
-            ref="bodyDataTableRef"
-            :data="bodyData"
-            header-align='center'
-            border
-            tooltip-effect="dark"
-            style="width: 100%"
+        <el-radio-group
+            size="small"
+            v-model="requestForm.dataType"
+            class="radio-group"
+            @change="radioChange"
         >
-          <!-- <el-table-column type="selection" width="55" label="Option">
-          </el-table-column> -->
-          <el-table-column label="Key" header-align='center'>
-            <template #header>
-              <strong style="font-size: 14px;">参数名</strong>
-            </template>
-            <template #default="scope">
-              <el-input size="small" v-model="scope.row.key"></el-input>
-            </template>
-          </el-table-column>
+          <!--      <el-radio label="data">data</el-radio>-->
+          <el-radio label="form_data">form-data</el-radio>
+          <!--          <el-radio label="json">json</el-radio>-->
+          <el-radio label="json">json</el-radio>
+          <el-radio label="data">row</el-radio>
 
-          <el-table-column prop="type" width="120" header-align='center'>
-            <template #header>
-              <strong style="font-size: 14px;">参数类型</strong>
-            </template>
-            <template v-slot="scope">
-              <el-select size="small" v-model="scope.row.type" placeholder="请选择">
-                <el-option
-                    v-for="item in dataTypeOptions"
-                    :key="item"
-                    :label="item"
-                    :value="item">
-                </el-option>
-              </el-select>
-            </template>
-          </el-table-column>
+          <!--          <el-popover-->
+          <!--              v-if="requestForm.dataType === 'data'"-->
+          <!--              hide-after="0"-->
+          <!--              placement="bottom"-->
+          <!--              trigger="click"-->
+          <!--              popper-class="popover-class"-->
+          <!--              ref="rawPopoverRef">-->
+          <!--            <template #reference>-->
+          <!--              <el-button size="small" type="text" @click="showPopover" title="add data">-->
+          <!--                {{ dataType[activeDataType] }}-->
+          <!--                <el-icon v-if="popoverOpen">-->
+          <!--                  <ele-ArrowUp></ele-ArrowUp>-->
+          <!--                </el-icon>-->
+          <!--                <el-icon v-else>-->
+          <!--                  <ele-ArrowDown></ele-ArrowDown>-->
+          <!--                </el-icon>-->
+          <!--              </el-button>-->
+          <!--            </template>-->
+          <!--            <div class="dropdown-menu">-->
+          <!--              <div-->
+          <!--                  @click="handleDataType(key)"-->
+          <!--                  v-for="(value, key) in dataType"-->
+          <!--                  :key="key"-->
+          <!--                  class="dropdown-menu-item"-->
+          <!--              >-->
+          <!--          <span>-->
+          <!--            {{ value }}-->
+          <!--          </span>-->
+          <!--              </div>-->
+          <!--            </div>-->
 
-          <el-table-column prop="value" header-align='center'>
-            <template #header>
-              <strong style="font-size: 14px;">参数值</strong>
-            </template>
-            <template v-slot="scope">
-              <el-input size="small" v-model="scope.row.value"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" width="50" class-name="small-padding fixed-width">
-            <template v-slot="scope">
-              <el-button size="small" type="text" @click="deleteData(scope.$index)">
-                <el-icon>
-                  <ele-Delete/>
-                </el-icon>
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+          <!--          </el-popover>-->
+        </el-radio-group>
+      </div>
+
+      <div style="padding-right: 5px;" v-show="requestForm.dataType === 'json'">
+        <el-button style="font-weight: 600; " size="small" type="text" @click="jsonFormat" title="美化JSON">
+          Beautify
+        </el-button>
+
+<!--        <el-button style="font-weight: 600; " size="small" type="text" @click="jsonCompact" title="压缩JSON">-->
+<!--          Compact-->
+<!--        </el-button>-->
       </div>
     </div>
 
-    <JsonEditorVue v-show="requestForm.dataType === 'json'" class="editor" v-model="jsonData" style="height: 500px"/>
-
+    <div style="padding-top: 8px;">
+      <div style="border: 1px solid #E6E6E6">
+        <v-ace-editor
+            v-show="requestForm.dataType === 'data' || requestForm.dataType === 'json'"
+            ref="jsonEditorRef"
+            v-model:value="rawData"
+            :lang="long"
+            :options="aceOptions"
+            style="height:500px"
+        ></v-ace-editor>
+      </div>
+    </div>
     <!---------------------------params------------------------------------>
     <div v-if="requestForm.dataType === 'params'">
       <div class="block-title">
@@ -197,11 +192,6 @@
 
                   <el-button v-if="!row.value.name" type="info" size="small" @click="selectFile($index)">选择文件
                   </el-button>
-                  <!--                  <el-button v-else :title="fileData.name">{{ fileData.name }}-->
-                  <!--                    <el-icon>-->
-                  <!--                        <ele-Delete/>-->
-                  <!--                      </el-icon>-->
-                  <!--                  </el-button>-->
                   <div v-else class="file-input__name">
                     <div class="file-input__name__title" :title="row.value.name">{{ row.value.name }}</div>
                     <el-button class="file-input__name__delete-icon" size="small" type="text"
@@ -213,11 +203,6 @@
                   </div>
                 </div>
               </div>
-              <!--              <input @change="test($event)" v-if="row.type === 'File'" type="file" :id="$index + 'files'">-->
-              <!--              <input v-if="row.type === 'File'" :id="$index + 'files'" type="file" v-model="row.value"></input>-->
-              <!--              <input v-if="row.type === 'File'" :id="$index + 'files'" type="file"></input>-->
-
-              <!--              <el-input v-else v-model="row.value"></el-input>-->
             </template>
           </el-table-column>
 
@@ -239,18 +224,20 @@
 </template>
 
 <script lang="ts">
-import JsonEditorVue from '/@/components/VaceEditor/json-editor.vue'
-
-import {defineComponent, reactive, ref, toRefs} from "vue";
+import {VAceEditor} from '/@/components/VaceEditor/index.js';
+import {defineComponent, onMounted, reactive, ref, toRefs} from "vue";
 import {useFileApi} from '/@/api/useSystemApi/file'
-//
+import {ElMessage} from "element-plus";
+import "/@/assets/jsoneditor/jsoneditor.css";
+
+
 export default defineComponent({
-  components: {JsonEditorVue},
+  components: {VAceEditor},
   name: 'requestBody',
-  setup() {
-    const formRef = ref()
-    const aceEditorRef = ref()
+  setup(props, {emit}) {
     const formDataRef = ref()
+    const rawPopoverRef = ref()
+    const jsonEditorRef = ref()
 
     const state = reactive({
       requestForm: {
@@ -259,7 +246,7 @@ export default defineComponent({
       },
       // body
       bodyData: [],
-      jsonData: {key: 'value'},
+      rawData: JSON.stringify({key: 'value'}),
       paramsData: [],
       hasJsonFlag: false,
       dataTypeOptions: ['string', 'int', 'float', 'boolean'],
@@ -268,57 +255,123 @@ export default defineComponent({
       formData: [],
       formDatatypeOptions: ['text', 'file'],
       fileData: {},
-
+      // row
+      aceOptions: {
+        fontSize: 14,
+        enableAutoIndent: true, // 启用基本自动完成
+        enableSnippets: true, // 启用代码段
+        enableLiveAutocompletion: true, // 启用实时自动完成
+        printMarginColumn: 30,
+        displayIndentGuides: true, // 显示参考线
+        // enableEmmet: true, // 启用Emmet
+        tabSize: 2, // 标签大小
+        useWorker: true, // 使用辅助对象
+        showPrintMargin: false, //去除编辑器里的竖线
+        // enableMultiselect: true, //     选中多处
+        readOnly: false, // 是否只读
+        showFoldWidgets: true, // 显示折叠部件
+        fadeFoldWidgets: true, // 淡入折叠部件
+        wrap: true, //换行
+        animatedScroll: true,
+        navigateWithinSoftTabs: true,
+      },
+      editor: null,
+      long: 'json',
+      // dataType: {json: 'JSON', text: 'Text'},
+      // activeDataType: 'json',
+      // popoverOpen: false,
     });
 
-    const editorInit = () => {
-      state.jsonData = {test1: 'test2'}
-      // aceEditorRef.value.initData(state.jsonData)
-    }
     // 初始化表单
     const initForm = (formData: any) => {
-      console.log(formData, ' formData')
       state.requestForm.dataType = formData.type
-      if (formData.type === 'json') {
-        state.jsonData = formData.json
-      }
-      if (formData.type === 'params') {
-        if (formData.params.length > 0) {
-          formData.params.forEach(params => {
-            params['value'] = params.value.toString()
-          })
-        }
-        state.paramsData = formData.params
-      }
+      initAce(state.requestForm.dataType)
       if (formData.type === 'data') {
-        state.bodyData = formData.data
+        state.rawData = formData.data.replace('/\\n/g', "\n")
+        handleHeader('data')
       }
+
+      if (formData.type === 'json') {
+        state.rawData = formData.json ? JSON.stringify(formData.json, null, 2) : ''
+      }
+
       if (formData.type === 'form_data') {
         state.formData = formData.form_data ? formData.form_data : []
       }
     }
 
-
     // 获取表单数据
     const getFormData = () => {
-      let requestData = {}
+      let requestData: any = {}
       requestData.type = state.requestForm.dataType
-      if (state.requestForm.dataType === 'json') {
-        // if (!state.hasJsonFlag) throw new Error('json 格式错误!')
-        requestData.json = state.jsonData
-      }
       if (state.requestForm.dataType === 'data') {
-        requestData.data = state.bodyData
+        requestData.data = state.rawData
       }
-      if (state.requestForm.dataType === 'params') {
-        requestData.params = state.paramsData
+      if (state.requestForm.dataType === 'json') {
+        requestData.json = JSON.parse(state.rawData)
       }
       if (state.requestForm.dataType === 'form_data') {
         requestData.form_data = state.formData
       }
-      state.hasJsonFlag = true
       return requestData
     }
+
+
+    // raw
+    const initAce = (value) => {
+      if (value == 'data') {
+        state.long = 'text'
+      }
+      if (value == 'json') {
+        state.long = 'json'
+      }
+    }
+
+    const radioChange = (value: any) => {
+      state.requestForm.dataType = value
+      if (value == 'form_data') {
+        handleHeader('form_data')
+      } else {
+        initAce(value)
+        handleHeader(state.requestForm.dataType)
+
+      }
+    }
+    // const handleDataType = (data: any) => {
+    //   state.popoverOpen = !state.popoverOpen
+    //   rawPopoverRef.value.hide()
+    //   state.activeDataType = data
+    //   handleHeader(data)
+    // }
+
+    const handleHeader = (dataType: any) => {
+      let headerData: any = {key: 'Content-Type'}
+      if (dataType === 'data') {
+        headerData.value = 'text/plain'
+      }
+      emit('updateHeader', headerData, dataType === 'form_data')
+    }
+
+    const showPopover = () => {
+      state.popoverOpen = !state.popoverOpen
+    }
+    // 美化json
+    const jsonFormat = () => {
+      try {
+        state.rawData = JSON.stringify(JSON.parse(state.rawData), null, 2);
+      } catch {
+        ElMessage.info('JSON格式错误！')
+      }
+    }
+    // 压缩json
+    const jsonCompact = () => {
+      try {
+        state.rawData = JSON.stringify(JSON.parse(state.rawData));
+      } catch {
+        ElMessage.info('JSON格式错误！')
+      }
+    }
+
     // bodyData
     const addData = () => {
       state.bodyData.push({key: '', type: 'string', value: ''})
@@ -368,26 +421,28 @@ export default defineComponent({
       let fileRef = document.getElementById('selectFile' + index)
       if (fileRef) fileRef.click()
     }
-    // onMounted(() => {
-    //   editorInit()
-    // })
+    onMounted(() => {
+    })
 
     return {
-      formRef,
-      editorInit,
       initForm,
+      radioChange,
       getFormData,
       addData,
       deleteData,
       addParams,
       deleteParams,
       deletedFile,
-      aceEditorRef,
       formDataRef,
+      rawPopoverRef,
+      jsonEditorRef,
+      jsonFormat,
+      jsonCompact,
       deleteFormData,
       selectFile,
       fileChange,
       addFormData,
+      showPopover,
       ...toRefs(state),
     }
 //
@@ -468,6 +523,10 @@ table {
     border-color: #ffffff;
   }
 }
+
+:deep(.radio-group) {
+  margin-bottom: 4px;
+}
 </style>
 
 <style lang="scss">
@@ -529,6 +588,14 @@ json-editor-vue .jsoneditor {
 
 
   }
+}
+
+.ace-jsoneditor .ace_gutter {
+  background: #ffffff
+}
+
+.ace-jsoneditor .ace_text-layer {
+  color: black;
 }
 
 .block-title {
@@ -614,5 +681,47 @@ json-editor-vue .jsoneditor {
       }
     }
   }
+}
+
+.dropdown-menu {
+  padding: 4px 0;
+  box-sizing: border-box;
+  background-color: #F9F9F9;
+  border-radius: 4px;
+  border: 1px solid #EDEDED;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
+
+  .dropdown-menu-item {
+    position: relative;
+    box-sizing: border-box;
+    height: 32px;
+    color: #212121;
+    font-size: 12px;
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica, Arial, sans-serif;;
+    display: flex;
+    align-items: center;
+    cursor: default;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    padding: 0 16px;
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &:hover {
+      background-color: #EDEDED;
+    }
+  }
+}
+
+
+</style>
+<style>
+.popover-class {
+  padding: 0 !important;
 }
 </style>

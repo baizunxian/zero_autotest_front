@@ -23,11 +23,11 @@
           <el-tabs v-model="activeName">
             <el-tab-pane name='requestBody'>
               <template #label><strong>body</strong></template>
-              <request-body ref="requestBodyRef"/>
+              <request-body ref="requestBodyRef" @updateHeader="updateHeader"/>
             </el-tab-pane>
 
             <el-tab-pane name='requestHeaders'>
-              <template #label><strong>Headers</strong></template>
+              <template #label><strong>Headers({{getHeaderLength()}})</strong></template>
               <request-headers ref="requestHeadersRef"/>
             </el-tab-pane>
 
@@ -184,7 +184,6 @@ export default defineComponent({
 
         // 保存用例
         if (type === 'save') {
-          console.log('testCaseForm', testCaseForm)
           useTestCaseApi().saveOrUpdate(testCaseForm)
               .then(res => {
                 ElMessage.success('保存成功！')
@@ -204,8 +203,6 @@ export default defineComponent({
           useTestCaseApi().debugTestCaseNew(testCaseForm)
               .then(res => {
                 state.reportBody = res.data
-                console.log(res, 'this.res')
-                console.log(type, 'type')
                 if (type === 'debug') {
                   console.log('-----------------debug---------------')
                   urlRef.value.onOpenCloseEnvDialog()
@@ -292,6 +289,13 @@ export default defineComponent({
       router.push({name: 'apiTestCase'})
     }
 
+    // updateHeader
+    const getHeaderLength = () => {
+      return requestHeadersRef.value.headersData.length
+    }
+    const updateHeader = (headerData: any, remove: any) => {
+      requestHeadersRef.value.updateHeader(headerData, remove)
+    }
     onMounted(() => {
       initTestCast()
     })
@@ -309,6 +313,8 @@ export default defineComponent({
       route,
       router,
       goBack,
+      getHeaderLength,
+      updateHeader,
       saveOrUpdateOrDebug,
       ...toRefs(state),
     };
@@ -351,5 +357,8 @@ export default defineComponent({
 
 :deep(.save-update-card .el-card__body) {
   padding-top: 0;
+}
+:deep(.el-tabs__header) {
+    margin: 0 0 10px;
 }
 </style>

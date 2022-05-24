@@ -1,9 +1,9 @@
-import { nextTick } from 'vue';
-import type { App } from 'vue';
+import type {App} from 'vue';
+import {nextTick} from 'vue';
 import * as svg from '@element-plus/icons-vue';
 import router from '/@/router/index';
-import { store } from '/@/store';
-import { Local } from '/@/utils/storage';
+import {store} from '/@/store';
+import {Local} from '/@/utils/storage';
 import svgIcon from '/@/components/svgIcon/index.vue';
 
 /**
@@ -12,11 +12,11 @@ import svgIcon from '/@/components/svgIcon/index.vue';
  * @description 使用：https://element-plus.gitee.io/zh-CN/component/icon.html
  */
 export function elSvg(app: App) {
-	const icons = svg as any;
-	for (const i in icons) {
-		app.component(`ele-${icons[i].name}`, icons[i]);
-	}
-	app.component('SvgIcon', svgIcon);
+  const icons = svg as any;
+  for (const i in icons) {
+    app.component(`ele-${icons[i].name}`, icons[i]);
+  }
+  app.component('SvgIcon', svgIcon);
 }
 
 /**
@@ -24,12 +24,12 @@ export function elSvg(app: App) {
  * @method const title = useTitle(); ==> title()
  */
 export function useTitle() {
-	nextTick(() => {
-		let webTitle = '';
-		let globalTitle: string = store.state.themeConfig.themeConfig.globalTitle;
-		webTitle = router.currentRoute.value.meta.title as any;
-		document.title = `${webTitle} - ${globalTitle}` || globalTitle;
-	});
+  nextTick(() => {
+    let webTitle = '';
+    let globalTitle: string = store.state.themeConfig.themeConfig.globalTitle;
+    webTitle = router.currentRoute.value.meta.title as any;
+    document.title = `${webTitle} - ${globalTitle}` || globalTitle;
+  });
 }
 
 /**
@@ -39,21 +39,21 @@ export function useTitle() {
  * @description data-xxx 属性用于存储页面或应用程序的私有自定义数据
  */
 export const lazyImg = (el: any, arr: any) => {
-	const io = new IntersectionObserver((res) => {
-		res.forEach((v: any) => {
-			if (v.isIntersecting) {
-				const { img, key } = v.target.dataset;
-				v.target.src = img;
-				v.target.onload = () => {
-					io.unobserve(v.target);
-					arr[key]['loading'] = false;
-				};
-			}
-		});
-	});
-	nextTick(() => {
-		document.querySelectorAll(el).forEach((img) => io.observe(img));
-	});
+  const io = new IntersectionObserver((res) => {
+    res.forEach((v: any) => {
+      if (v.isIntersecting) {
+        const {img, key} = v.target.dataset;
+        v.target.src = img;
+        v.target.onload = () => {
+          io.unobserve(v.target);
+          arr[key]['loading'] = false;
+        };
+      }
+    });
+  });
+  nextTick(() => {
+    document.querySelectorAll(el).forEach((img) => io.observe(img));
+  });
 };
 
 /**
@@ -68,35 +68,35 @@ export const globalComponentSize: string = Local.get('themeConfig')?.globalCompo
  * @returns 克隆后的对象
  */
 export function deepClone(obj: any) {
-	let newObj: any;
-	try {
-		newObj = obj.push ? [] : {};
-	} catch (error) {
-		newObj = {};
-	}
-	for (let attr in obj) {
-		if (typeof obj[attr] === 'object') {
-			newObj[attr] = deepClone(obj[attr]);
-		} else {
-			newObj[attr] = obj[attr];
-		}
-	}
-	return newObj;
+  let newObj: any;
+  try {
+    newObj = obj.push ? [] : {};
+  } catch (error) {
+    newObj = {};
+  }
+  for (let attr in obj) {
+    if (typeof obj[attr] === 'object') {
+      newObj[attr] = deepClone(obj[attr]);
+    } else {
+      newObj[attr] = obj[attr];
+    }
+  }
+  return newObj;
 }
 
 /**
  * 判断是否是移动端
  */
 export function isMobile() {
-	if (
-		navigator.userAgent.match(
-			/('phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone')/i
-		)
-	) {
-		return true;
-	} else {
-		return false;
-	}
+  if (
+    navigator.userAgent.match(
+      /('phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone')/i
+    )
+  ) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 /**
@@ -106,18 +106,18 @@ export function isMobile() {
  * @returns 删除空值后的数组对象
  */
 export function handleEmpty(list: any) {
-	const arr = [];
-	for (const i in list) {
-		const d = [];
-		for (const j in list[i]) {
-			d.push(list[i][j]);
-		}
-		const leng = d.filter((item) => item === '').length;
-		if (leng !== d.length) {
-			arr.push(list[i]);
-		}
-	}
-	return arr;
+  const arr = [];
+  for (const i in list) {
+    const d = [];
+    for (const j in list[i]) {
+      d.push(list[i][j]);
+    }
+    const leng = d.filter((item) => item === '').length;
+    if (leng !== d.length) {
+      arr.push(list[i]);
+    }
+  }
+  return arr;
 }
 
 /**
@@ -131,25 +131,25 @@ export function handleEmpty(list: any) {
  * @method handleEmpty 判断数组对象中所有属性是否为空，为空则删除当前行对象
  */
 const other = {
-	elSvg: (app: App) => {
-		elSvg(app);
-	},
-	useTitle: () => {
-		useTitle();
-	},
-	lazyImg: (el: any, arr: any) => {
-		lazyImg(el, arr);
-	},
-	globalComponentSize,
-	deepClone: (obj: any) => {
-		deepClone(obj);
-	},
-	isMobile: () => {
-		return isMobile();
-	},
-	handleEmpty: (list: any) => {
-		return handleEmpty(list);
-	},
+  elSvg: (app: App) => {
+    elSvg(app);
+  },
+  useTitle: () => {
+    useTitle();
+  },
+  lazyImg: (el: any, arr: any) => {
+    lazyImg(el, arr);
+  },
+  globalComponentSize,
+  deepClone: (obj: any) => {
+    deepClone(obj);
+  },
+  isMobile: () => {
+    return isMobile();
+  },
+  handleEmpty: (list: any) => {
+    return handleEmpty(list);
+  },
 };
 
 // 统一批量导出

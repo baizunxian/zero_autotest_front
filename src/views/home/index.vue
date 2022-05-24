@@ -2,7 +2,7 @@
   <div class="home-container" style="height: 100%;">
     <svg-icon icon-class="bug" />
 
-    <el-row style='margin-bottom: 10px'>
+    <el-row style='margin-bottom: 10px' :gutter="35">
       <el-col :span='24' class='common'>
         <count-statistics :data="countInfo" />
       </el-col>
