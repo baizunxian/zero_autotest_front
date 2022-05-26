@@ -36,14 +36,14 @@
       <i class="iconfont" :title="isScreenfull ? '开全屏' : '关全屏'"
          :class="!isScreenfull ? 'icon-fullscreen' : 'icon-tuichuquanping'"></i>
     </div>
+    <img :src="userTextToImg(getUserInfos.nickname)" class="layout-navbars-breadcrumb-user-link-photo mr5"/>
     <el-dropdown :show-timeout="70" :hide-timeout="50" @command="onHandleCommandClick">
-			<span class="layout-navbars-breadcrumb-user-link">
-<!--				<img :src="getUserInfos.photo" class="layout-navbars-breadcrumb-user-link-photo mr5"/>-->
-				{{ getUserInfos.nickname === '' ? 'common' : getUserInfos.nickname }}
-				<el-icon class="el-icon--right">
-					<ele-ArrowDown/>
-				</el-icon>
-			</span>
+        <span class="layout-navbars-breadcrumb-user-link">
+        {{ getUserInfos.nickname === '' ? 'common' : getUserInfos.nickname }}
+          <el-icon class="el-icon--right">
+            <ele-ArrowDown/>
+          </el-icon>
+        </span>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item command="/home">首页</el-dropdown-item>
@@ -68,6 +68,11 @@ import {Local, Session} from '/@/utils/storage';
 import UserNews from '/@/layout/navBars/breadcrumb/userNews.vue';
 import Search from '/@/layout/navBars/breadcrumb/search.vue';
 import {useUserApi} from '/@/api/useSystemApi/user'
+
+
+import {textToImg} from '/@/utils/textToImg'
+
+console.log('test', textToImg('test'))
 
 export default defineComponent({
   name: 'layoutBreadcrumbUser',
@@ -131,10 +136,10 @@ export default defineComponent({
               instance.confirmButtonLoading = true;
               instance.confirmButtonText = '退出中';
               useUserApi().logout()
-              .then(() => {
-                done();
-                instance.confirmButtonLoading = false;
-              })
+                  .then(() => {
+                    done();
+                    instance.confirmButtonLoading = false;
+                  })
             } else {
               done();
             }
@@ -185,6 +190,10 @@ export default defineComponent({
           break;
       }
     };
+
+    const userTextToImg = (username) => {
+      return textToImg(username)
+    }
     // 页面加载时
     onMounted(() => {
       if (Local.get('themeConfig')) {
@@ -193,6 +202,7 @@ export default defineComponent({
     });
     return {
       getUserInfos,
+      userTextToImg,
       onLayoutSetingClick,
       onHandleCommandClick,
       onScreenfullClick,
