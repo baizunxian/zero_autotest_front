@@ -104,7 +104,7 @@
           </div>
 
           <el-form size="mini" style="width: 50%;" label-position="left" label-width="100px" :model="funcArgsInfo">
-            <el-form-item v-for="key in funcArgsInfo" :key="key" :label="key">
+            <el-form-item v-for="(value, key) in funcArgsInfo" :key="key" :label="key">
               <el-input v-model="funcArgsInfo[key]"></el-input>
             </el-form-item>
           </el-form>
@@ -265,7 +265,7 @@ export default defineComponent({
 
     // 新增或修改
     const onOpenSaveOrUpdate = (row: any) => {
-      let query = {}
+      let query: any = {}
       if (row) {
         query.id = row.id
       } else {
@@ -308,9 +308,9 @@ export default defineComponent({
           })
     }
     //函数页面初始化
-    const showDebugFunc = (row) => {
+    const showDebugFunc = (row: any) => {
       state.debugFuncResult = ''
-      state.funcArgsInfo = []
+      state.funcArgsInfo = {}
       state.funcArgsInfo = row.args_info
       state.debugFuncShow = !state.debugFuncShow
       state.debugFuncForm.func_parse_str = row.func_name + row.func_args

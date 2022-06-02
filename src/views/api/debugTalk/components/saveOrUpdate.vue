@@ -3,7 +3,6 @@
     <div class="myEditorTop">[{{ isEdit ? '编辑' : '只读' }}] - [{{ debugTalkFrom.project_name }}]
       <el-button v-show="isEdit" type="success" @click="saveOrUpdate" style="margin-left: 10px;">保存</el-button>
     </div>
-    <v-ace-editor value=""/>
     <v-ace-editor
         ref="jsonEditorRef"
         v-model:value="debugTalkFrom.debug_talk"

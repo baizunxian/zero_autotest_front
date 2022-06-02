@@ -111,7 +111,6 @@ export default defineComponent({
   },
   setup() {
     const formRef = ref()
-    const catCaseRef = ref()
     const createForm = () => {
       return {
         name: '',
@@ -189,7 +188,7 @@ export default defineComponent({
     }
 
     // 回填id
-    const setCaseId = (id: number | string) => {
+    const setCaseId = (id: any) => {
       state.form.id = id
     }
 
@@ -206,7 +205,7 @@ export default defineComponent({
           })
     }
     // 选择项目
-    const selectProject = (project_id: number) => {
+    const selectProject = (project_id: any) => {
       state.form.module_id = null
       state.form.config_id = null
       state.form.include = []
@@ -246,7 +245,7 @@ export default defineComponent({
     }
 
     // cat case
-    const onCatTestCase = (id) => {
+    const onCatTestCase = (id: any) => {
       state.catCaseId = id
       state.showCaseInfo = true
     }
