@@ -35,7 +35,7 @@ export function useTestCaseApi() {
         data,
       });
     },
-     runTestCaseNew: (data?: object) => {
+    runTestCaseNew: (data?: object) => {
       return request({
         url: '/testcase/runTestCaseNew',
         method: 'POST',
@@ -60,6 +60,14 @@ export function useTestCaseApi() {
       return request({
         url: '/testcase/getTestCaseInfo',
         method: 'POST',
+        data,
+      });
+    },
+    postman2case: (data?: object) => {
+      return request({
+        url: '/testcase/postman2case',
+        method: 'POST',
+        headers: {"Content-Type": "multipart/form-data"},
         data,
       });
     },
