@@ -45,8 +45,20 @@
               </el-button>
             </template>
 
+            <template v-if="field.fieldName === 'enabled'">
+              <div style="align-items: center; display: flex; justify-content: center">
+                <div class="request-editor-tabs-badge"
+                     :class="[row['enabled'] === 1? 'start': 'stop']">
+                </div>
+                <span>{{ formatLookup(field.lookupCode, row['enabled']) }}</span>
+              </div>
+
+            </template>
+
             <template v-else>
-              <span>{{ field.lookupCode? formatLookup(field.lookupCode, row[field.fieldName]): row[field.fieldName]}}</span>
+              <span>{{
+                  field.lookupCode ? formatLookup(field.lookupCode, row[field.fieldName]) : row[field.fieldName]
+                }}</span>
             </template>
 
           </template>
@@ -54,8 +66,11 @@
 
         <el-table-column label="操作" width="150">
           <template #default="{row}">
-            <el-button size="small" type="text"
-                       @click="taskSwitch(row)">{{ row.enabled ? '停止' : '启动' }}
+
+            <el-button size="small"
+                       type="text"
+                       @click="taskSwitch(row)">
+              {{ row.enabled ? '停止' : '启动' }}
             </el-button>
             <el-button size="small" type="text"
                        @click="onOpenSaveOrUpdate('update', row)">修改
@@ -106,8 +121,22 @@ export default defineComponent({
         {fieldName: 'name', label: '任务名称', width: '', align: 'center', show: true},
         {fieldName: 'project_name', label: '所属项目', width: '', align: 'center', show: true},
         {fieldName: 'crontab_str', label: '执行时间', width: '', align: 'center', show: true},
-        {fieldName: 'run_type', label: '任务类型', width: '', align: 'center', show: true, lookupCode: 'api_report_run_type'},
-        {fieldName: 'enabled', label: '任务状态', width: '', align: 'center', show: true, lookupCode: 'api_timed_task_status'},
+        {
+          fieldName: 'run_type',
+          label: '任务类型',
+          width: '',
+          align: 'center',
+          show: true,
+          lookupCode: 'api_report_run_type'
+        },
+        {
+          fieldName: 'enabled',
+          label: '任务状态',
+          width: '',
+          align: 'center',
+          show: true,
+          lookupCode: 'api_timed_task_status'
+        },
         {fieldName: 'description', label: '备注', width: '', align: 'center', show: true},
         {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
         {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
@@ -142,11 +171,18 @@ export default defineComponent({
 
     // 新增或修改角色
     const taskSwitch = (row: any) => {
-      useTimedTasksApi().taskSwitch({id: row.id})
-      .then(() => {
-        ElMessage.success('操作成功！');
-        getList()
+      ElMessageBox.confirm('是否删除该条数据, 是否继续?', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(() => {
+        useTimedTasksApi().taskSwitch({id: row.id})
+            .then(() => {
+              ElMessage.success('操作成功！');
+              getList()
+            })
       })
+
     };
 
     // 删除角色
@@ -182,3 +218,22 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+
+.stop {
+  background-color: #c1bfc7;
+}
+
+.start {
+  background-color: #0cbb52;
+}
+
+.request-editor-tabs-badge {
+  display: inline-flex;
+  width: 8px;
+  height: 8px;
+  margin-right: 5px;
+  border-radius: 8px;
+}
+</style>
