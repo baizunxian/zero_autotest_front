@@ -406,7 +406,7 @@ export default defineComponent({
     // 文件上传
     const submitUpload = () => {
       state.importButtonStart = true
-      importFormRef.value.validate((vai: any) => {
+      importFormRef.value.validate(async (vai: any) => {
         if (vai) {
           if (!state.importForm.file_info.raw) {
             ElMessage.info('请选择上传文件！')
@@ -418,17 +418,23 @@ export default defineComponent({
             formData.append('file', state.importForm.file_info.raw)
             formData.append('project_id', state.importForm.project_id)
             formData.append('module_id', state.importForm.module_id)
-            useTestCaseApi().postman2case(formData)
-                .then((res: any) => {
-                  ElMessage.success(`成功导入${res.data}条用例！`)
-                  state.importButtonStart = false
-                  state.showImportPage = false
-                  getList()
-                })
+            let res: any = await useTestCaseApi().postman2case(formData)
+            ElMessage.success(`成功导入${res.data}条用例！`)
+            state.importButtonStart = false
+            state.showImportPage = false
+            getList()
+
+            // useTestCaseApi().postman2case(formData)
+            //     .then((res: any) => {
+            //       ElMessage.success(`成功导入${res.data}条用例！`)
+            //       state.importButtonStart = false
+            //       state.showImportPage = false
+            //       getList()
+            //     })
           } catch (e) {
             state.importButtonStart = false
           }
-        }else {
+        } else {
           state.importButtonStart = false
         }
       })
