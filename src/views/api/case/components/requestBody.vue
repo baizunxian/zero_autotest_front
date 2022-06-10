@@ -229,6 +229,7 @@ import {defineComponent, onMounted, reactive, ref, toRefs, watch} from "vue";
 import {useFileApi} from '/@/api/useSystemApi/file'
 import {ElMessage} from "element-plus";
 import "/@/assets/jsoneditor/jsoneditor.css";
+import {handleEmpty} from "/@/utils/other";
 
 
 export default defineComponent({
@@ -311,6 +312,17 @@ export default defineComponent({
       if (mode === 'raw') {
         state.rawData = formData.data.replace('/\\n/g', "\n")
         state.language = formData.language ? formData.language : 'JSON'
+      }
+    }
+
+    // 获取是否填写状态
+    const getStatus = () => {
+      let formDataList: Array<any> = handleEmpty(state.formData)
+      switch (state.mode) {
+        case 'form_data':
+          return formDataList.length > 0
+        case 'raw':
+          return state.rawData !== ''
       }
     }
 
@@ -470,6 +482,7 @@ export default defineComponent({
       addFormData,
       showPopover,
       handleLanguage,
+      getStatus,
       ...toRefs(state),
     }
 //

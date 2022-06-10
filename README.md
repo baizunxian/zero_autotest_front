@@ -53,7 +53,7 @@ yarn build
 #### 💯 学习交流加 微信 群
 
 - 微信群
-<img src="https://img.xiaobaicodes.com/img/1/1654158004576/33DACDE5-304F-4767-877A-462C8EC4AD4B.jpeg" width="220" height="220" alt="zero autotest 交流群" title="zero autotest 交流群"/>
+<img src="https://img.xiaobaicodes.com/img/1/1654846844222/D6B1DD90-0E69-4620-A0FE-C5AC1F14846A.jpeg" width="220" height="220" alt="zero autotest 交流群" title="zero autotest 交流群"/>
   
 #### 💌 支持作者
 

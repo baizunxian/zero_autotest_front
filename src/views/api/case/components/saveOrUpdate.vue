@@ -22,34 +22,49 @@
         <div style="min-height: 500px">
           <el-tabs v-model="activeName">
             <el-tab-pane name='requestBody'>
-              <template #label><strong>body</strong></template>
+              <template #label>
+                <div style="align-items: center; display: flex; justify-content: center">
+                  <strong>body</strong>
+                  <div v-show="getStatus('body')" class="request-editor-tabs-badge"></div>
+                </div>
+              </template>
               <request-body ref="requestBodyRef" @updateHeader="updateHeader"/>
             </el-tab-pane>
 
             <el-tab-pane name='requestHeaders'>
-              <template #label><strong>Headers({{getHeaderLength()}})</strong></template>
+              <template #label><strong>Headers({{ getHeaderLength() }})</strong></template>
               <request-headers ref="requestHeadersRef"/>
             </el-tab-pane>
 
             <el-tab-pane name='extractValidate'>
-              <template #label><strong>提取/校验</strong></template>
+              <template #label>
+                <div style="align-items: center; display: flex; justify-content: center">
+                  <strong>提取/校验</strong>
+                  <div v-show="getStatus('ev')" class="request-editor-tabs-badge"></div>
+                </div>
+              </template>
               <extract-validate ref="extractValidateRef"/>
             </el-tab-pane>
 
             <el-tab-pane name='variablesParameters'>
-              <template #label><strong>变量/参数/函数</strong></template>
+              <template #label>
+                <div style="align-items: center; display: flex; justify-content: center">
+                  <strong>变量/参数/函数</strong>
+                  <div v-show="getStatus('vp')" class="request-editor-tabs-badge"></div>
+                </div>
+              </template>
               <variables-parameters ref="variablesParametersRef"/>
             </el-tab-pane>
 
-<!--            <el-tab-pane name='outputList'>-->
-<!--              <template #label><strong>输出参数</strong></template>-->
-<!--              <output-list ref="outputListRef"/>-->
-<!--            </el-tab-pane>-->
+            <!--            <el-tab-pane name='outputList'>-->
+            <!--              <template #label><strong>输出参数</strong></template>-->
+            <!--              <output-list ref="outputListRef"/>-->
+            <!--            </el-tab-pane>-->
 
-<!--            <el-tab-pane name='Skip'>-->
-<!--              <template #label><strong>用例跳过条件</strong></template>-->
-<!--              <skip ref="skipRef"/>-->
-<!--            </el-tab-pane>-->
+            <!--            <el-tab-pane name='Skip'>-->
+            <!--              <template #label><strong>用例跳过条件</strong></template>-->
+            <!--              <skip ref="skipRef"/>-->
+            <!--            </el-tab-pane>-->
 
           </el-tabs>
         </div>
@@ -180,7 +195,6 @@ export default defineComponent({
             // output: outputForm
           },
         }
-        console.log(urlForm, ' urlForm')
 
         // 保存用例
         if (type === 'save') {
@@ -296,6 +310,18 @@ export default defineComponent({
     const updateHeader = (headerData: any, remove: any) => {
       requestHeadersRef.value.updateHeader(headerData, remove)
     }
+
+    // 获取是否填写参数状态
+    const getStatus = (components: string) => {
+      switch (components) {
+        case 'body':
+          return requestBodyRef.value.getStatus()
+        case 'vp':
+          return variablesParametersRef.value.getStatus()
+        case 'ev':
+          return extractValidateRef.value.getStatus()
+      }
+    }
     onMounted(() => {
       initTestCast()
     })
@@ -316,6 +342,7 @@ export default defineComponent({
       getHeaderLength,
       updateHeader,
       saveOrUpdateOrDebug,
+      getStatus,
       ...toRefs(state),
     };
   },
@@ -358,7 +385,24 @@ export default defineComponent({
 :deep(.save-update-card .el-card__body) {
   padding-top: 0;
 }
+
 :deep(.el-tabs__header) {
-    margin: 0 0 10px;
+  margin: 0 0 10px;
+}
+
+:deep(.el-tabs__item.is-active) {
+  color: var(--el-text-color-primary);
+}
+//:deep(.el-tabs__item:hover) {
+//  color: var(--el-text-color-primary);
+//}
+
+.request-editor-tabs-badge {
+  background-color: #0cbb52;
+  display: inline-flex;
+  width: 8px;
+  height: 8px;
+  margin-left: 5px;
+  border-radius: 8px;
 }
 </style>

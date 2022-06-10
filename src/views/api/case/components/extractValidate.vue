@@ -158,6 +158,7 @@
 <script lang="ts">
 
 import {defineComponent, reactive, ref, toRefs} from "vue";
+import {handleEmpty} from "/@/utils/other";
 
 export default defineComponent({
   name: 'extractValidate',
@@ -196,8 +197,6 @@ export default defineComponent({
       state.extract = []
       state.validate = []
       if (formData && formData.extract && formData.extract.length > 0) {
-        console.log(formData.extract, 'this.extract ')
-        console.log(formData.extract, 'form.extract')
         formData.extract.forEach(extracts => {
           for (let key in extracts) {
             let extract_dict = {
@@ -219,6 +218,13 @@ export default defineComponent({
           state.validate.push(valid)
         })
       }
+    }
+
+    // 获取是否填写状态
+    const getStatus = () => {
+      let extractList: Array<any> = handleEmpty(state.extract)
+      let validateList: Array<any> = handleEmpty(state.validate)
+      return (extractList.length > 0 || validateList.length > 0 )
     }
 
     // 获取表单数据
@@ -266,6 +272,7 @@ export default defineComponent({
       deleteExtract,
       addValidate,
       deleteValidate,
+      getStatus,
       ...toRefs(state),
     };
   },

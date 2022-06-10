@@ -218,6 +218,9 @@
 
 <script lang="ts">
 
+import {handleEmpty} from "/@/utils/other";
+import {defineComponent, reactive, ref, toRefs} from "vue";
+
 interface baseState {
   key: string,
   value: string,
@@ -249,8 +252,6 @@ interface state {
   typeOptions: Array<string>,
 }
 
-import {defineComponent, reactive, ref, toRefs} from "vue";
-
 export default defineComponent({
   name: 'variablesParameters',
   components: {},
@@ -258,7 +259,7 @@ export default defineComponent({
     const formRef = ref()
     const state = reactive<state>({
       variables: [],   // 变量列表
-      parameters: [{key: '', value: '', remarks_: ''}],  //  参数列表
+      parameters: [],  //  参数列表
       hooks: [],  // 钩子函数列表
       ValueV: '多参数示例：a,b    单参数示例： c',
       ValueP: '多参数示例: [["name1", "pwd1"],["name2","pwd2"]]   单参数示例: [1, "value2"]',
@@ -305,7 +306,6 @@ export default defineComponent({
         setup_hooks: [],
         teardown_hooks: [],
       }
-      console.log(state, 'vpvariables STate')
       if (state.variables.length > 0) {
         state.variables.forEach(data => {
           if (data.key !== '' && data.type === 'string') {
@@ -314,7 +314,6 @@ export default defineComponent({
           } else {
             form.variables.push(data)
           }
-          console.log(form, 'from==============')
         })
       }
       if (state.parameters.length > 0) {
@@ -333,8 +332,15 @@ export default defineComponent({
           }
         })
       }
-      console.log(form)
       return form
+    }
+
+    // 获取是否填写状态
+    const getStatus = () => {
+      let variablesList: Array<variablesState> = handleEmpty(state.variables)
+      let parametersList: Array<baseState> = handleEmpty(state.parameters)
+      let hooksList: Array<hooksState> = handleEmpty(state.hooks)
+      return (variablesList.length > 0 || parametersList.length > 0 || hooksList.length > 0)
     }
 
     // variables
@@ -371,6 +377,7 @@ export default defineComponent({
       deleteParameters,
       addHooks,
       deleteHooks,
+      getStatus,
       ...toRefs(state),
     };
   },
@@ -390,10 +397,12 @@ export default defineComponent({
     border-color: #ffffff;
   }
 }
+
 /* el-input */
 :deep(.el-input__inner) {
   font-weight: bold;
 }
+
 :deep(.el-textarea__inner) {
   font-weight: bold;
 }
