@@ -171,7 +171,7 @@ export default defineComponent({
 
     // 新增或修改角色
     const taskSwitch = (row: any) => {
-      ElMessageBox.confirm('是否删除该条数据, 是否继续?', '提示', {
+      ElMessageBox.confirm(`${row.enabled ? '停止' : '启动' }当前任务, 是否继续?`, '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',
