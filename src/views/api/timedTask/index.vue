@@ -69,7 +69,7 @@
 
             <el-button size="small"
                        type="text"
-                       @click="taskSwitch(row)">
+                       @click="taskSwitch(row, $event)">
               {{ row.enabled ? '停止' : '启动' }}
             </el-button>
             <el-button size="small" type="text"
@@ -169,9 +169,9 @@ export default defineComponent({
       saveOrUpdateRef.value.openDialog(editType, row);
     };
 
-    // 新增或修改角色
-    const taskSwitch = (row: any) => {
-      ElMessageBox.confirm('是否删除该条数据, 是否继续?', '提示', {
+    // 启动或停止任务
+    const taskSwitch = (row: any, event: any) => {
+       ElMessageBox.confirm(`是否${event.target.innerText}该任务, 是否继续?`, '提示', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning',
