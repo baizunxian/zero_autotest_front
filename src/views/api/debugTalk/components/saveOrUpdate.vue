@@ -89,7 +89,7 @@ export default defineComponent({
     };
 
     const contentChange = (val) => {
-      countent.value = val
+      // countent.value = val
       console.log(val)
     }
 

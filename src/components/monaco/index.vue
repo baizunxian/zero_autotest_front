@@ -19,6 +19,8 @@
 <script setup>
 import * as monaco from 'monaco-editor'
 import {reactive, defineProps, ref, watch, onMounted} from 'vue'
+import { language as pythonLanguage } from 'monaco-editor/esm/vs/basic-languages/python/python.js';
+
 
 const emit = defineEmits(['contentChange'])
 // import vCompletion from './sql.js'//引入补全代码文件
@@ -70,76 +72,85 @@ const hoverTips = (arr, word) => {
 }
 const initEditor = () => {
   // 初始化编辑器，确保dom已经渲染
-  monaco.languages.register({id: 'MyLanguage'})
-  // provider.value = monaco.languages.registerCompletionItemProvider(
-  //     'MyLanguage',
-  //     {
-  //       provideCompletionItems(model, position) {
-  //         return {
-  //           suggestions: cloneDeep(vCompletion),//自定义代码补全
-  //         }
-  //       },
-  //       triggerCharacters: ['.'],
-  //     }
-  // )
-  mylang.value = monaco.languages.setLanguageConfiguration('MyLanguage', {
-    //自定义括号，冒号等符号的补全规则
-    brackets: [
-      ['{', '}'],
-      ['[', ']'],
-      ['(', ')'],
-    ],
-    autoClosingPairs: [
-      {open: '{', close: '}'},
-      {open: '[', close: ']'},
-      {open: '(', close: ')'},
-      {open: '"', close: '', notIn: ['string']},
-      {open: "'", close: '', notIn: ['string', 'comment']},
-      {open: '`', close: '`', notIn: ['string', 'comment']},
-    ],
-  })
-  color.value = monaco.languages.setMonarchTokensProvider('MyLanguage', {
-    //自定义文本颜色
-    ignoreCase: true,
-    tokenizer: {
-      root: [
-        [
-          /pageData|currentUser/,
-          {token: 'keyword'},
-        ], //蓝色
-        [
-          /[+]|[-]|[*]|[/]|[%]|[>]|[<]|[=]|[!]|[:]|[&&]|[||]/,
-          {token: 'string'},
-        ], //红色
-        [/'.*?'|".*?"/, {token: 'string.escape'}], //橙色
-        [/#--.*?\--#/, {token: 'comment'}], //绿色
-        [/null/, {token: 'regexp'}], //粉色
-        [/[{]|[}]/, {token: 'type'}], //青色
-        // [/[\u4e00-\u9fa5]/, { token: 'predefined' }],//亮粉色
-        // [/''/, { token: 'invalid' }],//红色
-        // [/[\u4e00-\u9fa5]/, { token: 'number.binary' }],//浅绿
-        [/(?!.*[a-zA-Z])[0-9]/, {token: 'number.hex'}], //浅绿
-        [/[(]|[)]/, {token: 'number.octal'}], //浅绿
-        // [/[\u4e00-\u9fa5]/, { token: 'number.float' }],//浅绿
-      ],
-    },
-  })
-  hover.value = monaco.languages.registerHoverProvider('MyLanguage', {
-    //自定义文字悬浮提示
-    provideHover: (model, position) => {
-      if (model.getWordAtPosition(position) != null) {
-        const word = model.getWordAtPosition(position).word
-        let arr = [
-          {
-            text: 'SqlUtil', //悬浮文字
-            title: '数据库操作', //标题
-            content: '对数据进行操作，支持sql,addConditionExist等操作', //提示内容
-          },
-        ]
-        return hoverTips(arr, word)
+  monaco.languages.register({id: 'python'})
+  provider.value = monaco.languages.registerCompletionItemProvider(
+      'python',
+      {
+        provideCompletionItems(model, position) {
+          let suggestions = []
+          pythonLanguage.keywords.forEach(item => {
+            suggestions.push({
+              label: item,
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: item
+            });
+          })
+          return {
+            // suggestions: cloneDeep(vCompletion),//自定义代码补全
+            suggestions: suggestions
+          }
+        },
+        triggerCharacters: ['.'],
       }
-    },
-  })
+  )
+  // mylang.value = monaco.languages.setLanguageConfiguration('python', {
+  //   //自定义括号，冒号等符号的补全规则
+  //   brackets: [
+  //     ['{', '}'],
+  //     ['[', ']'],
+  //     ['(', ')'],
+  //   ],
+  //   autoClosingPairs: [
+  //     {open: '{', close: '}'},
+  //     {open: '[', close: ']'},
+  //     {open: '(', close: ')'},
+  //     {open: '"', close: '', notIn: ['string']},
+  //     {open: "'", close: '', notIn: ['string', 'comment']},
+  //     {open: '`', close: '`', notIn: ['string', 'comment']},
+  //   ],
+  // })
+  // color.value = monaco.languages.setMonarchTokensProvider('python', {
+  //   //自定义文本颜色
+  //   ignoreCase: true,
+  //   tokenizer: {
+  //     root: [
+  //       [
+  //         /pageData|currentUser/,
+  //         {token: 'keyword'},
+  //       ], //蓝色
+  //       [
+  //         /[+]|[-]|[*]|[/]|[%]|[>]|[<]|[=]|[!]|[:]|[&&]|[||]/,
+  //         {token: 'string'},
+  //       ], //红色
+  //       [/'.*?'|".*?"/, {token: 'string.escape'}], //橙色
+  //       [/#--.*?\--#/, {token: 'comment'}], //绿色
+  //       [/null/, {token: 'regexp'}], //粉色
+  //       [/[{]|[}]/, {token: 'type'}], //青色
+  //       // [/[\u4e00-\u9fa5]/, { token: 'predefined' }],//亮粉色
+  //       // [/''/, { token: 'invalid' }],//红色
+  //       // [/[\u4e00-\u9fa5]/, { token: 'number.binary' }],//浅绿
+  //       [/(?!.*[a-zA-Z])[0-9]/, {token: 'number.hex'}], //浅绿
+  //       [/[(]|[)]/, {token: 'number.octal'}], //浅绿
+  //       // [/[\u4e00-\u9fa5]/, { token: 'number.float' }],//浅绿
+  //     ],
+  //   },
+  // })
+  // hover.value = monaco.languages.registerHoverProvider('python', {
+  //   //自定义文字悬浮提示
+  //   provideHover: (model, position) => {
+  //     if (model.getWordAtPosition(position) != null) {
+  //       const word = model.getWordAtPosition(position).word
+  //       let arr = [
+  //         {
+  //           text: 'SqlUtil', //悬浮文字
+  //           title: '数据库操作', //标题
+  //           content: '对数据进行操作，支持sql,addConditionExist等操作', //提示内容
+  //         },
+  //       ]
+  //       return hoverTips(arr, word)
+  //     }
+  //   },
+  // })
   editor.value = monaco.editor.create(document.getElementById('codeBox'), {
     //初始化配置
     value: props.value,
