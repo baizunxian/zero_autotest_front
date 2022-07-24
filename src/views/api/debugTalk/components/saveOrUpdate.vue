@@ -3,12 +3,17 @@
     <div class="myEditorTop">[{{ isEdit ? '编辑' : '只读' }}] - [{{ debugTalkFrom.project_name }}]
       <el-button v-show="isEdit" type="success" @click="saveOrUpdate" style="margin-left: 10px;">保存</el-button>
     </div>
-    <v-ace-editor
-        ref="jsonEditorRef"
-        v-model:value="debugTalkFrom.debug_talk"
-        :options="options"
-        class="debugTalk"
-    ></v-ace-editor>
+    <!--    <v-ace-editor-->
+    <!--        ref="jsonEditorRef"-->
+    <!--        v-model:value="debugTalkFrom.debug_talk"-->
+    <!--        :options="options"-->
+    <!--        class="debugTalk"-->
+    <!--    ></v-ace-editor>-->
+    <monaco
+        ref="monacoEdit"
+        :value="debugTalkFrom.debug_talk"
+        @contentChange="contentChange"
+    ></monaco>
   </div>
 </template>
 
@@ -19,10 +24,11 @@ import {useDebugTalkApi} from "/@/api/useAutoApi/debugTalk";
 import {ElMessage} from "element-plus/es";
 import {VAceEditor} from '/@/components/VaceEditor/index.js';
 
+import monaco from '/@/components/monaco/index.vue'
 
 export default defineComponent({
   name: 'saveOrUpdateDebugTalk',
-  components: {VAceEditor},
+  components: {VAceEditor, monaco},
   setup() {
     const debugTalkRef = ref()
     const route = useRoute()
@@ -82,6 +88,11 @@ export default defineComponent({
       // setBackEndControlRefreshRoutes() // 刷新菜单，未进行后端接口测试
     };
 
+    const contentChange = (val) => {
+      countent.value = val
+      console.log(val)
+    }
+
     onMounted(() => {
       initData()
     })
@@ -90,6 +101,7 @@ export default defineComponent({
       initData,
       debugTalkRef,
       saveOrUpdate,
+      contentChange,
       ...toRefs(state),
     };
   },

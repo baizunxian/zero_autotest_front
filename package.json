@@ -44,6 +44,7 @@
 		"eslint": "7.8.0",
 		"eslint-plugin-vue": "^8.5.0",
 		"json-editor-vue3": "^1.0.6",
+		"monaco-editor": "0.19.3",
 		"prettier": "^2.5.1",
 		"resize-observer-polyfill": "^1.5.1",
 		"sass": "^1.49.9",
@@ -51,6 +52,7 @@
 		"typescript": "^4.6.2",
 		"vanta": "^0.5.22",
 		"vite": "^2.8.6",
+		"vite-plugin-monaco-editor": "1.0.5",
 		"vue-eslint-parser": "^8.3.0"
 	},
 	"browserslist": [
