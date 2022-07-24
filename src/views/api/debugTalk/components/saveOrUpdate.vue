@@ -1,6 +1,6 @@
 <template>
-  <div class="echart-pie-wrap">
-    <div class="myEditorTop">[{{ isEdit ? '编辑' : '只读' }}] - [{{ debugTalkFrom.project_name }}]
+  <div>
+    <div style=" height: 45px">[{{ isEdit ? '编辑' : '只读' }}] - [{{ debugTalkFrom.project_name }}]
       <el-button v-show="isEdit" type="success" @click="saveOrUpdate" style="margin-left: 10px;">保存</el-button>
     </div>
     <!--    <v-ace-editor-->
@@ -9,11 +9,15 @@
     <!--        :options="options"-->
     <!--        class="debugTalk"-->
     <!--    ></v-ace-editor>-->
-    <monaco
-        ref="monacoEdit"
-        :value="debugTalkFrom.debug_talk"
-        @contentChange="contentChange"
-    ></monaco>
+    <div class="code-box">
+      <monaco
+          ref="monacoEdit"
+          v-model:value="debugTalkFrom.debug_talk"
+          v-model:long="long"
+          @contentChange="contentChange"
+      ></monaco>
+    </div>
+
   </div>
 </template>
 
@@ -64,6 +68,8 @@ export default defineComponent({
       },
       // headers
 
+      long: 'python'
+
     });
 
     const initData = () => {
@@ -90,6 +96,7 @@ export default defineComponent({
 
     const contentChange = (val) => {
       // countent.value = val
+      state.debugTalkFrom.debug_talk = val
       console.log(val)
     }
 
@@ -125,7 +132,7 @@ export default defineComponent({
 
 }
 
-.debugTalk {
-  height: calc(100vh - 45px - 84px);
+.code-box {
+  height: calc(100% - 45px);
 }
 </style>
