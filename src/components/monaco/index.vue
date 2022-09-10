@@ -1,32 +1,56 @@
 <template>
-  <div id="codeBox" ref="monacoEditorRef"></div>
+  <div class="monaco-editor" ref="monacoEditorRef"></div>
 </template>
 <script lang="ts">
 import * as monaco from 'monaco-editor'
-import {reactive, ref, watch, onMounted, toRefs} from 'vue'
+import {reactive, ref, watch, onMounted, toRefs, toRaw} from 'vue'
 import {language as pythonLanguage} from 'monaco-editor/esm/vs/basic-languages/python/python.js';
-import {toRaw} from 'vue-demi'
+
 
 export default {
   name: 'monaco-editor',
   props: {
+    // 展示的字符串
     value: {
       type: String,
       default: '',
     },
+    // 是否启用比对
+    isDiff: {
+      type: Boolean,
+      default: false,
+    },
+    // 比对需要的源数据
+    oldString: {
+      type: String,
+      default: '',
+    },
+    // 比对需要的新数据
+    newString: {
+      type: String,
+      default: '',
+    },
+    // 语言
     long: {
       type: String,
       default: 'python',
+    },
+    // 主题
+    theme: {
+      type: String,
+      default: 'vs-dark',
     }
   },
-  setup(props: any, {emit}: any) {
+  setup(props: any) {
     const monacoEditorRef = ref()
     const editor: any = ref(null)
+    const originalEditor: any = ref(null)
+    const modifiedEditor: any = ref(null)
     const state = reactive({
       options: {
-        value: props.value,
-        theme: 'vs-dark',
-        autoIndex: true,
+        value: props.value,  // 值
+        theme: props.theme,   // 主题
+        autoIndex: true,  //
         language: props.long, // 语言类型
         tabCompletion: 'on',
         cursorSmoothCaretAnimation: true,
@@ -46,7 +70,7 @@ export default {
       monaco.languages.registerCompletionItemProvider(
           'python',
           {
-            provideCompletionItems(model: any, position: any) {
+            provideCompletionItems() {
               let suggestions: any = []
               pythonLanguage.keywords.forEach((item: any) => {
                 suggestions.push({
@@ -63,30 +87,54 @@ export default {
             triggerCharacters: ['.'],
           }
       )
+      if (props.isDiff) {
+        editor.value = monaco.editor.createDiffEditor(monacoEditorRef.value, state.options)
+        originalEditor.value = monaco.editor.createModel(props.value, props.long)
+        modifiedEditor.value = monaco.editor.createModel(props.value, props.long)
+        toRaw(editor.value).setModel({
+          original: toRaw(originalEditor.value),
+          modified: toRaw(modifiedEditor.value)
+        })
+      } else {
+        editor.value = monaco.editor.create(monacoEditorRef.value, state.options)
+      }
 
-      editor.value = monaco.editor.create(monacoEditorRef.value, state.options)
 
-      // 监听值的变化
-      editor.value.onDidChangeModelContent((val) => {
-        //给父组件实时返回最新文本
-        // emit('contentChange', toRaw(editor.value).getValue())
-        // emit('update:value', toRaw(editor.value).getValue())
-        console.log(toRaw(editor.value).getValue(), '---------------value1')
-
+      editor.value.onDidChangeModelContent((val: any) => {
+        console.log(val)
       })
+    }
+
+    // 获取value
+    const getValue = () => {
+      return toRaw(editor.value).getValue()
     }
 
     watch(
         () => props.value,
-        (newVal, oldVal) => {
+        (newVal) => {
           toRaw(editor.value).setValue(newVal)
         },
         {deep: true}
     )
     watch(
         () => props.long,
-        (newVal, oldVal) => {
-          console.log(newVal)
+        (newVal) => {
+          monaco.editor.setModelLanguage(toRaw(editor.value).getModel(), newVal)
+        },
+        {deep: true}
+    )
+    watch(
+        () => props.oldString,
+        (newVal) => {
+          toRaw(originalEditor.value).setValue(newVal)
+        },
+        {deep: true}
+    )
+    watch(
+        () => props.newString,
+        (newVal) => {
+          toRaw(modifiedEditor.value).setValue(newVal)
         },
         {deep: true}
     )
@@ -96,6 +144,7 @@ export default {
     })
 
     return {
+      getValue,
       initEditor,
       monacoEditorRef,
       ...toRefs(state)
@@ -103,25 +152,9 @@ export default {
   }
 }
 
-// const cloneDeep = (suggestions) => {
-//   return JSON.parse(JSON.stringify(suggestions))
-// }
-// const hoverTips = (arr, word) => {
-//   let tip = ''
-//   arr.forEach((item) => {
-//     if (word == item.text) {
-//       tip = {
-//         contents: [{value: item.title || ''}, {value: item.content || ''}],
-//       }
-//     }
-//   })
-//   return tip
-// }
-
-
 </script>
 <style scoped>
-#codeBox {
+.monaco-editor {
   width: 100%;
   height: 100%;
 }

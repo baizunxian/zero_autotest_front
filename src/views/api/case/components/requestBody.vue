@@ -63,14 +63,13 @@
 
     <div style="padding-top: 8px;">
       <div style="border: 1px solid #E6E6E6">
-        <v-ace-editor
+        <monaco-editor
             v-show="mode === 'raw'"
-            ref="jsonEditorRef"
+            style="height: 500px"
+            ref="monacoEditRef"
             v-model:value="rawData"
-            :lang="long"
-            :options="aceOptions"
-            style="height:500px"
-        ></v-ace-editor>
+            v-model:long="long"
+        ></monaco-editor>
       </div>
     </div>
     <!---------------------------params------------------------------------>
@@ -224,21 +223,20 @@
 </template>
 
 <script lang="ts">
-import {VAceEditor} from '/@/components/VaceEditor/index.js';
 import {defineComponent, onMounted, reactive, ref, toRefs, watch} from "vue";
 import {useFileApi} from '/@/api/useSystemApi/file'
 import {ElMessage} from "element-plus";
-import "/@/assets/jsoneditor/jsoneditor.css";
 import {handleEmpty} from "/@/utils/other";
+import monacoEditor from '/@/components/monaco/index.vue'
 
 
 export default defineComponent({
-  components: {VAceEditor},
+  components: {monacoEditor},
   name: 'requestBody',
   setup(props, {emit}) {
     const formDataRef = ref()
     const rawPopoverRef = ref()
-    const jsonEditorRef = ref()
+    const monacoEditRef = ref()
 
     const state = reactive({
       mode: 'raw',
@@ -274,6 +272,7 @@ export default defineComponent({
         animatedScroll: true,
         navigateWithinSoftTabs: true,
       },
+      //
       long: 'json',
     });
 
@@ -331,7 +330,7 @@ export default defineComponent({
       let requestData: any = {}
       requestData.mode = state.mode
       if (state.mode === 'raw') {
-        requestData.data = state.rawData
+        requestData.data = state.rawData = monacoEditRef.value.getValue()
         requestData.language = state.language
       }
       if (state.mode === 'json') {
@@ -345,9 +344,9 @@ export default defineComponent({
 
 
     // raw 设置ace语言
-    const setAceLong = (value: any) => {
+    const setLong = (value: any) => {
       if (value.toLowerCase() == 'text') {
-        state.long = 'text'
+        state.long = 'plaintext'
       }
       if (value.toLowerCase() == 'json') {
         state.long = 'json'
@@ -382,7 +381,7 @@ export default defineComponent({
         } else if (state.language.toLowerCase() === 'json') {
           headerData.value = 'application/json'
         }
-        setAceLong(state.language);
+        setLong(state.language);
       }
       emit('updateHeader', headerData, remove)
     }
@@ -394,6 +393,7 @@ export default defineComponent({
     // 美化json
     const jsonFormat = () => {
       try {
+        state.rawData = monacoEditRef.value.getValue()
         state.rawData = JSON.stringify(JSON.parse(state.rawData), null, 4);
       } catch {
         ElMessage.info('JSON格式错误！')
@@ -402,6 +402,7 @@ export default defineComponent({
     // 压缩json
     const jsonCompact = () => {
       try {
+        state.rawData = monacoEditRef.value.getValue()
         state.rawData = JSON.stringify(JSON.parse(state.rawData));
       } catch {
         ElMessage.info('JSON格式错误！')
@@ -473,7 +474,7 @@ export default defineComponent({
       deletedFile,
       formDataRef,
       rawPopoverRef,
-      jsonEditorRef,
+      monacoEditRef,
       jsonFormat,
       jsonCompact,
       deleteFormData,

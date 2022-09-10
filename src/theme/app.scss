@@ -20,6 +20,10 @@
 	--next-color-seting-header: #b3c0d1;
 }
 
+@font-face {
+    font-family: 'HarmonyOS_Medium';
+    src: url("/src/assets/fonts/HarmonyOS_Sans_SC_Medium.ttf");
+}
 html,
 body,
 #app {
@@ -27,7 +31,8 @@ body,
 	padding: 0;
 	width: 100%;
 	height: 100%;
-	font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+	//font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+	font-family: PingFang SC,HarmonyOS_Medium,Helvetica Neue,Microsoft YaHei,sans-serif;
 	font-weight: 400;
 	-webkit-font-smoothing: antialiased;
 	-webkit-tap-highlight-color: transparent;

@@ -1,25 +1,30 @@
 import request from '/@/utils/request';
 
 /**
- * 菜单接口
- * @method getAllMenus 获取菜单接口，路由格式
- * @method allMenu 获取菜单接口，平铺
- * @method saveOrUpdateMenu 更新保存菜单
+ * 数据库查询
  */
-export function useMenuApi() {
+export function useQueryDBApi() {
   return {
-    // 获取所有菜单，嵌套
-    getAllMenus: (data?: object) => {
+    // 获取数据库连接列表
+    getSourceList: (data?: object) => {
       return request({
-        url: '/menu/getAllMenus',
+        url: '/queryDB/getSourceList',
         method: 'POST',
         data,
       });
     },
-    //后去所有菜单，平铺
-    allMenu: (data?: object) => {
+    // 获取数数据库表
+    getDBList: (data?: object) => {
       return request({
-        url: '/menu/allMenu',
+        url: '/queryDB/getDBList',
+        method: 'POST',
+        data,
+      });
+    },
+    // 获取数数据库表
+    getTableList: (data?: object) => {
+      return request({
+        url: '/queryDB/getTableList',
         method: 'POST',
         data,
       });

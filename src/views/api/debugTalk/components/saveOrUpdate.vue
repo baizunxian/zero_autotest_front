@@ -3,19 +3,23 @@
     <div style=" height: 45px">[{{ isEdit ? '编辑' : '只读' }}] - [{{ debugTalkFrom.project_name }}]
       <el-button v-show="isEdit" type="success" @click="saveOrUpdate" style="margin-left: 10px;">保存</el-button>
     </div>
-    <!--    <v-ace-editor-->
-    <!--        ref="jsonEditorRef"-->
-    <!--        v-model:value="debugTalkFrom.debug_talk"-->
-    <!--        :options="options"-->
-    <!--        class="debugTalk"-->
-    <!--    ></v-ace-editor>-->
+
     <div class="code-box">
-      <monaco
+      <!--      展示-->
+      <monaco-editor
           ref="monacoEdit"
           v-model:value="debugTalkFrom.debug_talk"
           v-model:long="long"
-          @contentChange="contentChange"
-      ></monaco>
+      />
+      <!--对比-->
+      <!--      <monaco-editor-->
+      <!--          ref="monacoEdit"-->
+      <!--          v-model:long="long"-->
+      <!--          :is-diff="true"-->
+      <!--          :old-string="debugTalkFrom.debug_talk"-->
+      <!--          :new-string="debugTalkFrom.debug_talk"-->
+      <!--          @contentChange="contentChange"-->
+      <!--      />-->
     </div>
 
   </div>
@@ -26,15 +30,15 @@ import {defineComponent, onMounted, reactive, ref, toRefs} from "vue";
 import {useRoute} from 'vue-router'
 import {useDebugTalkApi} from "/@/api/useAutoApi/debugTalk";
 import {ElMessage} from "element-plus/es";
-import {VAceEditor} from '/@/components/VaceEditor/index.js';
 
-import monaco from '/@/components/monaco/index.vue'
+import monacoEditor from '/@/components/monaco/index.vue'
 
 export default defineComponent({
   name: 'saveOrUpdateDebugTalk',
-  components: {VAceEditor, monaco},
+  components: {monacoEditor},
   setup() {
     const debugTalkRef = ref()
+    const monacoEdit = ref()
     const route = useRoute()
     const state = reactive({
       isEdit: true,
@@ -87,6 +91,7 @@ export default defineComponent({
 
     // 新增
     const saveOrUpdate = () => {
+      state.debugTalkFrom.debug_talk = monacoEdit.value.getValue()
       useDebugTalkApi().saveOrUpdate(state.debugTalkFrom)
           .then(() => {
             ElMessage.success('操作成功');
@@ -94,21 +99,15 @@ export default defineComponent({
       // setBackEndControlRefreshRoutes() // 刷新菜单，未进行后端接口测试
     };
 
-    const contentChange = (val) => {
-      // countent.value = val
-      state.debugTalkFrom.debug_talk = val
-      console.log(val)
-    }
-
     onMounted(() => {
       initData()
     })
 
     return {
       initData,
+      monacoEdit,
       debugTalkRef,
       saveOrUpdate,
-      contentChange,
       ...toRefs(state),
     };
   },

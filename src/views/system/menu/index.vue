@@ -84,13 +84,13 @@ export default defineComponent({
     const saveOrUpdateRef = ref();
     const state = reactive({
       fieldData: [
-        {fieldName: 'title', label: '菜单名称', width: '', align: 'center', show: true},
-        {fieldName: 'path', label: '路由路径', width: '', align: 'center', show: true},
-        {fieldName: 'component', label: '组件路径', width: '', align: 'center', show: true},
-        {fieldName: 'roles', label: '权限标识', width: '', align: 'center', show: true},
-        {fieldName: 'name', label: '路由名称', width: '', align: 'center', show: true},
-        {fieldName: 'sort', label: '排序', width: '', align: 'center', show: true},
-        {fieldName: 'menu_type', label: '类型', width: '', align: 'center', show: true},
+        {fieldName: 'title', label: '菜单名称', width: '', align: 'left', show: true},
+        {fieldName: 'path', label: '路由路径', width: '', align: 'left', show: true},
+        {fieldName: 'component', label: '组件路径', width: '', align: 'left', show: true},
+        {fieldName: 'roles', label: '权限标识', width: '', align: 'left', show: true},
+        {fieldName: 'name', label: '路由名称', width: '', align: 'left', show: true},
+        {fieldName: 'sort', label: '排序', width: '', align: 'left', show: true},
+        {fieldName: 'menu_type', label: '类型', width: '', align: 'left', show: true},
         // {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
         // {fieldName: 'updated_by', label: '更新人', width: '', align: 'center', show: true},
         // {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
@@ -125,7 +125,7 @@ export default defineComponent({
     // 获取菜单列表
     const getList = async () => {
       state.menuTableLoading = true
-      let res = await useMenuApi().allMenu()
+      let res = await useMenuApi().allMenu({})
       state.allMenuList = res.data
       let parent_menu = []
       res.data.forEach(menu => {

@@ -140,7 +140,6 @@
         title="导入"
         :close-on-click-modal="false">
 
-
       <el-form
           :rules="importRules"
           ref="importFormRef"
@@ -197,6 +196,7 @@
                 </el-button>
               </div>
             </div>
+            <el-tip>目前只支持postman json文件</el-tip>
           </div>
         </el-form-item>
       </el-form>

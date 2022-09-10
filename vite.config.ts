@@ -3,7 +3,6 @@ import { resolve } from 'path';
 import { defineConfig, loadEnv, ConfigEnv } from 'vite';
 import monacoEditorPlugin from "vite-plugin-monaco-editor"
 
-
 const pathResolve = (dir: string): any => {
 	return resolve(__dirname, '.', dir);
 };
