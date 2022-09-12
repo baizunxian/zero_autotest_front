@@ -6,6 +6,7 @@ import * as monaco from 'monaco-editor'
 import {reactive, ref, watch, onMounted, toRefs, toRaw} from 'vue'
 import {language as pythonLanguage} from 'monaco-editor/esm/vs/basic-languages/python/python.js';
 
+import SQLSnippets from "./core/sql.js"
 
 export default {
   name: 'monaco-editor',
@@ -39,6 +40,23 @@ export default {
     theme: {
       type: String,
       default: 'vs-dark',
+    },
+
+    dbList: {
+      type: Array,
+      default: () => []
+    },
+    onInputTableAlia: {
+      type: Array,
+      default: () => []
+    },
+    onInputField: {
+      type: Array,
+      default: () => []
+    },
+    dbs: {
+      type: Array,
+      default: () => []
     }
   },
   setup(props: any) {
@@ -47,6 +65,7 @@ export default {
     const originalEditor: any = ref(null)
     const modifiedEditor: any = ref(null)
     const state = reactive({
+      sqlSnippets: null,
       options: {
         value: props.value,  // 值
         theme: props.theme,   // 主题
@@ -66,23 +85,39 @@ export default {
 
     const initEditor = () => {
       // 初始化编辑器，确保dom已经渲染
-      monaco.languages.register({id: 'python'})
+
+      state.sqlSnippets = new SQLSnippets(
+          monaco,
+          props.onInputField,
+          props.onInputTableAlia,
+          props.dbs
+      )
+
+      monaco.languages.register({id: props.long})
       monaco.languages.registerCompletionItemProvider(
-          'python',
+          props.long,
           {
-            provideCompletionItems() {
+            async provideCompletionItems(model, position) {
               let suggestions: any = []
-              pythonLanguage.keywords.forEach((item: any) => {
-                suggestions.push({
-                  label: item,
-                  kind: monaco.languages.CompletionItemKind.Keyword,
-                  insertText: item
-                });
-              })
-              return {
-                // suggestions: cloneDeep(vCompletion),//自定义代码补全
-                suggestions: suggestions
+              let language: any = pythonLanguage
+              switch (props.long) {
+                case "sql":
+                  return await state.sqlSnippets.provideCompletionItems(model, position)
+                default:
+                  language = pythonLanguage
+                  language.keywords.forEach((item: any) => {
+                    suggestions.push({
+                      label: item,
+                      kind: monaco.languages.CompletionItemKind.Keyword,
+                      insertText: item
+                    });
+                  })
+                  return {
+                    // suggestions: cloneDeep(vCompletion),//自定义代码补全
+                    suggestions: suggestions
+                  }
               }
+
             },
             triggerCharacters: ['.'],
           }
@@ -101,13 +136,17 @@ export default {
 
 
       editor.value.onDidChangeModelContent((val: any) => {
-        console.log(val)
+        // console.log(val)
       })
     }
 
     // 获取value
     const getValue = () => {
       return toRaw(editor.value).getValue()
+    }
+
+    const getMode = () => {
+      return toRaw(editor.value).getModel()
     }
 
     watch(
@@ -139,12 +178,21 @@ export default {
         {deep: true}
     )
 
+    watch(
+        () => props.dbs,
+        () => {
+          state.sqlSnippets.setDbSchema(props.dbs)
+        },
+        {deep: true}
+    )
+
     onMounted(() => {
       initEditor()
     })
 
     return {
       getValue,
+      getMode,
       initEditor,
       monacoEditorRef,
       ...toRefs(state)
