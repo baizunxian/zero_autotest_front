@@ -3,21 +3,21 @@
     <el-card shadow="hover" style="height: 100%">
       <splitpanes class="default-theme" @resize="paneSize = $event[0].size" style="height: 100%;">
         <pane :size="32">
-          <db-list @setData="setData"></db-list>
+          <project></project>
         </pane>
         <pane :size="100">
-          <splitpanes class=""
-                      ref="containerRef"
-                      @resize="winChange('resize', $event)"
-                      @ready="winChange('ready', $event)"
-                      :horizontal="true">
-            <pane :size="100">
-              <container-top ref="containerTopRef"></container-top>
-            </pane>
-            <pane :size="100">
-              <container-bottom></container-bottom>
-            </pane>
-          </splitpanes>
+          <!--          <splitpanes class=""-->
+          <!--                      ref="containerRef"-->
+          <!--                      @resize="winChange('resize', $event)"-->
+          <!--                      @ready="winChange('ready', $event)"-->
+          <!--                      :horizontal="true">-->
+          <!--            <pane :size="100">-->
+          <!--              <container-top ref="containerTopRef"></container-top>-->
+          <!--            </pane>-->
+          <!--            <pane :size="100">-->
+          <!--              <container-bottom></container-bottom>-->
+          <!--            </pane>-->
+          <!--          </splitpanes>-->
         </pane>
       </splitpanes>
     </el-card>
@@ -27,18 +27,14 @@
 
 <script lang="ts">
 import {defineComponent, reactive, toRefs, ref} from 'vue';
-import dbList from '/@/views/tools/queryDB/components/dbList.vue';
-import containerTop from '/@/views/tools/queryDB/components/containerTop.vue';
-import containerBottom from '/@/views/tools/queryDB/components/containerBottom.vue';
+import project from '/@/views/api/apiTest/components/project.vue';
 import {Splitpanes, Pane} from 'splitpanes';
 import 'splitpanes/dist/splitpanes.css';
 
 export default defineComponent({
   name: 'query_db',
   components: {
-    dbList,
-    containerTop,
-    containerBottom,
+    project,
     Splitpanes,
     Pane,
   },
@@ -57,15 +53,8 @@ export default defineComponent({
       containerTopRef.value.setMonacoHeHeight(height)
     }
 
-
-    const setData = (dbs:any) => {
-      console.log("dbs----------1>", dbs)
-      containerTopRef.value.setData(dbs)
-    }
-
     return {
       winChange,
-      setData,
       containerRef,
       containerTopRef,
       ...toRefs(state)
@@ -78,6 +67,7 @@ export default defineComponent({
 
 :deep(.el-card) {
   height: 100%;
+
   .el-card__body {
     height: 100%;
     padding: 5px;
@@ -91,4 +81,5 @@ export default defineComponent({
 .splitpanes__pane .content {
   padding: 0 6px;
 }
+
 </style>

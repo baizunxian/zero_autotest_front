@@ -247,7 +247,7 @@ export default defineComponent({
               // url
               let urlForm = {
                 id: data.id,
-                // resource: this.resource,
+                // dataSource: this.dataSource,
                 url: case_data.request.url,
                 method: case_data.request.method,
                 enabled_flag: data.enabled_flag,

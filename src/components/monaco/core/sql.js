@@ -169,7 +169,7 @@ export default class Snippets {
                     tableColumns.push({
                         label: field.columnName ? field.columnName : '',
                         kind: this.monaco.languages.CompletionItemKind.Module,
-                        detail: `<字段>`,
+                        detail: `<字段><${field.columnType}>`,
                         sortText: this.SORT_TEXT.Column,
                         insertText: field.columnName ? field.columnName : ''
                     })

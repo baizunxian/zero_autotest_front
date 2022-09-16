@@ -50,7 +50,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="100" align="center">
+        <el-table-column label="操作" width="100" align="center" fixed="right">
           <template #default="{row}">
             <el-button size="small" type="text" @click="onOpenSaveOrUpdate('update', row)">
               修改

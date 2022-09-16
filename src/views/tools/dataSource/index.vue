@@ -2,7 +2,7 @@
   <div>
     <el-card shadow="hover">
       <div class="mb15">
-        <el-input v-model="listQuery.name" placeholder="请输入配置名称" style="max-width: 180px"></el-input>
+        <el-input v-model="listQuery.name" :placeholder="`请输入环境名称`" style="max-width: 180px"></el-input>
         <el-button type="primary" class="ml10" @click="search">
           <el-icon>
             <ele-Search/>
@@ -21,7 +21,6 @@
           v-loading="tableLoading"
           :data="listData"
           style="width: 100%">
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
 
         <el-table-column
             v-for="field in fieldData"
@@ -47,12 +46,16 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="150" align="center" fixed="right">
+        <el-table-column label="操作" width="100" align="center" fixed="right">
           <template #default="scope">
-            <el-button type="text" @click="onOpenSaveOrUpdate('update', scope.row)">
+            <el-button  size="small"
+                        type="text"
+                       @click="onOpenSaveOrUpdate('update', scope.row)">
               修改
             </el-button>
-            <el-button type="text" @click="deleted(scope.row)">
+            <el-button size="small"
+                       type="text"
+                       @click="deleted(scope.row)">
               删除
             </el-button>
           </template>
@@ -64,55 +67,28 @@
                   v-model:limit="listQuery.pageSize"
                   @pagination="getList"/>
     </el-card>
-
-    <el-dialog
-        draggable
-        v-model="showSaveOrUpdate"
-        width="80%"
-        top="8vh"
-        :title="editType === 'save'? '新增配置':'更新配置'"
-        destroy-on-close
-        :close-on-click-modal="false">
-      <save-or-update ref="saveOrUpdateRef" @getList="getList" :config_id="config_id"/>
-      <template #footer>
-        <el-button @click="showSaveOrUpdate = false">取 消</el-button>
-        <el-button type="primary" @click="saveOrUpdate">保 存</el-button>
-      </template>
-    </el-dialog>
+    <save-or-update ref="saveOrUpdateRef"  @getList="getList"/>
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
+import saveOrUpdate from '/@/views/api/env/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
-import {useTestCaseApi} from "/@/api/useAutoApi/testcase";
-import {useRouter} from "vue-router";
-import saveOrUpdate from '/@/views/api/configure/components/saveOrUpdate.vue';
-
-// 定义接口来定义对象的类型
-// interface TableData {
-//   roleName: string;
-//   roleSign: string;
-//   describe: string;
-//   sort: number;
-//   status: boolean;
-//   createTime: string;
-// }
+import {useEnvApi} from "/@/api/useAutoApi/env";
 
 
 export default defineComponent({
-  name: 'apiConfigure',
+  name: 'apiEnv',
   components: {saveOrUpdate, Pagination},
   setup() {
     const saveOrUpdateRef = ref();
-    const router = useRouter();
     const state = reactive({
       fieldData: [
-        {fieldName: 'id', label: 'ID', width: '55', align: 'center', show: true},
-        {fieldName: 'name', label: '配置名称', width: '', align: 'center', show: true},
-        {fieldName: 'project_name', label: '所属项目', width: '', align: 'center', show: true},
-        {fieldName: 'module_name', label: '所属模块', width: '', align: 'center', show: true},
+        {fieldName: 'name', label: '环境名称', width: '', align: 'center', show: true},
+        {fieldName: 'url', label: 'URL', width: '', align: 'center', show: true},
+        {fieldName: 'remarks', label: '备注', width: '', align: 'center', show: true},
         {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
         {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
         {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
@@ -125,18 +101,13 @@ export default defineComponent({
       listQuery: {
         page: 1,
         pageSize: 20,
-        case_type: 2,
         name: '',
       },
-      // configure
-      editType: 'save',
-      config_id: null,
-      showSaveOrUpdate: false,
     });
     // 初始化表格数据
     const getList = () => {
       state.tableLoading = true
-      useTestCaseApi().getList(state.listQuery)
+      useEnvApi().getList(state.listQuery)
           .then(res => {
             state.listData = res.data.rows
             state.total = res.data.rowTotal
@@ -144,27 +115,15 @@ export default defineComponent({
           })
     };
 
-    // 查询
+     // 查询
     const search = () => {
       state.listQuery.page = 1
       getList()
     }
 
-    // 新增或修改
-    const onOpenSaveOrUpdate = (editType: string, row: any | null) => {
-      state.editType = editType
-      if (row && row.id) {
-        state.config_id = row.id
-      } else {
-        state.config_id = null
-      }
-      state.showSaveOrUpdate = !state.showSaveOrUpdate
-      // router.push({name: 'saveOrUpdateTestCase', query: query})
-    };
-
-    // saveOrUpdate
-    const saveOrUpdate = () => {
-      saveOrUpdateRef.value.saveOrUpdate()
+    // 新增或修改角色
+    const onOpenSaveOrUpdate = (editType: string, row: any) => {
+      saveOrUpdateRef.value.openDialog(editType, row);
     };
 
     // 删除角色
@@ -175,7 +134,7 @@ export default defineComponent({
         type: 'warning',
       })
           .then(() => {
-            useTestCaseApi().deleted({id: row.id})
+            useEnvApi().deleted({id: row.id})
                 .then(() => {
                   ElMessage.success('删除成功');
                   getList()
@@ -184,8 +143,6 @@ export default defineComponent({
           .catch(() => {
           });
     };
-
-
     // 页面加载时
     onMounted(() => {
       getList();
@@ -194,10 +151,8 @@ export default defineComponent({
       getList,
       search,
       saveOrUpdateRef,
-      saveOrUpdate,
       onOpenSaveOrUpdate,
       deleted,
-      router,
       ...toRefs(state),
     };
   },

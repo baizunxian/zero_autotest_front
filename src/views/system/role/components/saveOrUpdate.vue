@@ -42,7 +42,8 @@
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="角色描述">
-              <el-input v-model="form.description" type="textarea" placeholder="请输入角色描述" maxlength="150"></el-input>
+              <el-input v-model="form.description" type="textarea" placeholder="请输入角色描述"
+                        maxlength="150"></el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">

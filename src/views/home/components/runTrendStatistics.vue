@@ -128,7 +128,7 @@ export default defineComponent({
         }
     );
     const initEchartsResizeFun = () => {
-      state.echartsInfo.resize()
+      state.echartsInfo?.resize()
     };
     onMounted(() => {
       state.height = cardRef.value.$el.offsetHeight * 0.9

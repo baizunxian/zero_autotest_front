@@ -57,7 +57,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" show-overflow-tooltip width="140">
+        <el-table-column label="操作" show-overflow-tooltip width="140" fixed="right">
           <template #default="scope">
             <el-button size="small" type="text" @click="onOpenSaveOrUpdate('update', scope.row)">修改</el-button>
             <el-button size="small" type="text" @click="deleted(scope.row)">删除</el-button>

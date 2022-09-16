@@ -1,25 +1,24 @@
 <template>
-  <div class="content">
-
-    <div style="display: flex">
-      <el-select v-model="dbForm.data_source"
-                 clearable placeholder="请选择数据库"
-                 style="width: 200px"
-                 @change="sourceChange"
-      >
-        <el-option
-            v-for="item in dataSource"
-            :key="item"
-            :label="item"
-            :value="item"
-        >
-        </el-option>
-      </el-select>
-      <el-select v-model="dbForm.id"
+  <div class="dbTreeForDbQuery">
+    <div class="wrapper-op">
+      <!--      <el-select v-model="dbForm.data_source"-->
+      <!--                 clearable placeholder="请选择数据库"-->
+      <!--                 style="width: 200px"-->
+      <!--                 @change="sourceChange"-->
+      <!--      >-->
+      <!--        <el-option-->
+      <!--            v-for="item in dataSource"-->
+      <!--            :key="item"-->
+      <!--            :label="item"-->
+      <!--            :value="item"-->
+      <!--        >-->
+      <!--        </el-option>-->
+      <!--      </el-select>-->
+      <el-select v-model="sourceForm.id"
                  clearable
-                 placeholder="请选择数据库"
+                 placeholder="连接"
                  style="width: 200px; margin-left: -1px"
-                 @change="dbChange"
+                 @change="sourceChange"
       >
         <el-option
             v-for="item in sourceList"
@@ -38,92 +37,126 @@
         新增
       </el-button>
     </div>
+    <div class="tree-current-node">
+      <span style="color: #2c2f37;font-weight: 600; font-size: 12px">当前库：</span>{{ currentDB }}
+    </div>
 
-    <el-tree
-        style="width: 100%;"
-        :props="defaultProps"
-        :load="loadNode"
-        :data="dbList"
-        icon=""
-        lazy
-        @check-change="handleCheckChange"
-    >
-      <template #default="{ node, data }">
-        <el-icon>
-          <ele-CirclePlusFilled/>
-        </el-icon>
-        <span class="custom-tree-node">
-          <span>😀{{ node.label }}</span>
-        </span>
-      </template>
-    </el-tree>
+    <div style="height: 100%; overflow-y: auto">
+      <el-table
+          :data="dbList"
+          style="width: 100%"
+          row-key="name"
+          lazy
+          :show-header="false"
+          :load="getTableList"
+          @row-click="clickDB"
+          :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      >
+        <el-table-column prop="name" label="name" width="auto" :show-overflow-tooltip="true">
+          <template #default="{row}">
+            <el-icon>
+              <ele-Coin/>
+            </el-icon>
+            <span>{{ row.name }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+
+    </div>
 
   </div>
 
 </template>
 
 <script lang="ts">
-import {defineComponent, reactive, toRefs} from 'vue';
+import {defineComponent, onMounted, reactive, toRefs} from 'vue';
 import {useQueryDBApi} from "/@/api/useTools/querDB";
 
 export default defineComponent({
   name: 'typeTab',
-  setup() {
+  setup(props, {emit}) {
 
     const state = reactive({
-      // db_info
+      // source
       dataSource: ['mysql', 'redis'],
       sourceList: [],
+      sourceForm: {
+        id: null,
+      },
+      // db
       dbList: [],
       dbForm: {
         id: null,
-        data_source: '',
-        table: '',
+        source_id: null,
       },
+      currentDB: '',
+      // table
       tableList: [],
+      tableForm: {
+        source_id: null,
+        databases: null,
+      },
+
+      // column
     });
-    // 获取列表
+    // source
     const getSourceList = () => {
-      useQueryDBApi().getSourceList(state.dbForm).then((res: any) => {
+      useQueryDBApi().getSourceList(state.sourceForm).then((res: any) => {
         state.sourceList = res.data
       })
     }
 
     // source 变更
     const sourceChange = (value: string) => {
-      state.dbForm.data_source = value
-      if (value) {
-        getSourceList()
-      } else {
-        state.dbForm.id = null
-        state.sourceList = []
+      state.dbForm.source_id = state.tableForm.source_id = value
+      if (!value) {
+        state.sourceForm.id = null
         state.dbList = []
         state.tableList = []
-      }
-    }
-    // source 变更
-    const dbChange = (value: any) => {
-      if (value) {
-        state.dbForm.id = value
+      } else {
         getDBList()
-      } else {
-        state.dbList = []
-        state.tableList = []
       }
-
     }
 
+    // db
     // 获取数据库表
     const getDBList = () => {
       useQueryDBApi().getDBList(state.dbForm).then((res: any) => {
-        res.data.forEach((e: any) => {
-          state.dbList.push({name: e.Database})
-        })
+        state.dbList = res.data
       })
     }
 
-    const getTableList = async () => {
-      let res: any = await useQueryDBApi().getTableList(state.dbForm)
+    const clickDB = async (row, column, event) => {
+      let iconInfo = event.currentTarget.querySelector(".el-table__expand-icon")
+      if (iconInfo) {
+        iconInfo.click();
+      }
+      if (row.type === "database") {
+        state.tableForm.databases = row.name
+        state.currentDB = row.name
+        let dbs = await getColumnList()
+        let data = {
+          database: row.name,
+          source_id: state.sourceForm.id,
+          dbs: [{ dbName: row.name, tables:dbs}]
+        }
+        emit("setData", data)
+      }
+      console.log(row, column, event)
+    }
+
+    // table
+
+    const getTableList = async (row: any, treeNode: unknown, resolve: (date: any) => void) => {
+      state.tableForm.databases = row.name
+      let res: any = await useQueryDBApi().getTableList(state.tableForm)
+      // return res.data
+      resolve(res.data)
+    }
+
+    // column
+    const getColumnList = async () => {
+      let res: any = await useQueryDBApi().getColumnList(state.tableForm)
       return res.data
     }
 
@@ -162,10 +195,16 @@ export default defineComponent({
       },
     }
 
+    onMounted(() => {
+      getSourceList()
+    })
+
 
     return {
+      getSourceList,
       getDBList,
-      dbChange,
+      getColumnList,
+      clickDB,
       getTableList,
       sourceChange,
       handleCheckChange,
@@ -179,17 +218,36 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 
-.content {
-  padding: 0 12px;
+.dbTreeForDbQuery {
+  padding: 0 6px;
   width: 100%;
   overflow-x: auto;
-  height: 100%
+  overflow-y: hidden;
+  height: 100%;
+
+  .wrapper-op {
+    min-width: 220px;
+    margin-bottom: 8px;
+    display: flex;
+    //flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tree-current-node {
+    padding: 0 0 8px 6px;
+    border-bottom: 1px solid #dee2ea;
+    margin-bottom: 6px;
+  }
 }
 
 .el-tree .el-icon i { //原有的箭头 去掉
   display: none !important;
   height: 0;
   width: 0;
+}
+
+:deep(.el-table td.el-table__cell) {
+  border-bottom: #ffffff;
 }
 
 </style>

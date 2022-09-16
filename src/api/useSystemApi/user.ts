@@ -19,6 +19,7 @@ export function useUserApi() {
       return request({
         url: '/user/logout',
         method: 'POST',
+        data: {}
       });
     },
     getList: (data?: object) => {

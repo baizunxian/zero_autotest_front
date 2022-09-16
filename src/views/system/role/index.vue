@@ -57,13 +57,15 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="100">
-          <template #default="scope">
-            <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"
-                       @click="onOpenSaveOrUpdate('update', scope.row)">修改
+        <el-table-column label="操作" width="100" fixed="right">
+          <template #default="{row}">
+            <el-button size="small"
+                       type="text"
+                       @click="onOpenSaveOrUpdate('update', row)">修改
             </el-button>
-            <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text" @click="deleted(scope.row)">
-              删除
+            <el-button size="small"
+                       type="text"
+                       @click="deleted(row)"> 删除
             </el-button>
           </template>
         </el-table-column>
@@ -84,16 +86,6 @@ import {ElMessage, ElMessageBox} from 'element-plus';
 import saveOrUpdate from '/@/views/system/role/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useRolesApi} from "/@/api/useSystemApi/roles";
-
-// 定义接口来定义对象的类型
-interface TableData {
-  roleName: string;
-  roleSign: string;
-  describe: string;
-  sort: number;
-  status: boolean;
-  createTime: string;
-}
 
 
 export default defineComponent({

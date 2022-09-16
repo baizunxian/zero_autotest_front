@@ -124,7 +124,7 @@ export default defineComponent({
 
     };
     const initEchartsResizeFun = () => {
-      state.echartsInfo.resize()
+      state.echartsInfo?.resize()
     };
 
     watch(

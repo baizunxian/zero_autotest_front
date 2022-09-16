@@ -89,7 +89,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" align="center" width="80">
+        <el-table-column label="操作" align="center" width="80" fixed="right">
           <template #default="{row}">
             <el-button type="text" @click="deleteReport(row)">
               删除

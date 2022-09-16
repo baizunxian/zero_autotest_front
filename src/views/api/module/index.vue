@@ -51,12 +51,12 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="100" align="center">
+        <el-table-column label="操作" width="100" align="center" fixed="right">
           <template #default="scope">
-            <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text"
+            <el-button size="small" type="text"
                        @click="onOpenSaveOrUpdate('update', scope.row)">修改
             </el-button>
-            <el-button :disabled="scope.row.roleName === '超级管理员'" size="small" type="text" @click="deleted(scope.row)">
+            <el-button size="small" type="text" @click="deleted(scope.row)">
               删除
             </el-button>
           </template>
@@ -78,17 +78,6 @@ import {ElMessage, ElMessageBox} from 'element-plus';
 import saveOrUpdate from '/@/views/api/module/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useModuleApi} from "/@/api/useAutoApi/module";
-
-// 定义接口来定义对象的类型
-// interface TableData {
-//   roleName: string;
-//   roleSign: string;
-//   describe: string;
-//   sort: number;
-//   status: boolean;
-//   createTime: string;
-// }
-
 
 export default defineComponent({
   name: 'apiModule',

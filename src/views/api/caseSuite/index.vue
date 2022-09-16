@@ -48,7 +48,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="150" align="center">
+        <el-table-column label="操作" width="150" align="center" fixed="right">
           <template #default="{row}">
             <el-button size="small" type="text" @click="runSuitePage(row)">
               运行

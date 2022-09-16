@@ -29,7 +29,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="150">
+        <el-table-column label="操作" width="150" fixed="left">
           <template #default="{row}">
             <el-button
                 size="small"
@@ -212,7 +212,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
+import {defineComponent, nextTick, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useLookupApi} from '/@/api/useSystemApi/lookup';
@@ -304,8 +304,13 @@ export default defineComponent({
         state.lookupForm.id = row.id
         state.lookupForm.code = row.code
         state.lookupForm.description = row.description
+      } else {
+        state.lookupForm = {}
       }
       state.isShowLookupDialog = !state.isShowLookupDialog
+      nextTick(() => {
+        lookupFormRef.value.clearValidate()
+      })
     };
 
     const saveOrUpdateLookup = () => {

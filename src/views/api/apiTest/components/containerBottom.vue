@@ -17,20 +17,7 @@
         :label="item.title"
         :name="item.name"
     >
-      <el-table v-show="findTableData(item.tabIndex).length > 0" :data="findTableData(item.tabIndex)" border style="width: 100%">
-        <el-table-column
-            v-for="(value ,key) in  findTableData(item.tabIndex)[0]"
-            :label="key"
-            :prop="key"
-            :key="key"
-            align="center"
-            :show-overflow-tooltip="true"
-            width="auto"
-        >
-        </el-table-column>
-
-      </el-table>
-
+      {{ item.content }}
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -44,32 +31,23 @@ export default defineComponent({
 
     const state = reactive({
       activeName: 'test',
-      tabIndex: 0,
+      tabIndex: 1,
       data: [
-        {name: 'test', tabIndex: 0, title: 'title1', content: [{data: 1}]}
+        {name: 'test', title: 'title1', content: 'content1'},
+        {name: 'test2', title: 'test2', content: 'content2'},
+        {name: 'test3', title: 'title3', content: 'content3'},
       ]
     });
 
-    const setResult = (data) => {
-      addTab(data)
-    }
 
-    const findTableData = (tabIndex: number) => {
-      return state.data.find( (e) => e.tabIndex == tabIndex).content
-    }
-
-
-    const addTab = (content: string) => {
-      let tabIndex = ++state.tabIndex
-      const newTabName = `结果${tabIndex}`
+    const addTab = (targetName: string) => {
+      const newTabName = `结果${++state.tabIndex}`
       state.data.push({
         title: newTabName,
-        tabIndex: tabIndex,
         name: newTabName,
-        content: [{"test": 2222}],
+        content: 'New Tab content',
       })
       state.activeName = newTabName
-      console.log(state.data, "state.data")
     }
 
     const removeTab = (targetName: string) => {
@@ -92,9 +70,7 @@ export default defineComponent({
 
 
     return {
-      setResult,
       addTab,
-      findTableData,
       removeTab,
       ...toRefs(state)
     };

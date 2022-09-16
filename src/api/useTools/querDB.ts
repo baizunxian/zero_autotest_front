@@ -8,7 +8,7 @@ export function useQueryDBApi() {
     // 获取数据库连接列表
     getSourceList: (data?: object) => {
       return request({
-        url: '/queryDB/getSourceList',
+        url: '/dataSource/sourceList',
         method: 'POST',
         data,
       });
@@ -16,7 +16,7 @@ export function useQueryDBApi() {
     // 获取数数据库表
     getDBList: (data?: object) => {
       return request({
-        url: '/queryDB/getDBList',
+        url: '/dataSource/dbList',
         method: 'POST',
         data,
       });
@@ -24,7 +24,15 @@ export function useQueryDBApi() {
     // 获取数数据库表
     getTableList: (data?: object) => {
       return request({
-        url: '/queryDB/getTableList',
+        url: '/dataSource/tableList',
+        method: 'POST',
+        data,
+      });
+    },
+    // 获取数数据库表
+    getColumnList: (data?: object) => {
+      return request({
+        url: '/dataSource/columnList',
         method: 'POST',
         data,
       });
@@ -37,10 +45,10 @@ export function useQueryDBApi() {
         data
       })
     },
-    // 删除
-    deleted(data?: object) {
+    // 执行
+    execute(data?: object) {
       return request({
-        url: '/menu/deleted',
+        url: '/dataSource/mysql/execute',
         method: 'POST',
         data
       })

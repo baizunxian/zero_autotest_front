@@ -9,11 +9,11 @@ import request from '/@/utils/request';
 export function useMenuApi() {
   return {
     // 获取所有菜单，嵌套
-    getAllMenus: (data?: object) => {
+    getAllMenus: () => {
       return request({
         url: '/menu/getAllMenus',
         method: 'POST',
-        data,
+        data: {},
       });
     },
     //后去所有菜单，平铺
