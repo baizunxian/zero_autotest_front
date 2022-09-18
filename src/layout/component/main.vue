@@ -89,3 +89,18 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+:deep(.el-scrollbar) {
+  //width: 100%;
+  height: 100%;
+
+  .el-scrollbar__wrap {
+    .el-scrollbar__view {
+      height: 100%;
+    }
+  }
+}
+
+</style>
+

@@ -1,7 +1,13 @@
 <template>
   <div>
     <div class="db-query-top-bar">
-      <el-button @click="execute">执行</el-button>
+      <el-link @click="execute">
+        <el-icon>
+          <ele-CaretRight/>
+        </el-icon>
+        执行
+      </el-link>
+<!--      <el-button @click="execute" icon="CaretRight">执行</el-button>-->
     </div>
 
     <div style="border: 1px solid #E6E6E6; overflow-y: auto">
@@ -25,17 +31,18 @@ import {ElMessage} from "element-plus/es";
 export default defineComponent({
   components: {monacoEditor},
   name: 'app',
-  setup() {
+  setup(props, {emit}) {
     const monacoEditRef = ref()
     const state = reactive({
       long: 'sql',
-      height: 10,
+      height: 300,
       // db
       dbs: [],
       //execute
       executeForm: {
         sql: '',
         source_id: "",
+        database: "",
       }
     });
 
@@ -46,6 +53,7 @@ export default defineComponent({
     const setData = (data: any) => {
       state.dbs = data.dbs
       state.executeForm.source_id = data.source_id
+      state.executeForm.database = data.database
     }
 
     const execute = () => {
@@ -56,6 +64,7 @@ export default defineComponent({
       state.executeForm.sql = monacoEditRef.value.getValue()
       useQueryDBApi().execute(state.executeForm)
           .then(res => {
+            emit("setResult", res.data)
             console.log(res)
           })
     }
@@ -81,6 +90,7 @@ export default defineComponent({
   flex: none;
   display: flex;
   border-bottom: 1px solid #dee2ea;
+  padding: 0 2px;
 }
 
 </style>

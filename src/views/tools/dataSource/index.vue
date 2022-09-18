@@ -80,7 +80,7 @@ import {useEnvApi} from "/@/api/useAutoApi/env";
 
 
 export default defineComponent({
-  name: 'apiEnv',
+  name: 'dataSource',
   components: {saveOrUpdate, Pagination},
   setup() {
     const saveOrUpdateRef = ref();

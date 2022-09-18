@@ -1,9 +1,4 @@
 <template>
-  <div style="margin-bottom: 20px">
-    <el-button size="small" @click="addTab(editableTabsValue)">
-      add tab
-    </el-button>
-  </div>
   <el-tabs
       v-model="activeName"
       type="card"
@@ -16,26 +11,34 @@
         :key="item.name"
         :label="item.title"
         :name="item.name"
+        size="small"
     >
-      <el-table v-show="findTableData(item.tabIndex).length > 0" :data="findTableData(item.tabIndex)" border style="width: 100%">
-        <el-table-column
-            v-for="(value ,key) in  findTableData(item.tabIndex)[0]"
-            :label="key"
-            :prop="key"
-            :key="key"
-            align="center"
-            :show-overflow-tooltip="true"
-            width="auto"
-        >
-        </el-table-column>
+      <div style="overflow-y: auto">
+        <el-table v-show="findTableData(item.tabIndex).length > 0" :data="findTableData(item.tabIndex)"
+                  border
+                  fit
+                  size="small"
+                  :max-height="tableHeight"
+                  style="width: 100%">
+          <el-table-column
+              v-for="(value ,key) in  findTableData(item.tabIndex)[0]"
+              :label="key"
+              :prop="key"
+              :key="key"
+              align="center"
+              :show-overflow-tooltip="true"
+              width="auto"
+          >
+          </el-table-column>
 
-      </el-table>
+        </el-table>
+      </div>
 
     </el-tab-pane>
   </el-tabs>
 </template>
 <script lang="ts">
-import {defineComponent, reactive, toRefs} from 'vue';
+import {defineComponent, reactive, toRefs, h} from 'vue';
 
 export default defineComponent({
 
@@ -44,29 +47,29 @@ export default defineComponent({
 
     const state = reactive({
       activeName: 'test',
+      tableHeight: 200,
       tabIndex: 0,
-      data: [
-        {name: 'test', tabIndex: 0, title: 'title1', content: [{data: 1}]}
-      ]
+      data: []
     });
-
-    const setResult = (data) => {
-      addTab(data)
+    // 插入sql查询结果
+    const setResult = (result: any) => {
+      addTab(result)
     }
 
+    // 根据对于的 tabIndex 获取对于tab数据
     const findTableData = (tabIndex: number) => {
-      return state.data.find( (e) => e.tabIndex == tabIndex).content
+      return state.data.find((e) => e.tabIndex == tabIndex).content
     }
 
 
-    const addTab = (content: string) => {
+    const addTab = (result: string) => {
       let tabIndex = ++state.tabIndex
       const newTabName = `结果${tabIndex}`
       state.data.push({
         title: newTabName,
         tabIndex: tabIndex,
         name: newTabName,
-        content: [{"test": 2222}],
+        content: result,
       })
       state.activeName = newTabName
       console.log(state.data, "state.data")
@@ -90,10 +93,14 @@ export default defineComponent({
       state.data = tabs.filter((tab) => tab.name !== targetName)
     }
 
+    const setTableHeight = (tableHeight: number) => {
+      state.tableHeight = tableHeight - 60
+    }
 
     return {
       setResult,
       addTab,
+      setTableHeight,
       findTableData,
       removeTab,
       ...toRefs(state)
@@ -103,5 +110,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+
+:deep(.el-tabs__content) {
+overflow: auto;
+}
+
 
 </style>

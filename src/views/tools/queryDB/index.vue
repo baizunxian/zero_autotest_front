@@ -12,10 +12,10 @@
                       @ready="winChange('ready', $event)"
                       :horizontal="true">
             <pane :size="100">
-              <container-top ref="containerTopRef"></container-top>
+              <container-top ref="containerTopRef" @setResult="setResult"></container-top>
             </pane>
             <pane :size="100">
-              <container-bottom></container-bottom>
+              <container-bottom ref="containerBottomRef"></container-bottom>
             </pane>
           </splitpanes>
         </pane>
@@ -45,29 +45,40 @@ export default defineComponent({
   setup() {
     const containerRef = ref()
     const containerTopRef = ref()
+    const containerBottomRef = ref()
     const state = reactive({
       paneSize: 50,
     });
 
     const winChange = (changeType: string, $event: any) => {
-      let height = containerRef.value.$el.offsetHeight * 50 / 100
+      let topHeight = containerRef.value.$el.offsetHeight * 50 / 100
+      let BottomHeigth = containerRef.value.$el.offsetHeight * 50 / 100
       if (changeType == 'resize') {
-        height = containerRef.value.$el.offsetHeight * $event[0].size / 100
+        topHeight = containerRef.value.$el.offsetHeight * $event[0].size / 100
+        BottomHeigth = containerRef.value.$el.offsetHeight * $event[1].size / 100
       }
-      containerTopRef.value.setMonacoHeHeight(height)
+      containerTopRef.value.setMonacoHeHeight(topHeight)
+      containerBottomRef.value.setTableHeight(BottomHeigth)
     }
 
 
-    const setData = (dbs:any) => {
+    const setData = (dbs: any) => {
       console.log("dbs----------1>", dbs)
       containerTopRef.value.setData(dbs)
+    }
+
+    const setResult = (result: any) => {
+      console.log("result----------1>", result)
+      containerBottomRef.value.setResult(result)
     }
 
     return {
       winChange,
       setData,
+      setResult,
       containerRef,
       containerTopRef,
+      containerBottomRef,
       ...toRefs(state)
     };
   },
@@ -78,6 +89,7 @@ export default defineComponent({
 
 :deep(.el-card) {
   height: 100%;
+
   .el-card__body {
     height: 100%;
     padding: 5px;
@@ -90,5 +102,11 @@ export default defineComponent({
 
 .splitpanes__pane .content {
   padding: 0 6px;
+}
+:deep(.el-tabs) {
+  height: 100%;
+  .el-tabs__header {
+    //height: 30px;
+  }
 }
 </style>

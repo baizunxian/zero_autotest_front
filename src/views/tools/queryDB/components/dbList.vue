@@ -16,7 +16,7 @@
       <!--      </el-select>-->
       <el-select v-model="sourceForm.id"
                  clearable
-                 placeholder="连接"
+                 placeholder="请选择数据源"
                  style="width: 200px; margin-left: -1px"
                  @change="sourceChange"
       >
@@ -55,7 +55,8 @@
         <el-table-column prop="name" label="name" width="auto" :show-overflow-tooltip="true">
           <template #default="{row}">
             <el-icon>
-              <ele-Coin/>
+              <ele-Coin v-if="row.type === 'database'"/>
+              <ele-Tickets v-else/>
             </el-icon>
             <span>{{ row.name }}</span>
           </template>
@@ -138,7 +139,7 @@ export default defineComponent({
         let data = {
           database: row.name,
           source_id: state.sourceForm.id,
-          dbs: [{ dbName: row.name, tables:dbs}]
+          dbs: [{dbName: row.name, tables: dbs}]
         }
         emit("setData", data)
       }
@@ -249,5 +250,23 @@ export default defineComponent({
 :deep(.el-table td.el-table__cell) {
   border-bottom: #ffffff;
 }
+
+:deep(.el-table__inner-wrapper::before) {
+  content: "";
+  position: absolute;
+  background-color: #FFFFFF;
+  z-index: 10;
+}
+
+//:deep(.el-table__empty-block) {
+//  ::before {
+//    content: "";
+//    position: absolute;
+//    background-color: #FFFFFF;
+//    z-index: 10;
+//  }
+
+//}
+
 
 </style>
