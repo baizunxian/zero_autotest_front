@@ -16,7 +16,7 @@
         </el-option>
       </el-select>
 
-      <el-button type="text" class="ml10" @click="getList">
+      <el-button link type="primary"  class="ml10" @click="getList">
         <el-icon>
           <ele-CirclePlusFilled/>
         </el-icon>

@@ -128,8 +128,6 @@ export default defineComponent({
     font-weight: 600;
     height: 28px;
     line-height: 14px;
-    display: -webkit-inline-box;
-    display: -ms-inline-flexbox;
     display: inline-flex;
     -webkit-box-align: center;
     -ms-flex-align: center;

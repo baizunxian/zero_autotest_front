@@ -39,7 +39,7 @@ export default {
     // 主题
     theme: {
       type: String,
-      default: 'vs-dark',
+      default: 'vs',   // vs hc-black  vs-dark
     },
 
     dbList: {
@@ -59,13 +59,16 @@ export default {
       default: () => []
     }
   },
-  setup(props: any) {
+  emits: ["update:value"],
+  setup(props: any, {emit}) {
     const monacoEditorRef = ref()
     const editor: any = ref(null)
     const originalEditor: any = ref(null)
     const modifiedEditor: any = ref(null)
     const state = reactive({
       sqlSnippets: null,
+      _contentBackup: null,
+      _isSettingContent: false,
       options: {
         value: props.value,  // 值
         theme: props.theme,   // 主题
@@ -132,11 +135,16 @@ export default {
         })
       } else {
         editor.value = monaco.editor.create(monacoEditorRef.value, state.options)
+
       }
-
-
+      state._contentBackup = props.value;
+      state._isSettingContent = false;
       editor.value.onDidChangeModelContent((val: any) => {
-        // console.log(val)
+        if (state._isSettingContent)
+          return;
+        const content = toRaw(editor.value).getValue();
+        state._contentBackup = content;
+        emit("update:value", content)
       })
     }
 
@@ -152,14 +160,31 @@ export default {
     watch(
         () => props.value,
         (newVal) => {
-          toRaw(editor.value).setValue(newVal)
+          if (state._contentBackup !== newVal) {
+            try {
+              state._isSettingContent = true;
+              toRaw(editor.value).setValue(newVal)
+            } finally {
+              state._isSettingContent = false;
+            }
+            state._contentBackup = newVal;
+          }
+
         },
         {deep: true}
     )
+
     watch(
         () => props.long,
         (newVal) => {
           monaco.editor.setModelLanguage(toRaw(editor.value).getModel(), newVal)
+        },
+        {deep: true}
+    )
+    watch(
+        () => props.theme,
+        () => {
+          monaco.editor.setTheme(props.theme)
         },
         {deep: true}
     )

@@ -30,7 +30,7 @@
       </el-select>
 
 
-      <el-button type="text" class="ml10" @click="getList">
+      <el-button link type="primary"  class="ml10" @click="handelCreatePage">
         <el-icon>
           <ele-CirclePlusFilled/>
         </el-icon>
@@ -48,41 +48,59 @@
           row-key="name"
           lazy
           :show-header="false"
-          :load="getTableList"
+          :load="loadTableList"
           @row-click="clickDB"
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       >
         <el-table-column prop="name" label="name" width="auto" :show-overflow-tooltip="true">
           <template #default="{row}">
-            <el-icon>
-              <ele-Coin v-if="row.type === 'database'"/>
-              <ele-Tickets v-else/>
-            </el-icon>
-            <span>{{ row.name }}</span>
+            <svg-icon v-if="row.type === 'database'" :size="18" :name="mysqlIcon" align="absmiddle"
+                      style="vertical-align: text-bottom;"/>
+            <svg-icon v-else :size="18" :name="mysqlTableIcon" align="absmiddle" style="vertical-align: text-bottom;"/>
+            <span style="margin-left: 4px; color: #1f1f1f; font-size: 14px">{{ row.name }}</span>
           </template>
         </el-table-column>
       </el-table>
 
     </div>
 
+    <save-or-update-source ref="saveOrUpdateRef" @getList="getSourceList"/>
+
   </div>
 
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, toRefs} from 'vue';
+import {defineComponent, onMounted, reactive, toRefs, ref, getCurrentInstance, onUnmounted} from 'vue';
 import {useQueryDBApi} from "/@/api/useTools/querDB";
+import mysqlIcon from "/@/icons/mysql_icon.svg";
+import mysqlTableIcon from "/@/icons/mysql_table.svg";
+import saveOrUpdateSource from "/@/views/tools/dataSource/components/saveOrUpdate.vue";
 
 export default defineComponent({
   name: 'typeTab',
-  setup(props, {emit}) {
+  components: {
+    saveOrUpdateSource,
+  },
+  setup() {
+    const {proxy} = <any>getCurrentInstance();
+
+    const saveOrUpdateRef = ref()
 
     const state = reactive({
       // source
-      dataSource: ['mysql', 'redis'],
       sourceList: [],
       sourceForm: {
         id: null,
+      },
+      dataSourceForm: {
+        id: null,
+        name: "",
+        type: "mysql",
+        host: "",
+        port: "",
+        user: "",
+        password: "",
       },
       // db
       dbList: [],
@@ -119,19 +137,33 @@ export default defineComponent({
       }
     }
 
-    // db
-    // 获取数据库表
+    // 获取数据库列表
     const getDBList = () => {
       useQueryDBApi().getDBList(state.dbForm).then((res: any) => {
         state.dbList = res.data
       })
     }
 
-    const clickDB = async (row, column, event) => {
+    // 点击数据库
+    const clickDB = async (row: any, column, event) => {
       let iconInfo = event.currentTarget.querySelector(".el-table__expand-icon")
       if (iconInfo) {
         iconInfo.click();
       }
+      console.log(row, column, event)
+    }
+
+    // 加载数据库列表
+    const getTableList = async (databases: string = "") => {
+      if (databases) state.tableForm.databases = databases
+      let res = await useQueryDBApi().getTableList(state.tableForm)
+      return res.data
+    }
+
+    // 加载数据库列表
+    const loadTableList = async (row: any, treeNode: unknown, resolve: (date: any) => void) => {
+      state.tableForm.databases = row.name
+      let tableList: any = await getTableList()
       if (row.type === "database") {
         state.tableForm.databases = row.name
         state.currentDB = row.name
@@ -141,22 +173,20 @@ export default defineComponent({
           source_id: state.sourceForm.id,
           dbs: [{dbName: row.name, tables: dbs}]
         }
-        emit("setData", data)
+        proxy.mittBus.emit("setSourceInfo", data)
+        // emit("setData", data)
       }
-      console.log(row, column, event)
+      // return tableList
+      resolve(tableList)
     }
 
-    // table
-
-    const getTableList = async (row: any, treeNode: unknown, resolve: (date: any) => void) => {
-      state.tableForm.databases = row.name
-      let res: any = await useQueryDBApi().getTableList(state.tableForm)
-      // return res.data
-      resolve(res.data)
-    }
-
-    // column
-    const getColumnList = async () => {
+    // 获取字段列表
+    const getColumnList = async (table: any) => {
+      if (table) {
+        state.tableForm.table = table
+      } else {
+        state.tableForm.table = null
+      }
       let res: any = await useQueryDBApi().getColumnList(state.tableForm)
       return res.data
     }
@@ -169,37 +199,29 @@ export default defineComponent({
       console.log(data, checked, indeterminate)
     }
 
-    const loadNode = (node: any, resolve: any) => {
-      if (node.level === 0) {
-        return resolve(state.dbList)
-      }
-      if (node.level === 1) {
-        state.dbForm.table = node.label
-        getTableList().then(data => {
-          console.log(data, 'data=->')
-          return resolve(data)
-        })
-
-      }
-      if (node.level === 2) {
-        return resolve([])
-      }
-
+    // 打开数据源新增页面
+    const handelCreatePage = () => {
+      saveOrUpdateRef.value.openDialog("save")
     }
-    const defaultProps = {
-      children: 'children',
-      label: 'name',
-      isLeaf: (data: any, node: any) => {
-        if (node.level === 2) {
-          return true
-        }
-      },
+
+    const saveOrUpdateSource = () => {
+      useQueryDBApi().saveOrUpdate()
     }
 
     onMounted(() => {
       getSourceList()
+
+      proxy.mittBus.on("getColumnList", async (table: any) => {
+        await getColumnList(table).then(async (res) => {
+          console.log("table--------------->", res)
+          return res
+        })
+      })
     })
 
+    onUnmounted(() => {
+      proxy.mittBus.off("getColumnList")
+    })
 
     return {
       getSourceList,
@@ -207,10 +229,13 @@ export default defineComponent({
       getColumnList,
       clickDB,
       getTableList,
+      loadTableList,
       sourceChange,
       handleCheckChange,
-      defaultProps,
-      loadNode,
+      mysqlIcon,
+      mysqlTableIcon,
+      saveOrUpdateRef,
+      handelCreatePage,
       ...toRefs(state),
     };
   },

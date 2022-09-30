@@ -3,7 +3,7 @@
     <el-card shadow="hover" style="height: 100%">
       <splitpanes class="default-theme" @resize="paneSize = $event[0].size" style="height: 100%;">
         <pane :size="32">
-          <db-list @setData="setData"></db-list>
+          <db-list></db-list>
         </pane>
         <pane :size="100">
           <splitpanes class=""
@@ -11,10 +11,10 @@
                       @resize="winChange('resize', $event)"
                       @ready="winChange('ready', $event)"
                       :horizontal="true">
-            <pane :size="100">
-              <container-top ref="containerTopRef" @setResult="setResult"></container-top>
+            <pane :size="50">
+              <container-top ref="containerTopRef"></container-top>
             </pane>
-            <pane :size="100">
+            <pane :size="50">
               <container-bottom ref="containerBottomRef"></container-bottom>
             </pane>
           </splitpanes>
@@ -51,31 +51,20 @@ export default defineComponent({
     });
 
     const winChange = (changeType: string, $event: any) => {
-      let topHeight = containerRef.value.$el.offsetHeight * 50 / 100
-      let BottomHeigth = containerRef.value.$el.offsetHeight * 50 / 100
-      if (changeType == 'resize') {
-        topHeight = containerRef.value.$el.offsetHeight * $event[0].size / 100
-        BottomHeigth = containerRef.value.$el.offsetHeight * $event[1].size / 100
-      }
-      containerTopRef.value.setMonacoHeHeight(topHeight)
-      containerBottomRef.value.setTableHeight(BottomHeigth)
-    }
-
-
-    const setData = (dbs: any) => {
-      console.log("dbs----------1>", dbs)
-      containerTopRef.value.setData(dbs)
-    }
-
-    const setResult = (result: any) => {
-      console.log("result----------1>", result)
-      containerBottomRef.value.setResult(result)
+      containerRef.value.$nextTick(() => {
+        let topHeight = containerRef.value.$el.offsetHeight
+        let BottomHeight = containerRef.value.$el.offsetHeight
+        if (changeType == 'resize') {
+          topHeight = containerRef.value.$el.offsetHeight * $event[0].size / 100
+          BottomHeight = containerRef.value.$el.offsetHeight * $event[1].size / 100
+        }
+        containerTopRef.value.setMonacoHeHeight(topHeight)
+        containerBottomRef.value.setTableHeight(BottomHeight)
+      })
     }
 
     return {
       winChange,
-      setData,
-      setResult,
       containerRef,
       containerTopRef,
       containerBottomRef,
@@ -103,8 +92,10 @@ export default defineComponent({
 .splitpanes__pane .content {
   padding: 0 6px;
 }
+
 :deep(.el-tabs) {
   height: 100%;
+
   .el-tabs__header {
     //height: 30px;
   }

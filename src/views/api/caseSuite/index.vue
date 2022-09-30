@@ -36,7 +36,7 @@
           <template #default="{row}">
             <template v-if="field.fieldName === 'name'">
               <el-button size="small"
-                         type="text"
+                         link type="primary"
                          @click="onOpenSaveOrUpdate('update', row)">
                 {{ row[field.fieldName] }}
               </el-button>
@@ -50,14 +50,14 @@
 
         <el-table-column label="操作" width="150" align="center" fixed="right">
           <template #default="{row}">
-            <el-button size="small" type="text" @click="runSuitePage(row)">
+            <el-button size="small" link type="primary" @click="runSuitePage(row)">
               运行
             </el-button>
             <el-button size="small"
-                       type="text"
+                       link type="primary"
                        @click="onOpenSaveOrUpdate('update', row)">修改
             </el-button>
-            <el-button size="small" type="text" @click="deleted(row)">
+            <el-button size="small" link type="primary" @click="deleted(row)">
               删除
             </el-button>
           </template>

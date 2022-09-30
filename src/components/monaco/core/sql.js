@@ -90,7 +90,6 @@ export default class Snippets {
             if (this.dbSchema.find(db => db.dbName === tokenNoDot.replace(/^.*,/g, ''))) {
                 // <库名>.<表名>联想
                 console.log("库名.表名 联想", lastToken)
-
                 return {
                     suggestions: [...this.getTableSuggestByDbName(tokenNoDot.replace(/^.*,/g, ''))]
                 }
@@ -140,7 +139,7 @@ export default class Snippets {
         } else {
             console.log("默认联想", lastToken, [...this.getDataBaseSuggest(), ...this.getTableSuggest(), ...this.getKeywordSuggest()])
             return {
-                suggestions: [...this.getDataBaseSuggest(), ...this.getTableSuggest(), ...this.getKeywordSuggest(), ...await this.getTableColumnSuggest()]
+                suggestions: [...this.getDataBaseSuggest(), ...this.getTableSuggest(), ...this.getKeywordSuggest()]
             }
         }
     }

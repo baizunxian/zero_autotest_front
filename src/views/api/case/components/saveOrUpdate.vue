@@ -1,5 +1,5 @@
 <template>
-  <div class="system-edit-menu-container">
+  <div class="system-edit-menu-container h100">
     <el-card class="save-update-card" shadow="hover">
       <div>
         <el-page-header
@@ -56,15 +56,15 @@
               <variables-parameters ref="variablesParametersRef"/>
             </el-tab-pane>
 
-            <!--            <el-tab-pane name='outputList'>-->
-            <!--              <template #label><strong>输出参数</strong></template>-->
-            <!--              <output-list ref="outputListRef"/>-->
-            <!--            </el-tab-pane>-->
-
-            <!--            <el-tab-pane name='Skip'>-->
-            <!--              <template #label><strong>用例跳过条件</strong></template>-->
-            <!--              <skip ref="skipRef"/>-->
-            <!--            </el-tab-pane>-->
+            <el-tab-pane name='preOperation' class="h100">
+              <template #label>
+                <div style="align-items: center; display: flex; justify-content: center">
+                  <strong>前置操作</strong>
+                  <!--                  <div v-show="getStatus('vp')" class="request-editor-tabs-badge"></div>-->
+                </div>
+              </template>
+              <pre-operation/>
+            </el-tab-pane>
 
           </el-tabs>
         </div>
@@ -103,9 +103,8 @@ import RequestBody from '/@/views/api/case/components/requestBody.vue'
 import RequestHeaders from '/@/views/api/case/components/requestHeaders.vue'
 import ExtractValidate from '/@/views/api/case/components/extractValidate.vue'
 import VariablesParameters from '/@/views/api/case/components/variablesParameters.vue'
-// import OutputList from '/@/views/api/case/components/outputList.vue'
-// import Skip from '/@/views/api/case/components/skip.vue'
 import TestReport from '/@/views/api/Report/components/report.vue'
+import preOperation from "/@/views/api/caseSuite/components/saveOrUpdateNew.vue"
 import {ElLoading, ElMessage} from "element-plus"
 import {useStore} from "/@/store"
 import {useRoute, useRouter} from "vue-router"
@@ -123,8 +122,12 @@ export default defineComponent({
     // OutputList,
     // Skip,
     TestReport,
+    preOperation,
   },
-  setup() {
+  props: {
+    case_id: Number
+  },
+  setup(props) {
     const store = useStore();
     const route = useRoute();
     const router = useRouter();
@@ -238,9 +241,10 @@ export default defineComponent({
       }
     }
 
-    const initTestCast = () => {
-      if (route.query.id) {
-        useTestCaseApi().getTestCaseInfo({id: route.query.id})
+    const initTestCase = () => {
+      let case_id = route.query.id || props.case_id
+      if (case_id) {
+        useTestCaseApi().getTestCaseInfo({id: case_id})
             .then(res => {
               let data = res.data
               let case_data = data.testcase
@@ -323,7 +327,7 @@ export default defineComponent({
       }
     }
     onMounted(() => {
-      initTestCast()
+      initTestCase()
     })
 
     return {
@@ -393,6 +397,7 @@ export default defineComponent({
 :deep(.el-tabs__item.is-active) {
   color: var(--el-text-color-primary);
 }
+
 //:deep(.el-tabs__item:hover) {
 //  color: var(--el-text-color-primary);
 //}

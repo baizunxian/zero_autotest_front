@@ -40,7 +40,7 @@ export function useQueryDBApi() {
     // 新增修改
     saveOrUpdate(data?: object) {
       return request({
-        url: '/menu/saveOrUpdate',
+        url: '/dataSource/saveOrUpdateSource',
         method: 'POST',
         data
       })

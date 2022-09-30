@@ -1,0 +1,132 @@
+<template>
+  <div class="system-edit-menu-container">
+    <el-dialog
+        draggable :title="editType === 'save'? '新增' : '修改'" v-model="isShowDialog" width="40%">
+      <el-form :model="form" :rules="rules" ref="formRef" label-width="80px">
+        <el-row :gutter="35">
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="数据源名称" prop="name">
+              <el-input v-model="form.name" placeholder="请输入数据源名称" clearable></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="数据源类型" prop="type">
+              <el-select v-model="form.type" clearable placeholder="选择数据源类型" style="width: 100%">
+                <el-option
+                    v-for="item in dataSourceType"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="地址" prop="host">
+              <el-input v-model="form.host" placeholder="请输入地址" clearable></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="端口" prop="port">
+              <el-input v-model="form.port" placeholder="请输入端口" clearable></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="用户名" prop="user">
+              <el-input v-model="form.user" placeholder="请输入用户名" clearable></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="密码">
+              <el-input v-model="form.password" placeholder="请输入密码" clearable></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <template #footer>
+				<span class="dialog-footer">
+					<el-button @click="onDialog">取 消</el-button>
+					<el-button type="primary" @click="saveOrUpdate">保 存</el-button>
+				</span>
+      </template>
+    </el-dialog>
+  </div>
+</template>
+
+<script lang="ts">
+import {defineComponent, reactive, toRefs, ref} from 'vue';
+import {useQueryDBApi} from "/@/api/useTools/querDB";
+import {ElMessage} from "element-plus";
+
+export default defineComponent({
+  name: 'saveOrUpdateProject',
+  setup(props, {emit}) {
+    const createForm = () => {
+      return {
+        id: null,
+        name: "",
+        type: "mysql",
+        host: "",
+        port: "",
+        user: "",
+        password: "",
+      }
+    }
+    const formRef = ref()
+    const state = reactive({
+      dataSourceType: ['mysql'],
+      isShowDialog: false,
+      editType: '',
+      form: createForm(),
+      rules: {
+        name: [{required: true, message: '请输入数据源名称', trigger: 'blur'},],
+        host: [{required: true, message: '请选数据源地址', trigger: 'blur'},],
+      },
+    });
+
+    // 打开弹窗
+    const openDialog = (type: string, row: any) => {
+      // 获取项目列表
+      state.editType = type
+      if (row) {
+        state.form = JSON.parse(JSON.stringify(row));
+      } else {
+        state.form = createForm()
+      }
+      onDialog();
+    };
+    // 关闭弹窗
+    const onDialog = () => {
+      state.isShowDialog = !state.isShowDialog;
+    };
+    // 新增
+    const saveOrUpdate = () => {
+      formRef.value.validate((valid: any) => {
+        if (valid) {
+          useQueryDBApi().saveOrUpdate(state.form)
+              .then(() => {
+                ElMessage.success('操作成功');
+                emit('getList')
+                onDialog(); // 关闭弹窗
+              })
+        }
+      })
+    };
+
+    return {
+      openDialog,
+      formRef,
+      onDialog,
+      saveOrUpdate,
+      ...toRefs(state),
+    };
+  },
+});
+</script>

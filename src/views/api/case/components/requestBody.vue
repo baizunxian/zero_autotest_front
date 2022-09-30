@@ -330,7 +330,7 @@ export default defineComponent({
       let requestData: any = {}
       requestData.mode = state.mode
       if (state.mode === 'raw') {
-        requestData.data = state.rawData = monacoEditRef.value.getValue()
+        requestData.data = state.rawData
         requestData.language = state.language
       }
       if (state.mode === 'json') {
@@ -460,8 +460,6 @@ export default defineComponent({
       let fileRef = document.getElementById('selectFile' + index)
       if (fileRef) fileRef.click()
     }
-    onMounted(() => {
-    })
 
     return {
       initForm,

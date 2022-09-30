@@ -7,16 +7,16 @@
         </el-icon>
         执行
       </el-link>
-<!--      <el-button @click="execute" icon="CaretRight">执行</el-button>-->
     </div>
 
-    <div style="border: 1px solid #E6E6E6; overflow-y: auto">
+    <div style="border: 1px solid #E6E6E6; overflow-y: auto" ref="monacoEditDivRef">
       <monaco-editor
           :style="{height: height + 'px'}"
           ref="monacoEditRef"
           :dbs="dbs"
-          v-model:value="sql"
+          v-model:value="executeForm.sql"
           v-model:long="long"
+          :onInputTableAlia="onInputTableAlia"
       ></monaco-editor>
     </div>
   </div>
@@ -24,15 +24,18 @@
 
 <script lang="ts">
 import monacoEditor from '/@/components/monaco/index.vue'
-import {defineComponent, reactive, toRefs, ref} from 'vue';
+import {defineComponent, reactive, toRefs, ref, getCurrentInstance, onMounted, onUnmounted} from 'vue';
 import {useQueryDBApi} from "/@/api/useTools/querDB";
 import {ElMessage} from "element-plus/es";
+import {ElLoading} from "element-plus";
 
 export default defineComponent({
   components: {monacoEditor},
   name: 'app',
-  setup(props, {emit}) {
+  setup() {
+    const monacoEditDivRef = ref()
     const monacoEditRef = ref()
+    const {proxy} = <any>getCurrentInstance();
     const state = reactive({
       long: 'sql',
       height: 300,
@@ -40,7 +43,7 @@ export default defineComponent({
       dbs: [],
       //execute
       executeForm: {
-        sql: '',
+        sql: 'select  * from ',
         source_id: "",
         database: "",
       }
@@ -56,28 +59,48 @@ export default defineComponent({
       state.executeForm.database = data.database
     }
 
-    const execute = () => {
+    const execute = async () => {
       if (state.executeForm.source_id == "") {
         ElMessage.warning('请选择对应数据源！');
         return
       }
       state.executeForm.sql = monacoEditRef.value.getValue()
-      useQueryDBApi().execute(state.executeForm)
-          .then(res => {
-            emit("setResult", res.data)
-            console.log(res)
-          })
+      const loading = ElLoading.service({text: "sql执行中...", target: monacoEditRef.value.$el})
+      try {
+        let res = await useQueryDBApi().execute(state.executeForm)
+        proxy.mittBus.emit("setExecuteResult", res.data)
+      } catch (err) {
+        console.log(err)
+      } finally {
+        loading.close()
+      }
     }
 
-    const get_mode = () => {
-      console.log("mode --->", monacoEditRef.value.getMode())
+    const onInputTableAlia = async (table: any) => {
+      console.log("databases----------->", table)
+      let res = await proxy.mittBus.emit("getColumnList", (table) => {
+        console.log("table------------table", table)
+      })
+      console.log("res------------res", res)
+      return res
     }
+    onMounted(() => {
+      proxy.mittBus.on("setSourceInfo", (data: any) => {
+        setData(data)
+      })
+    })
+
+    onUnmounted(() => {
+      proxy.mittBus.off("setSourceInfo")
+    })
+
     return {
       setData,
       execute,
       monacoEditRef,
+      monacoEditDivRef,
+      onInputTableAlia,
       setMonacoHeHeight,
-      get_mode,
       ...toRefs(state),
     };
   },

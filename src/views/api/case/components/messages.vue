@@ -1,15 +1,14 @@
 <template>
-  <el-form ref="formRef" :model="form" label-width="80px" label-position="right"
+  <el-form ref="formRef" :model="form" label-width="auto" label-position="left"
            :rules="rules">
     <el-row :gutter="24">
-      <el-col :span="10">
-        <!--      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6" class="mb20">-->
+      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6" class="mb20">
         <el-form-item label="用例名" prop="name">
           <el-input v-model.trim="form.name" style="width: 100%;" placeholder="请输入用例名称"></el-input>
         </el-form-item>
-        <!--      </el-col>-->
+      </el-col>
 
-        <!--      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6" class="mb20">-->
+      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6" class="mb20">
         <el-form-item label="所属项目" prop="project_id">
           <el-select size="small" v-model="form.project_id" placeholder="选择所属项目" filterable style="width: 100%;"
                      @change="selectProject">
@@ -22,9 +21,9 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <!--      </el-col>-->
+      </el-col>
 
-        <!--      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6" class="mb20">-->
+      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6" class="mb20">
         <el-form-item label="可选模块" prop="module_id">
           <el-select size="small" v-model="form.module_id" placeholder="选择模块" filterable style="width: 100%;">
             <el-option
@@ -36,9 +35,9 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <!--      </el-col>-->
+      </el-col>
 
-        <!--      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6" class="mb20">-->
+      <el-col :xs="24" :sm="12" :md="12" :lg="6" :xl="6" class="mb20">
         <el-form-item label="关联配置" prop="config_id">
           <el-select size="small" v-model="form.config_id" placeholder="请选择配置" clearable filterable
                      style="width: 100%;">
@@ -54,32 +53,30 @@
           </el-select>
         </el-form-item>
       </el-col>
+
+      <!--      <el-col :span="14">-->
+      <!--        <el-transfer-->
+      <!--            ref="transferRef"-->
+      <!--            v-model="form.include"-->
+      <!--            filterable-->
+      <!--            :right-default-checked="form.include"-->
+      <!--            :props="{key: 'id', label: 'name'}"-->
+      <!--            :titles="['可选前置用例', '已选前置用例']"-->
+      <!--            :data="include_data"-->
+      <!--        >-->
+      <!--          <template #default="{option}">-->
+      <!--            <span-->
+      <!--                :title="option.name"-->
+      <!--                :draggable="!option.disabled">-->
+      <!--              <el-link target="_blank"-->
+      <!--                       @click.prevent="onCatTestCase(option.id)"-->
+      <!--                       type="success"-->
+      <!--                       style="font-size: 12px">查看</el-link>-->
+      <!--              {{ option.name }}-->
+      <!--            </span>-->
+      <!--          </template>-->
+      <!--        </el-transfer>-->
       <!--      </el-col>-->
-
-
-      <el-col :span="14">
-        <el-transfer
-            ref="transferRef"
-            v-model="form.include"
-            filterable
-            :right-default-checked="form.include"
-            :props="{key: 'id', label: 'name'}"
-            :titles="['可选前置用例', '已选前置用例']"
-            :data="include_data"
-        >
-          <template #default="{option}">
-            <span
-                :title="option.name"
-                :draggable="!option.disabled">
-              <el-link target="_blank"
-                       @click.prevent="onCatTestCase(option.id)"
-                       type="success"
-                       style="font-size: 12px">查看</el-link>
-              {{ option.name }}
-            </span>
-          </template>
-        </el-transfer>
-      </el-col>
 
     </el-row>
   </el-form>
@@ -105,7 +102,7 @@ import {defineComponent, onMounted, reactive, ref, toRefs} from "vue";
 
 
 export default defineComponent({
-  name: 'case-url',
+  name: 'caseMessages',
   components: {
     catCase,
   },
@@ -197,9 +194,9 @@ export default defineComponent({
       return state.form
     }
     //  ----------------project start-------------------------------------
-    // 获取项目列表
+    // 获取项目列表 请求写死
     const getProjectList = () => {
-      useProjectApi().getList(state.projectQuery) // 请求数据写死，后面优化
+      useProjectApi().getList(state.projectQuery)
           .then(res => {
             state.projectList = res.data.rows
           })
@@ -220,7 +217,7 @@ export default defineComponent({
     //  ----------------module start-------------------------------------
     // 获取模块列表
     const getModuleList = () => {
-      useModuleApi().getList(state.moduleQuery) // 请求数据写死，后面优化
+      useModuleApi().getList(state.moduleQuery)
           .then(res => {
             state.moduleList = res.data.rows
           })
@@ -229,7 +226,7 @@ export default defineComponent({
     //  ----------------config start-------------------------------------
     // 获取用例列表
     const getCaseList = () => {
-      useTestCaseApi().getList(state.caseQuery) // 请求数据写死，后面优化
+      useTestCaseApi().getList(state.caseQuery)
           .then(res => {
             state.caseList = state.include_data = res.data.rows
           })
@@ -238,7 +235,7 @@ export default defineComponent({
     //  ----------------config start-------------------------------------
     // 获取配置列表
     const getConfigList = () => {
-      useTestCaseApi().getList(state.configQuery) // 请求数据写死，后面优化
+      useTestCaseApi().getList(state.configQuery)
           .then(res => {
             state.configList = res.data.rows
           })

@@ -14,7 +14,7 @@
         size="small"
     >
       <div style="overflow-y: auto">
-        <el-table v-show="findTableData(item.tabIndex).length > 0" :data="findTableData(item.tabIndex)"
+        <el-table :data="findTableData(item.tabIndex)"
                   border
                   fit
                   size="small"
@@ -38,23 +38,19 @@
   </el-tabs>
 </template>
 <script lang="ts">
-import {defineComponent, reactive, toRefs, h} from 'vue';
+import {defineComponent, reactive, toRefs, getCurrentInstance, onMounted, onUnmounted} from 'vue';
 
 export default defineComponent({
 
   name: 'app',
   setup() {
-
+    const {proxy} = <any>getCurrentInstance();
     const state = reactive({
       activeName: 'test',
       tableHeight: 200,
       tabIndex: 0,
       data: []
     });
-    // 插入sql查询结果
-    const setResult = (result: any) => {
-      addTab(result)
-    }
 
     // 根据对于的 tabIndex 获取对于tab数据
     const findTableData = (tabIndex: number) => {
@@ -97,8 +93,20 @@ export default defineComponent({
       state.tableHeight = tableHeight - 60
     }
 
+    onMounted(() => {
+      //插入sql查询结果
+      proxy.mittBus.on("setExecuteResult", (result: any) => {
+        addTab(result)
+      })
+
+    })
+
+    onUnmounted(() => {
+      proxy.mittBus.off("setExecuteResult")
+    })
+
+
     return {
-      setResult,
       addTab,
       setTableHeight,
       findTableData,
@@ -112,7 +120,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 
 :deep(.el-tabs__content) {
-overflow: auto;
+  overflow: auto;
 }
 
 
