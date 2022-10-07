@@ -7,7 +7,11 @@
           <div class="el-step__icon-inner">{{ data.index }}</div>
         </div>
         <!--              脚本类型-->
-        <el-tag style="margin: 0 5px" size="small">{{ optType[data.type] }}</el-tag>
+        <svg-icon name="ele-ArrowRight" style="height: 20px; width: 20px"></svg-icon>
+<!--        <el-icon style="margin-top: -2px">-->
+<!--          <ele-ArrowRight/>-->
+<!--        </el-icon>-->
+        <el-tag style="margin: 0 5px" size="small">{{ optType[data.step_type] }}</el-tag>
         <!--              脚本名称-->
         <template v-if="data.step_type === 'wait'">
           <el-input-number v-model="data.value" @click.stop=""/>
@@ -16,7 +20,7 @@
 
         <template v-else>
           <span v-if="!data.edit">
-                <SvgIcon name="ele-EditPen" @click.stop="editeName(data)"/>
+                <svg-icon name="ele-EditPen" @click.stop="editeName(data)"/>
                 {{ data.name }}
           </span>
           <el-input v-else
@@ -69,6 +73,7 @@ import scriptController from "/@/views/api/caseSuite/components/scriptController
 import sqlController from "/@/views/api/caseSuite/components/sqlController.vue";
 import extractController from "/@/views/api/caseSuite/components/extractController.vue";
 import caseController from "/@/views/api/caseSuite/components/caseController.vue";
+import {ElMessageBox} from "element-plus";
 
 export default defineComponent({
   name: 'header',
@@ -116,8 +121,13 @@ export default defineComponent({
     }
 
     const deletedNode = (index: number) => {
-      console.log("deletedNode", index)
-      proxy.mittBus.emit("deletedNode", index - 1)
+      ElMessageBox.confirm('是否删除步骤, 是否继续?', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(() => {
+        proxy.mittBus.emit("deletedNode", index - 1)
+      })
     }
 
     return {

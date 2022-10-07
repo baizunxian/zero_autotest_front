@@ -11,7 +11,7 @@
       </el-option>
     </el-select>
 
-    <el-button @click="addData">test</el-button>
+    <el-button @click="addStep">test</el-button>
 
     <div style="height:100%; overflow-y: auto">
       <el-tree
@@ -89,17 +89,17 @@ export default defineComponent({
         data.index = index + 1
       })
     }
-    // 追加数据
-    const addData = () => {
+    // 追加步骤
+    const addStep = () => {
       let data = {}
       if (state.optType === "script") {
-        data = {name: "", value: "", type: "script", disable: false}
+        data = {name: "", value: "", step_type: "script", enable: true}
       } else if (state.optType === "sql") {
-        data = {name: "", value: "", type: "sql", timeout: null, variable_name: "", disable: false}
+        data = {name: "", value: "", step_type: "sql", timeout: null, variable_name: "", enable: true}
       } else if (state.optType === "wait") {
-        data = {name: "", value: null, type: "wait", disable: false}
+        data = {name: "", value: null, step_type: "wait", enable: true}
       } else if (state.optType === "extract") {
-        data = {name: "", value: null, json_path_list: [], type: "extract", disable: false}
+        data = {name: "", value: null, json_path_list: [], step_type: "extract", enable: true}
       }
       state.data.push(data)
       showData()
@@ -145,7 +145,7 @@ export default defineComponent({
       handleDrop,
       showData,
       nodeClick,
-      addData,
+      addStep,
       route,
       router,
       ...toRefs(state),
