@@ -6,13 +6,12 @@
         <div class="el-step__icon is-text">
           <div class="el-step__icon-inner">{{ data.index }}</div>
         </div>
-        <!--              脚本类型-->
-        <svg-icon name="ele-ArrowRight" style="height: 20px; width: 20px"></svg-icon>
-<!--        <el-icon style="margin-top: -2px">-->
-<!--          <ele-ArrowRight/>-->
-<!--        </el-icon>-->
+        <!--脚本类型-->
+        <svg-icon :name="data.showDetail ? 'ele-ArrowDown' : 'ele-ArrowRight'" style="height: 20px; width: 20px"></svg-icon>
+        <!--        <svg-icon v-else name="ele-ArrowDown" style="height: 20px; width: 20px"></svg-icon>-->
+
         <el-tag style="margin: 0 5px" size="small">{{ optType[data.step_type] }}</el-tag>
-        <!--              脚本名称-->
+        <!--脚本名称-->
         <template v-if="data.step_type === 'wait'">
           <el-input-number v-model="data.value" @click.stop=""/>
           <span>m</span>
