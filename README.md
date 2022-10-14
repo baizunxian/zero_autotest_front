@@ -14,7 +14,7 @@ https://gitee.com/xb_xiaobai/zero_autotest_front
   https://gitee.com/xb_xiaobai/zero_autotest_backend
 #### ⛱️ 线上预览
 
-- ZERO AUTOTEST 自动化测试平台在线预览 <a href="https://xiaobaicodes.com:8888" target="_blank">https://xiaobaicodes.com:8888</a>
+- ZERORUNNER 自动化测试平台在线预览 <a href="https://xiaobaicodes.com:8888" target="_blank">https://xiaobaicodes.com:8888</a>
 
 #### 🚧 安装 cnpm、yarn
 
@@ -53,7 +53,7 @@ yarn build
 #### 💯 学习交流加 微信 群
 
 - 微信群
-<img src="https://img.xiaobaicodes.com/img/1/1654846844222/D6B1DD90-0E69-4620-A0FE-C5AC1F14846A.jpeg" width="220" height="220" alt="zero autotest 交流群" title="zero autotest 交流群"/>
+<img src="https://img.xiaobaicodes.com/img/1/1654846844222/D6B1DD90-0E69-4620-A0FE-C5AC1F14846A.jpeg" width="220" height="220" alt="zerorunner 交流群" title="zerorunner 交流群"/>
   
 #### 💌 支持作者
 

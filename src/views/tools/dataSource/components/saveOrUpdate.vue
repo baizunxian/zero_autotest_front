@@ -11,6 +11,20 @@
           </el-col>
 
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="关联环境" prop="type">
+              <el-select v-model="form.env_id" clearable placeholder="选择关联环境" style="width: 100%">
+                <el-option
+                    v-for="env in envList"
+                    :key="env.id"
+                    :label="env.name"
+                    :value="env.id"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="数据源类型" prop="type">
               <el-select v-model="form.type" clearable placeholder="选择数据源类型" style="width: 100%">
                 <el-option
@@ -32,7 +46,7 @@
 
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="端口" prop="port">
-              <el-input v-model="form.port" placeholder="请输入端口" clearable></el-input>
+              <el-input v-model.number="form.port" placeholder="请输入端口" clearable></el-input>
             </el-form-item>
           </el-col>
 
@@ -61,12 +75,13 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, reactive, toRefs, ref} from 'vue';
+import {defineComponent, reactive, ref, toRefs} from 'vue';
 import {useQueryDBApi} from "/@/api/useTools/querDB";
 import {ElMessage} from "element-plus";
+import {useEnvApi} from "/@/api/useAutoApi/env";
 
 export default defineComponent({
-  name: 'saveOrUpdateProject',
+  name: 'saveOrUpdateDataSource',
   setup(props, {emit}) {
     const createForm = () => {
       return {
@@ -77,6 +92,7 @@ export default defineComponent({
         port: "",
         user: "",
         password: "",
+        env_id: "",
       }
     }
     const formRef = ref()
@@ -88,7 +104,16 @@ export default defineComponent({
       rules: {
         name: [{required: true, message: '请输入数据源名称', trigger: 'blur'},],
         host: [{required: true, message: '请选数据源地址', trigger: 'blur'},],
+        env_id: [{required: true, message: '请选数环境', trigger: 'blur'},],
+        port: [{required: true, message: '请输入端口号', trigger: 'blur'},],
       },
+
+      // env
+      envList: [],
+      envListQuery: {
+        page: 1,
+        pageSize: 200,
+      }
     });
 
     // 打开弹窗
@@ -101,6 +126,7 @@ export default defineComponent({
         state.form = createForm()
       }
       onDialog();
+      getEnvList()
     };
     // 关闭弹窗
     const onDialog = () => {
@@ -120,8 +146,17 @@ export default defineComponent({
       })
     };
 
+    // env
+    const getEnvList = () => {
+      useEnvApi().getList(state.envListQuery)
+          .then(res => {
+            state.envList = res.data.rows
+          })
+    };
+
     return {
       openDialog,
+      getEnvList,
       formRef,
       onDialog,
       saveOrUpdate,

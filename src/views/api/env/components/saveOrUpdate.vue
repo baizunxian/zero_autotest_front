@@ -1,110 +1,174 @@
 <template>
   <div class="system-edit-menu-container">
-    <el-dialog
-        draggable :title="editType === 'save'? '新增' : '修改'" v-model="isShowDialog" width="40%">
-      <el-form :model="form" :rules="rules" ref="formRef" size="default" label-width="80px">
-        <el-row :gutter="35">
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="环境名称" prop="name">
-              <el-input v-model="form.name" placeholder="环境名称" clearable></el-input>
-            </el-form-item>
-          </el-col>
+    <!--    <el-card class="save-update-card" shadow="hover">-->
+    <div>
+      <!--        <el-page-header-->
+      <!--            class="page-header"-->
+      <!--            :content="editType === 'create'? '新增配置':'更新配置'"-->
+      <!--            style="margin: 10px 0;"-->
+      <!--            @back="goBack"-->
+      <!--        >-->
+      <!--        </el-page-header>-->
 
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="环境地址" prop="url">
-              <el-input v-model="form.url" placeholder="环境地址" clearable></el-input>
-            </el-form-item>
-          </el-col>
+      <!--        <h3 class="block-title">请求信息</h3>-->
 
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="备注">
-              <el-input type="textarea" v-model="form.remarks" placeholder="备注" clearable></el-input>
-            </el-form-item>
-          </el-col>
+      <!--        <url ref="urlRef" @saveOrUpdateOrDebug="saveOrUpdateOrDebug"/>-->
 
-        </el-row>
-      </el-form>
-      <template #footer>
-				<span class="dialog-footer">
-					<el-button @click="onDialog" size="default">取 消</el-button>
-					<el-button type="primary" @click="saveOrUpdate" size="default">保 存</el-button>
-				</span>
-      </template>
-    </el-dialog>
+      <!--        <h3 class="block-title">基本信息</h3>-->
+
+      <messages ref="messagesRef"/>
+
+      <!--        <h3 class="block-title">参数信息</h3>-->
+      <div style="min-height: 500px">
+        <el-tabs v-model="activeName">
+          <!--            <el-tab-pane name='requestBody'>-->
+          <!--              <template #label><strong>body</strong></template>-->
+          <!--              <request-body ref="requestBodyRef"/>-->
+          <!--            </el-tab-pane>-->
+
+          <el-tab-pane name='httpConfig'>
+            <template #label><strong>HTTP配置</strong></template>
+            <http-config ref="httpConfigRef"/>
+          </el-tab-pane>
+
+          <!--            <el-tab-pane name='extractValidate'>-->
+          <!--              <template #label><strong>提取/校验</strong></template>-->
+          <!--              <extract-validate ref="extractValidateRef"/>-->
+          <!--            </el-tab-pane>-->
+
+          <el-tab-pane name='commonConfig'>
+            <template #label><strong>通用配置</strong></template>
+            <common-config ref="commonConfigRef"/>
+          </el-tab-pane>
+
+          <el-tab-pane name='databaseConfig'>
+            <template #label><strong>数据库配置</strong></template>
+            <database-config ref="databaseConfigRef"/>
+          </el-tab-pane>
+
+        </el-tabs>
+      </div>
+    </div>
+    <!--    </el-card>-->
+
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, toRefs, ref} from 'vue';
-import {useEnvApi} from "/@/api/useAutoApi/env";
-import {ElMessage} from "element-plus";
+import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue'
+import Messages from '/@/views/api/env/components/messages.vue'
+import httpConfig from '/@/views/api/env/components/httpConfig.vue'
+import commonConfig from '/@/views/api/env/components/commonConfig.vue'
+import databaseConfig from '/@/views/api/env/components/databaseConfig.vue'
+import {ElMessage} from "element-plus"
+import {useStore} from "/@/store"
+import {useRoute, useRouter} from "vue-router"
+import {useEnvApi} from '/@/api/useAutoApi/env'
 
 export default defineComponent({
   name: 'saveOrUpdateEnv',
-  setup(props, {emit}) {
-    const createForm = () => {
-      return {
-        name: '', // 项目名称
-        url: '', // 环境地址
-        remarks: '', // 备注
-
-      }
-    }
-    const formRef = ref()
+  components: {
+    Messages,
+    httpConfig,
+    commonConfig,
+    databaseConfig,
+  },
+  props: {
+    env_id: {
+      type: Number,
+      required: true,
+    },
+  },
+  setup(props) {
+    const store = useStore();
+    const route = useRoute();
+    const router = useRouter();
+    const userInfo = store.state.userInfos
+    const messagesRef = ref()
+    const httpConfigRef = ref()
+    const databaseConfigRef = ref()
+    const commonConfigRef = ref()
     const state = reactive({
       isShowDialog: false,
-      editType: '',
-      // 参数请参考 `/src/router/route.ts` 中的 `dynamicRoutes` 路由菜单格式
-      form: createForm(),
-      rules: {
-        name: [{required: true, message: '请输入环境名称', trigger: 'blur'},],
-        url: [{required: true, message: '请输入环境地址', trigger: 'blur'},],
-      },
+      activeName: 'httpConfig',
+
     });
 
-    // 打开弹窗
-    const openDialog = (type: string, row: any) => {
-      // 获取项目列表
-      state.editType = type
-      if (row) {
-        state.form = JSON.parse(JSON.stringify(row));
-      } else {
-        state.form = createForm()
-      }
-      onDialog();
-    };
-    // 关闭弹窗
-    const onDialog = () => {
-      state.isShowDialog = !state.isShowDialog;
-    };
-    // 新增
+
     const saveOrUpdate = () => {
-      formRef.value.validate((valid: any) => {
-        if (valid) {
-          useEnvApi().saveOrUpdate(state.form)
-              .then(() => {
-                ElMessage.success('操作成功');
-                emit('getList')
-                onDialog(); // 关闭弹窗
-              })
+      try {
+        // 获取url mothod 表单
+        let msgData = messagesRef.value.getData()
+        let httpData = httpConfigRef.value.getData()
+        let commonData = commonConfigRef.value.getData()
+        // let databaseData = databaseConfigRef.value.getData()
+
+        // 组装表单
+        let form = {
+          id: msgData.id,
+          name: msgData.name,
+          headers: httpData.headers,
+          domain_name: httpData.domain_name,
+          remarks: httpData.remarks,
+          variables: commonData.variables
         }
-      })
-      console.log(state.form, 'state.menuForm')
-      // setBackEndControlRefreshRoutes() // 刷新菜单，未进行后端接口测试
-    };
-    // 页面加载时
+        // 保存用例
+        useEnvApi().saveOrUpdate(form).then(res => {
+          ElMessage.success('保存成功！')
+          let case_id = res.data
+          messagesRef.value.setId(case_id)
+        })
+      } catch (err: any) {
+        ElMessage.info(err || '信息表单填写不完整')
+      }
+    }
+
+    const setData = async () => {
+      let data = null
+      if (props.env_id) {
+        let res = await useEnvApi().getEnvById({id: props.env_id})
+        data = res.data
+      }
+      messagesRef.value.setData(data)
+      httpConfigRef.value.setData(data)
+      commonConfigRef.value.setData(data)
+      databaseConfigRef.value.setData(data)
+    }
+
+    // 返回到列表
+    const goBack = () => {
+      router.push({name: 'apiTestCase'})
+    }
+
     onMounted(() => {
-      // getMenuData();
-    });
+      setData()
+    })
 
     return {
-      openDialog,
-      formRef,
-      props,
-      onDialog,
+      messagesRef,
+      httpConfigRef,
+      databaseConfigRef,
+      commonConfigRef,
+      store,
+      route,
+      router,
+      goBack,
       saveOrUpdate,
       ...toRefs(state),
     };
   },
 });
 </script>
+
+<style lang="scss" scoped>
+:deep(.el-tabs__header) {
+  margin: 0 0 6px;
+}
+
+.content {
+  border: 1px solid #dcdfe6;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 5px 0;
+}
+</style>

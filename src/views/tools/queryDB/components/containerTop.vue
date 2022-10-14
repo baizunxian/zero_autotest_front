@@ -23,14 +23,12 @@
 </template>
 
 <script lang="ts">
-import monacoEditor from '/@/components/monaco/index.vue'
 import {defineComponent, reactive, toRefs, ref, getCurrentInstance, onMounted, onUnmounted} from 'vue';
 import {useQueryDBApi} from "/@/api/useTools/querDB";
 import {ElMessage} from "element-plus/es";
 import {ElLoading} from "element-plus";
 
 export default defineComponent({
-  components: {monacoEditor},
   name: 'app',
   setup() {
     const monacoEditDivRef = ref()

@@ -44,64 +44,73 @@
 
       </div>
 
-      <el-table
-          v-loading="tableLoading"
+      <!--      <el-table-->
+      <!--          v-loading="tableLoading"-->
+      <!--          :data="listData"-->
+      <!--          stripe-->
+      <!--          border-->
+      <!--          fit-->
+      <!--          highlight-current-row-->
+      <!--          style="width: 100%;"-->
+      <!--      >-->
+      <!--        <el-table-column type="selection" width="40"></el-table-column>-->
+      <!--        <el-table-column label="序号" width="45px" align="center">-->
+      <!--          <template #default="scope">-->
+      <!--            {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}-->
+      <!--          </template>-->
+      <!--        </el-table-column>-->
+      <!--        <el-table-column-->
+      <!--            v-for="field in fieldData"-->
+      <!--            :key="field.fieldName"-->
+      <!--            :label="field.label"-->
+      <!--            :align="field.align"-->
+      <!--            :width="field.width"-->
+      <!--            :show-overflow-tooltip="field.show"-->
+      <!--            :prop="field.fieldName"-->
+      <!--        >-->
+      <!--          <template #default="{row}">-->
+      <!--            <template v-if="field.fieldName === 'name'">-->
+      <!--              <el-button size="small"-->
+      <!--                         type="primary" link-->
+      <!--                         @click="onOpenReport(row)">-->
+      <!--                {{ row[field.fieldName] }}-->
+      <!--              </el-button>-->
+      <!--            </template>-->
+
+      <!--            <template v-else-if="field.fieldName === 'status'">-->
+      <!--              <el-tag type="success" v-if="row.success">通过</el-tag>-->
+      <!--              <el-tag type="danger" v-else>不通过</el-tag>-->
+      <!--            </template>-->
+
+      <!--            <template v-else>-->
+      <!--              <span>{{ field.lookupCode?formatLookup(field.lookupCode, row[field.fieldName]): row[field.fieldName]  }}</span>-->
+      <!--            </template>-->
+
+      <!--          </template>-->
+      <!--        </el-table-column>-->
+
+      <!--        <el-table-column label="操作" align="center" width="80" fixed="right">-->
+      <!--          <template #default="{row}">-->
+      <!--            <el-button type="primary" link @click="deleteReport(row)">-->
+      <!--              删除-->
+      <!--            </el-button>-->
+      <!--          </template>-->
+      <!--        </el-table-column>-->
+      <!--      </el-table>-->
+      <!--      <pagination :total="total"-->
+      <!--                  :hidden="total === 0"-->
+      <!--                  v-model:page="listQuery.page"-->
+      <!--                  v-model:limit="listQuery.pageSize"-->
+      <!--                  @pagination="getList"/>-->
+
+      <zero-table
+          :columns="columns"
           :data="listData"
-          stripe
-          border
-          fit
-          highlight-current-row
-          style="width: 100%;"
-      >
-        <el-table-column type="selection" width="40"></el-table-column>
-        <el-table-column label="序号" width="45px" align="center">
-          <template #default="scope">
-            {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
-          </template>
-        </el-table-column>
-        <el-table-column
-            v-for="field in fieldData"
-            :key="field.fieldName"
-            :label="field.label"
-            :align="field.align"
-            :width="field.width"
-            :show-overflow-tooltip="field.show"
-            :prop="field.fieldName"
-        >
-          <template #default="{row}">
-            <template v-if="field.fieldName === 'name'">
-              <el-button size="small"
-                         type="text"
-                         @click="onOpenReport(row)">
-                {{ row[field.fieldName] }}
-              </el-button>
-            </template>
-
-            <template v-else-if="field.fieldName === 'status'">
-              <el-tag type="success" v-if="row.success">通过</el-tag>
-              <el-tag type="danger" v-else>不通过</el-tag>
-            </template>
-
-            <template v-else>
-              <span>{{ field.lookupCode?formatLookup(field.lookupCode, row[field.fieldName]): row[field.fieldName]  }}</span>
-            </template>
-
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作" align="center" width="80" fixed="right">
-          <template #default="{row}">
-            <el-button type="text" @click="deleteReport(row)">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <pagination :total="total"
-                  :hidden="total === 0"
-                  v-model:page="listQuery.page"
-                  v-model:limit="listQuery.pageSize"
-                  @pagination="getList"/>
+          v-model:page-size="listQuery.pageSize"
+          v-model:page="listQuery.page"
+          :total="total"
+          @pagination-change="getList"
+      />
 
       <el-dialog
           draggable
@@ -120,30 +129,69 @@
 
 <script lang="ts">
 
-import Pagination from '/@/components/Pagination/index.vue'
 import TestReport from '/@/views/api/Report/components/report.vue';
 import {useReportApi} from '/@/api/useAutoApi/report';
-import {defineComponent, onMounted, reactive, toRefs} from 'vue';
-import {ElMessage, ElMessageBox} from 'element-plus'
-import {formatLookup} from '/@/utils/lookup'
+import {defineComponent, h, onMounted, reactive, toRefs} from 'vue';
+import {ElButton, ElMessage, ElMessageBox, ElTag} from 'element-plus'
 
 
 export default defineComponent({
   name: 'apiReport',
-  components: {Pagination, TestReport},
+  components: {TestReport},
   setup() {
     const state = reactive({
-      fieldData: [
-        {fieldName: 'name', label: '报告名称', width: '', align: 'center', show: true},
-        {fieldName: 'status', label: '运行结果', width: '', align: 'center', show: true},
-        {fieldName: 'run_type',label: '任务类型',width: '',align: 'center',show: true,lookupCode: 'api_report_run_type'},
-        {fieldName: 'run_mode',label: '运行模式',width: '',align: 'center',show: true,lookupCode: 'api_report_run_mode'},
-        {fieldName: 'run_test_count', label: '运行用例', width: '', align: 'center', show: true},
-        // {fieldName: 'successes', label: '执行结果', width: '', align: 'center', show: true},
-        {fieldName: 'successful_use_case', label: '成功用例', width: '', align: 'center', show: true},
-        {fieldName: 'duration', label: '执行耗时(秒)', width: '', align: 'center', show: true},
-        {fieldName: 'start_at', label: '执行时间', width: '150', align: 'center', show: true},
-        {fieldName: 'execute_user_name', label: '执行人', width: '', align: 'center', show: true},
+      columns: [
+        {label: '序号', columnType: 'index', align: 'center', width: 'auto', showTooltip: true},
+        {
+          key: 'name', label: '报告名称', align: 'center', width: '', showTooltip: true,
+          render: (row: any) => h(ElButton, {
+            link: true,
+            type: "primary",
+            onClick: () => {
+              onOpenReport(row)
+            }
+          }, row.name)
+        },
+        {
+          key: 'status', label: '运行结果', align: 'center', width: '', showTooltip: true,
+          render: (row: any) => h(ElTag, {
+            type: row.success ? "success" : "danger",
+          }, row.success ? "通过" : "不通过",)
+        },
+        {
+          key: 'run_type',
+          label: '任务类型',
+          width: '',
+          align: 'center',
+          showTooltip: true,
+          lookupCode: 'api_report_run_type'
+        },
+        {
+          key: 'run_mode',
+          label: '运行模式',
+          align: 'center',
+          width: '',
+          showTooltip: true,
+          lookupCode: 'api_report_run_mode'
+        },
+        {key: 'run_test_count', label: '运行用例', align: 'center', width: '', showTooltip: true},
+        // {key: 'successes', label: '执行结果', width: '', showTooltip: true},
+        {key: 'successful_use_case', label: '成功用例', align: 'center', width: '', showTooltip: true},
+        {key: 'duration', label: '执行耗时(秒)', align: 'center', width: '', showTooltip: true},
+        {key: 'start_at', label: '执行时间', align: 'center', width: '150', showTooltip: true},
+        {key: 'execute_user_name', label: '执行人', align: 'center', width: '', showTooltip: true},
+        {
+          label: '操作', columnType: 'string', fixed: 'right', align: 'center', width: '80',
+          render: (row: any) => h("div", null, [
+            h(ElButton, {
+              link: true,
+              type: "primary",
+              onClick: () => {
+                deleted(row)
+              }
+            }, '删除')
+          ])
+        },
       ],
       // list
       listData: [],
@@ -183,7 +231,7 @@ export default defineComponent({
     }
 
     // 删除报告
-    const deleteReport = (row: any) => {
+    const deleted = (row: any) => {
       ElMessageBox.confirm('是否删除该条数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -197,7 +245,6 @@ export default defineComponent({
     }
 
     const onOpenReport = (row: any) => {
-      console.log('row----------', row)
       useReportApi().getReportById({id: row.id})
           .then((res: any) => {
             state.reportBody = res.data.report_body
@@ -213,8 +260,7 @@ export default defineComponent({
       getList,
       onOpenReport,
       search,
-      deleteReport,
-      formatLookup,
+      deleted,
       ...toRefs(state),
     };
   }

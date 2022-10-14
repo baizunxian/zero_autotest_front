@@ -1,10 +1,10 @@
 <template>
   <el-form inline ref="request-form" label-width="50px" size="mini" label-position="right">
     <div class="block-title">
-      <el-button size="small" type="text" @click="addHeaders" title="添加header">
+      <el-button size="small" type="primary" link @click="addHeaders" title="添加header">
         <el-icon><ele-CirclePlusFilled></ele-CirclePlusFilled></el-icon>add
       </el-button>
-      <el-button type="text" @click="bulkEdit" title="文本编辑">
+      <el-button type="primary" link @click="bulkEdit" title="文本编辑">
         {{ showBulk ? "KeyValueEdit" : "BulkEdit" }}
       </el-button>
     </div>
@@ -40,7 +40,7 @@
         <el-table-column align="center" width="50" class-name="small-padding fixed-width">
           <template #default="scope">
 
-            <el-button size="small" type="text" @click="deleteHeaders(scope.$index)">
+            <el-button size="small" type="primary" link @click="deleteHeaders(scope.$index)">
               <el-icon>
                 <ele-Delete/>
               </el-icon>

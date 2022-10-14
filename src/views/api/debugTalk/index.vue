@@ -78,7 +78,7 @@
           </el-table-column>
           <el-table-column prop="" label="操作" width="100">
             <template #default="{row}">
-              <el-button type="text" icon="el-icon-caret-right" @click="showDebugFunc(row)">
+              <el-button type="primary" link icon="el-icon-caret-right" @click="showDebugFunc(row)">
                 调试
               </el-button>
             </template>
@@ -123,100 +123,52 @@
         </div>
       </el-dialog>
 
-      <el-table
-          v-loading="tableLoading"
+      <zero-table
+          :columns="columns"
           :data="listData"
-          stripe
-          border
-          fit
-          highlight-current-row
-          style="width: 100%;"
+          v-model:page-size="listQuery.pageSize"
+          v-model:page="listQuery.page"
+          :total="total"
+          @pagination-change="getList"
       >
-        <el-table-column label="序号" width="50px" align="center">
-          <template #default="scope">
-            {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
-          </template>
-        </el-table-column>
-
-        <el-table-column
-            v-for="field in fieldData"
-            :key="field.fieldName"
-            :label="field.label"
-            :align="field.align"
-            :width="field.width"
-            :show-overflow-tooltip="field.show"
-            :prop="field.fieldName"
-        >
-          <template #default="{row}">
-            <template v-if="field.fieldName === 'debug_talk'">
-              <el-button size="small"
-                         type="text"
-                         @click="onOpenSaveOrUpdate(row)">
-                debugtalk.py
-              </el-button>
-            </template>
-
-            <template v-else>
-              {{ row[field.fieldName] }}
-            </template>
-          </template>
-        </el-table-column>
-
-
-        <!--        <el-table-column prop="" label="操作" width="120" align="center">-->
-        <!--          <template #default="scope">-->
-        <!--            <el-button type="text" icon="el-icon-s-order" @click="getList(scope.row)">-->
-        <!--              函数列表-->
-        <!--            </el-button>-->
-        <!--          </template>-->
-        <!--        </el-table-column>-->
-      </el-table>
-
-      <pagination :total="total"
-                  :hidden="total === 0"
-                  v-model:page="listQuery.page"
-                  v-model:limit="listQuery.pageSize"
-                  @pagination="getList"/>
+      </zero-table>
 
     </el-card>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
-import {ElMessage, ElMessageBox} from 'element-plus';
-import Pagination from '/@/components/Pagination/index.vue';
+import {defineComponent, onMounted, reactive, ref, toRefs, h} from 'vue';
+import {ElMessage, ElMessageBox, ElButton} from 'element-plus';
 import {useDebugTalkApi} from "/@/api/useAutoApi/debugTalk";
 import {useRouter} from 'vue-router'
 
 import "vue3-json-viewer/dist/index.css"
-import {JsonViewer} from 'vue3-json-viewer'
-
-// 定义接口来定义对象的类型
-// interface TableData {
-//   roleName: string;
-//   roleSign: string;
-//   describe: string;
-//   sort: number;
-//   status: boolean;
-//   createTime: string;
-// }
 
 
 export default defineComponent({
   name: 'apiDebugTalk',
-  components: {Pagination, JsonViewer},
   setup() {
     const saveOrUpdateRef = ref();
     const router = useRouter();
     const state = reactive({
-      fieldData: [
-        {fieldName: 'id', label: 'ID', width: '55', align: 'center', show: true},
-        {fieldName: 'project_name', label: '所属项目', width: '', align: 'center', show: true},
-        {fieldName: 'debug_talk', label: 'DebugTalk', width: '', align: 'center', show: true},
-        {fieldName: 'module_name', label: '所属模块', width: '', align: 'center', show: true},
-        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
-        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
+      columns: [
+        {label: '序号', columnType: 'index', width: 'auto', showTooltip: true},
+        {key: 'id', label: 'ID', width: '55', align: 'center', show: true},
+        {key: 'project_name', label: '所属项目', width: '', align: 'center', show: true},
+        {
+          key: 'debug_talk', label: 'scriptcode', width: '', align: 'center', show: true,
+          render: (row: any) => h(ElButton, {
+            link: true,
+            type: "primary",
+            onClick: () => {
+              onOpenSaveOrUpdate(row)
+            }
+          }, "script_code.py")
+        },
+        {key: 'module_name', label: '所属模块', width: '', align: 'center', show: true},
+        {key: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
+        {key: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
         // {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
         // {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
       ],

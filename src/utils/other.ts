@@ -5,6 +5,33 @@ import router from '/@/router/index';
 import {store} from '/@/store';
 import {Local} from '/@/utils/storage';
 import svgIcon from '/@/components/svgIcon/index.vue';
+import zeroTable from '/@/components/zeroTable/index.vue';
+import StepController from '/@/components/StepController/index.vue';
+import monacoEditor from '/@/components/monaco/index.vue';
+
+/**
+ * 导出全局注册 zero table
+ * @param app vue 实例
+ */
+export function zeroTables(app: App) {
+  app.component('ZeroTable', zeroTable);
+}
+/**
+ * 导出全局注册 Step Controller
+ * @param app vue 实例
+ */
+export function stepController(app: App) {
+  app.component('StepController', StepController);
+}
+
+/**
+ * 导出全局注册 monacoEditor
+ * @param app vue 实例
+ */
+export function monaco(app: App) {
+  app.component('monacoEditor', monacoEditor);
+}
+
 
 /**
  * 导出全局注册 element plus svg 图标
@@ -131,6 +158,15 @@ export function handleEmpty(list: any) {
  * @method handleEmpty 判断数组对象中所有属性是否为空，为空则删除当前行对象
  */
 const other = {
+  zeroTable: (app: App) => {
+    zeroTables(app);
+  },
+  stepController: (app: App) => {
+    stepController(app);
+  },
+  monacoEditor: (app: App) => {
+    monaco(app);
+  },
   elSvg: (app: App) => {
     elSvg(app);
   },

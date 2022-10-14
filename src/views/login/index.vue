@@ -2,8 +2,9 @@
   <div class="login-container" ref='vantaRef'>
     <div class="login-icon-group">
       <div class="login-icon-group-title">
-        <img :src="logoMini"/>
-        <div class="login-icon-group-title-text font25">{{ getThemeConfig.globalViceTitle }}</div>
+        <svg-icon :name="logoMini" :size="350"></svg-icon>
+<!--        <img :src="logoMini" style="width: 100%;"/>-->
+<!--        <div class="login-icon-group-title-text font25">{{ getThemeConfig.globalViceTitle }}</div>-->
       </div>
       <img :src="loginIconTwo" class="login-icon-group-icon"/>
     </div>
@@ -35,7 +36,7 @@ import {computed, defineComponent, onBeforeUnmount, onMounted, reactive, ref, to
 import Account from '/@/views/login/component/account.vue';
 import {useStore} from '/@/store';
 
-import logoMini from '/@/assets/logo.png';
+import logoMini from '/@/assets/logo.svg';
 import loginIconTwo from '/@/assets/login-icon-two.svg';
 
 // import BIRDS from 'vanta/src/vanta.birds.js'
@@ -112,8 +113,9 @@ export default defineComponent({
 
     .login-icon-group-title {
       position: absolute;
-      top: 50px;
-      left: 80px;
+      //top: 50px;
+      //left: 80px;
+      margin-top: -100px;
       display: flex;
       align-items: center;
 

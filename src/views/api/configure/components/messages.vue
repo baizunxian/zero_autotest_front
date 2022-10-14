@@ -40,7 +40,7 @@
 <script lang="ts">
 import {useProjectApi} from '/@/api/useAutoApi/project'
 import {useModuleApi} from '/@/api/useAutoApi/module'
-import {useTestCaseApi} from '/@/api/useAutoApi/testcase'
+import {useTestCaseApi} from '/@/api/useAutoApi/testCase'
 import {defineComponent, onMounted, reactive, ref, toRefs} from "vue";
 import {ElMessage} from "element-plus";
 
@@ -65,7 +65,7 @@ export default defineComponent({
     }
     const state = reactive({
       isShowDialog: false,
-      handleType: '',   //case 调用类型， 保存，调试
+      handleType: '',   //apiCase 调用类型， 保存，调试
       // 表单及校验
       form: createForm(),
       rules: {

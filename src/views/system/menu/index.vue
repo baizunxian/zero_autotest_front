@@ -38,7 +38,7 @@
               <SvgIcon :name="row.icon"/>
               <span class="ml10">{{ row.title }}</span>
 <!--              <el-button size="small"-->
-<!--                         type="text"-->
+<!--                         type="primary" link-->
 <!--                         class="ml10"-->
 <!--                         @click="onOpenSaveOrUpdate('update', row)">-->
 <!--                {{ row[field.fieldName] }}-->
@@ -59,8 +59,8 @@
 
         <el-table-column label="操作" show-overflow-tooltip width="140" fixed="right">
           <template #default="scope">
-            <el-button size="small" type="text" @click="onOpenSaveOrUpdate('update', scope.row)">修改</el-button>
-            <el-button size="small" type="text" @click="deleted(scope.row)">删除</el-button>
+            <el-button size="small" type="primary" link @click="onOpenSaveOrUpdate('update', scope.row)">修改</el-button>
+            <el-button size="small" type="primary" link @click="deleted(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

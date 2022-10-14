@@ -1,0 +1,73 @@
+<svg height="100%" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"
+     viewBox="0 0 200 200" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <desc>Created with Snap</desc>
+    <defs/>
+    <g id="root" contentwidth="480" contentheight="285.2116182572614">
+        <rect class="background" height="100%" width="100%"  style="" fill="#ffffff"
+              opacity="0.0"/>
+        <g class="content" id="content" >
+            <g class="icon" style="mask: url(#mask);">
+                <svg height="200" version="1.1" width="200" xmlns="http://www.w3.org/2000/svg">
+                    <desc>Created with Snap</desc>
+                    <defs/>
+                    <svg xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 500 500">
+                        <defs/>
+                        <g>
+                            <path fill="none" stroke="#ee4266" paint-order="fill stroke markers"
+                                  d=" M 0 0 L 0 100 Q 100 100 100 99 L 100 100 L 100 96.0 Q 100 96 100 0.79999999999995 L 0 0.99999999999997"
+                                  stroke-linecap="square" stroke-miterlimit="10" stroke-width="3"
+                                  class="nameBg sloganBg" style=""/>
+
+
+                            <path fill="none" stroke="#ee4266" paint-order="fill stroke markers"
+                                  d=" M 251 240.99999999999997 L 261 240.99999999999997 Q 241 240.99999999999997 241 261 L 241 331.79999999999995 L 320 331.79999999999995 Q 310 331.79999999999995 310 311.79999999999995 L 320 240.99999999999997"
+                                  stroke-linecap="square" stroke-miterlimit="10" stroke-width="3"
+                                  class="nameBg sloganBg" style=""/>
+                            <path fill="#ee4266" stroke="none" paint-order="stroke fill markers"
+                                  d=" M 251 331.79999999999995 L 320 331.79999999999995 Q 320 331.79999999999995 320 311.79999999999995 L 310 250.99999999999997 L 320 250.99999999999997 L 320 321.79999999999995 Q 310 341.79999999999995 301 341.79999999999995 L 251 341.79999999999995 L 251 331.79999999999995"
+                                  opacity="0.6" style=""/>
+                            <path fill="#ee4266" stroke="none" paint-order="stroke fill markers"
+                                  d=" M 261 341.79999999999995 L 320 341.79999999999995 Q 320 341.79999999999995 320 321.79999999999995 L 320 261 L 321 261 L 321 331.79999999999995 Q 321 351.79999999999995 320 351.79999999999995 L 261 351.79999999999995 L 261 341.79999999999995"
+                                  opacity="0.39999999999999997" style=""/>
+                            <path fill="none" stroke="#ee4266" paint-order="fill stroke markers"
+                                  d=" M 320 240.99999999999997 L 261 240.99999999999997 Q 241 240.99999999999997 241 261 L 241 331.79999999999995 L 320 331.79999999999995 Q 320 331.79999999999995 322 311.79999999999995 L 320 240.99999999999997"
+                                  stroke-linecap="square" stroke-miterlimit="10" stroke-width="3" style=""/>
+                            <path fill="none" stroke="#ee4266" paint-order="fill stroke markers"
+                                  d=" M 320 240.99999999999997 L 261 240.99999999999997 Q 241 240.99999999999997 241 261 L 241 331.79999999999995 L 320 331.79999999999995 Q 320 331.79999999999995 320 311.79999999999995 L 320 240.99999999999997"
+                                  stroke-linecap="square" stroke-miterlimit="10" stroke-width="3" style=""/>
+                        </g>
+                        <desc>Created with Snap</desc>
+                    </svg>
+                </svg>
+            </g>
+            <g id="icon_name_and_slogan_gap">
+            </g>
+            <g class="name_and_slogan" id="name_and_slogan_id">
+                <g class="name">
+                    <g id="nameDefaultGroup">
+                        <path d="M2.2 -38.7L40.2 -38.7L40.2 -28.4L17.1 -8.6L41.5 -8.6L41.5 0.8L1.8 0.8L1.8 -10.2L24.4 -29.3L2.2 -30z"
+                              style="" fill="#1c1259" id="namepathdata"/>
+                    </g>
+                </g>
+                <g class="slogan">
+                    <g id="sloganDefaultGroup"/>
+                </g>
+            </g>
+            <g class="border">
+            </g>
+        </g>
+
+        <defs id="defs">
+            <mask xmlns="http://www.w3.org/2000/svg" id="mask">
+                <rect id="showAll" fill="white" x="0" y="0" width="200" height="200.8"/>
+                <rect id="hideNameBg" fill="black" x="0" y="0" width="0" height="0" stroke-width="2" stroke="black"/>
+                <rect id="hideSloganBg" fill="black" x="0" y="0" width="0" height="0" stroke-width="2" stroke="black"/>
+                <path d="M2.2 -38.7L40.2 -38.7L40.2 -28.4L17.1 -8.6L41.5 -8.6L41.5 0.8L1.8 0.8L1.8 -10.2L24.4 -29.3L2.2 -30z"
+                      style="stroke-width: 0;" fill="#000000" id="masknamepathdata" stroke="#000000"
+                      paint-order="stroke"/>
+            </mask>
+        </defs>
+
+    </g>
+</svg>

@@ -16,7 +16,7 @@
   </div>
 </template>
 <script>
-// import {saveDebugTalk, getDebugTalkInfo} from '@/api/case'
+// import {saveDebugTalk, getDebugTalkInfo} from '@/api/apiCase'
 import {mapGetters} from 'vuex'
 
 export default {

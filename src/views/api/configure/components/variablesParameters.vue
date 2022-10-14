@@ -18,7 +18,7 @@
         </template>
       </el-tooltip>
 
-      <el-button type="text" @click="addVariables" title="新增变量">
+      <el-button type="primary" link @click="addVariables" title="新增变量">
         <el-icon>
           <ele-CirclePlusFilled></ele-CirclePlusFilled>
         </el-icon>
@@ -81,7 +81,7 @@
       <el-table-column align="center" width="50" class-name="small-padding fixed-width">
         <template #default="scope">
 
-          <el-button size="small" type="text" @click="deleteVariables(scope.$index)">
+          <el-button size="small" type="primary" link @click="deleteVariables(scope.$index)">
             <el-icon>
               <ele-Delete/>
             </el-icon>
@@ -105,7 +105,7 @@
         </template>
       </el-tooltip>
 
-      <el-button type="text" @click="addParameters" title="新增参数">
+      <el-button type="primary" link @click="addParameters" title="新增参数">
         <el-icon>
           <ele-CirclePlusFilled></ele-CirclePlusFilled>
         </el-icon>
@@ -153,7 +153,7 @@
 
       <el-table-column align="center" width="150" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button size="small" type="text" @click="deleteParameters(scope.$index)">
+          <el-button size="small" type="primary" link @click="deleteParameters(scope.$index)">
             <el-icon>
               <ele-Delete/>
             </el-icon>
@@ -172,7 +172,7 @@
 <!--        </template>-->
 <!--      </el-tooltip>-->
 
-<!--      <el-button type="text" @click="addHooks" title="新增函数">-->
+<!--      <el-button type="primary" link @click="addHooks" title="新增函数">-->
 <!--        <el-icon>-->
 <!--          <ele-CirclePlusFilled></ele-CirclePlusFilled>-->
 <!--        </el-icon>-->
@@ -205,7 +205,7 @@
 <!--      </el-table-column>-->
 <!--      <el-table-column align="center" width="50" class-name="small-padding fixed-width">-->
 <!--        <template #default="scope">-->
-<!--          <el-button size="small" type="text" @click="deleteHooks(scope.$index)">-->
+<!--          <el-button size="small" type="primary" link @click="deleteHooks(scope.$index)">-->
 <!--            <el-icon>-->
 <!--              <ele-Delete/>-->
 <!--            </el-icon>-->

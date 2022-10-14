@@ -14,6 +14,13 @@ export function useEnvApi() {
         data,
       });
     },
+    getEnvById: (data?: object) => {
+      return request({
+        url: '/env/getEnvById',
+        method: 'POST',
+        data,
+      });
+    },
     saveOrUpdate(data?: object) {
       return request({
         url: '/env/saveOrUpdate',

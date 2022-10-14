@@ -2,7 +2,7 @@
   <div>
     <el-card shadow="hover">
       <div class="mb15">
-        <el-input v-model="listQuery.name" :placeholder="`请输入环境名称`" style="max-width: 180px"></el-input>
+        <el-input v-model="listQuery.name" placeholder="请输入配置名称" style="max-width: 180px"></el-input>
         <el-button type="primary" class="ml10" @click="search">
           <el-icon>
             <ele-Search/>
@@ -16,89 +16,85 @@
           新增
         </el-button>
       </div>
-      <el-table
-          border
-          v-loading="tableLoading"
+      <zero-table
+          :columns="columns"
           :data="listData"
-          style="width: 100%">
-
-        <el-table-column
-            v-for="field in fieldData"
-            :key="field.fieldName"
-            :label="field.label"
-            :align="field.align"
-            :width="field.width"
-            :show-overflow-tooltip="field.show"
-            :prop="field.fieldName"
-        >
-          <template #default="{row}">
-            <template v-if="field.fieldName === 'name'">
-              <el-button size="small"
-                         type="text"
-                         @click="onOpenSaveOrUpdate('update', row)">
-                {{ row[field.fieldName] }}
-              </el-button>
-            </template>
-
-            <template v-else>
-              {{ row[field.fieldName] }}
-            </template>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作" width="100" align="center" fixed="right">
-          <template #default="scope">
-            <el-button size="small" type="text"
-                       @click="onOpenSaveOrUpdate('update', scope.row)">修改
-            </el-button>
-            <el-button size="small" type="text" @click="deleted(scope.row)">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <pagination :total="total"
-                  :hidden="total === 0"
-                  v-model:page="listQuery.page"
-                  v-model:limit="listQuery.pageSize"
-                  @pagination="getList"/>
+          v-model:page-size="listQuery.pageSize"
+          v-model:page="listQuery.page"
+          :total="total"
+          @pagination-change="getList"
+      />
     </el-card>
-    <save-or-update ref="saveOrUpdateRef"  @getList="getList"/>
+
+    <el-dialog
+        draggable
+        v-model="showSaveOrUpdate"
+        width="50%"
+        top="8vh"
+        :title="editType === 'save'? '新增配置':'更新配置'"
+        destroy-on-close
+        :close-on-click-modal="false">
+      <save-or-update ref="saveOrUpdateRef" @getList="getList" :env_id="env_id"/>
+      <template #footer>
+        <el-button @click="showSaveOrUpdate = false">取 消</el-button>
+        <el-button type="primary" @click="saveOrUpdate">保 存</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
-import {ElMessage, ElMessageBox} from 'element-plus';
-import saveOrUpdate from '/@/views/api/env/components/saveOrUpdate.vue';
-import Pagination from '/@/components/Pagination/index.vue';
+import {defineComponent, h, onMounted, reactive, ref, toRefs} from 'vue';
+import {ElButton, ElMessage, ElMessageBox} from 'element-plus';
 import {useEnvApi} from "/@/api/useAutoApi/env";
-
-// 定义接口来定义对象的类型
-// interface TableData {
-//   roleName: string;
-//   roleSign: string;
-//   describe: string;
-//   sort: number;
-//   status: boolean;
-//   createTime: string;
-// }
-
+import {useRouter} from "vue-router";
+import saveOrUpdate from '/@/views/api/env/components/saveOrUpdate.vue';
 
 export default defineComponent({
-  name: 'apiEnv',
-  components: {saveOrUpdate, Pagination},
+  name: 'Env',
+  components: {saveOrUpdate},
   setup() {
     const saveOrUpdateRef = ref();
+    const router = useRouter();
     const state = reactive({
-      fieldData: [
-        {fieldName: 'name', label: '环境名称', width: '', align: 'center', show: true},
-        {fieldName: 'url', label: 'URL', width: '', align: 'center', show: true},
-        {fieldName: 'remarks', label: '备注', width: '', align: 'center', show: true},
-        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
-        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
-        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
-        {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
+      columns: [
+        {label: '序号', columnType: 'index', width: 'auto', showTooltip: true},
+        {
+          key: 'name', label: '配置名称', width: '', showTooltip: true,
+          render: (row: any) => h(ElButton, {
+            link: true,
+            type: "primary",
+            onClick: () => {
+              onOpenSaveOrUpdate("update", row)
+            }
+          }, row.name)
+        },
+        {key: 'domain_name', label: '域名地址', width: 'auto', showTooltip: true},
+        {key: 'remarks', label: '备注', width: 'auto', showTooltip: true},
+        {key: 'updation_date', label: '更新时间', width: '150', showTooltip: true},
+        {key: 'updated_by_name', label: '更新人', width: '', showTooltip: true},
+        {key: 'creation_date', label: '创建时间', width: '150', showTooltip: true},
+        {key: 'created_by_name', label: '创建人', width: '', showTooltip: true},
+        {
+          label: '操作', fixed: 'right', width: '100',
+          render: (row: any) => h("div", null, [
+            h(ElButton, {
+              link: true,
+              type: "primary",
+              onClick: () => {
+                onOpenSaveOrUpdate("update", row)
+              }
+            }, '编辑'),
+
+            h(ElButton, {
+              link: true,
+              type: "primary",
+              onClick: () => {
+                deleted(row)
+              }
+            }, '删除')
+          ])
+        },
       ],
       // list
       listData: [],
@@ -107,8 +103,13 @@ export default defineComponent({
       listQuery: {
         page: 1,
         pageSize: 20,
+        case_type: 2,
         name: '',
       },
+      // configure
+      editType: 'save',
+      env_id: null,
+      showSaveOrUpdate: false,
     });
     // 初始化表格数据
     const getList = () => {
@@ -121,15 +122,27 @@ export default defineComponent({
           })
     };
 
-     // 查询
+    // 查询
     const search = () => {
       state.listQuery.page = 1
       getList()
     }
 
-    // 新增或修改角色
-    const onOpenSaveOrUpdate = (editType: string, row: any) => {
-      saveOrUpdateRef.value.openDialog(editType, row);
+    // 新增或修改
+    const onOpenSaveOrUpdate = (editType: string, row: any | null) => {
+      state.editType = editType
+      if (row && row.id) {
+        state.env_id = row.id
+      } else {
+        state.env_id = null
+      }
+      state.showSaveOrUpdate = !state.showSaveOrUpdate
+      // router.push({name: 'saveOrUpdateTestCase', query: query})
+    };
+
+    // saveOrUpdate
+    const saveOrUpdate = () => {
+      saveOrUpdateRef.value.saveOrUpdate()
     };
 
     // 删除角色
@@ -149,6 +162,8 @@ export default defineComponent({
           .catch(() => {
           });
     };
+
+
     // 页面加载时
     onMounted(() => {
       getList();
@@ -157,8 +172,10 @@ export default defineComponent({
       getList,
       search,
       saveOrUpdateRef,
+      saveOrUpdate,
       onOpenSaveOrUpdate,
       deleted,
+      router,
       ...toRefs(state),
     };
   },

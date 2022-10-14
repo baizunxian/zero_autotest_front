@@ -14,6 +14,9 @@ const app = createApp(App);
 
 directive(app);
 other.elSvg(app);
+other.zeroTable(app)
+other.stepController(app)
+other.monacoEditor(app)
 
 app.use(router).use(store, key).use(ElementPlus,{size: 'small'}).mount('#app');
 

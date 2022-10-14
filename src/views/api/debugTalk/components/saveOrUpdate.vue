@@ -31,11 +31,8 @@ import {useRoute} from 'vue-router'
 import {useDebugTalkApi} from "/@/api/useAutoApi/debugTalk";
 import {ElMessage} from "element-plus/es";
 
-import monacoEditor from '/@/components/monaco/index.vue'
-
 export default defineComponent({
   name: 'saveOrUpdateDebugTalk',
-  components: {monacoEditor},
   setup() {
     const debugTalkRef = ref()
     const monacoEdit = ref()

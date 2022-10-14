@@ -1,6 +1,6 @@
 <script lang="ts">
 // 渲染函数：https://v3.cn.vuejs.org/guide/render-function.html
-import {h, resolveComponent} from 'vue';
+import {h, resolveComponent, defineComponent} from 'vue';
 
 // 定义接口来定义对象的类型
 interface SvgIconProps {
@@ -9,7 +9,7 @@ interface SvgIconProps {
   color: string;
 }
 
-export default {
+export default defineComponent({
   name: 'svgIcon',
   props: {
     // svg 图标组件名字
@@ -41,5 +41,5 @@ export default {
     });
     else return () => h('i', {class: props.name, style: onLineStyle});
   },
-};
+});
 </script>

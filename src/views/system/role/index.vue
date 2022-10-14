@@ -16,94 +16,76 @@
           新增角色
         </el-button>
       </div>
-      <el-table
-          border
-          v-loading="tableLoading"
+      <zero-table
+          :columns="columns"
           :data="listData"
-          style="width: 100%">
-        <el-table-column label="序号" width="50px" align="center">
-          <template #default="scope">
-            {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
-          </template>
-        </el-table-column>
-
-        <el-table-column
-            v-for="field in fieldData"
-            :key="field.fieldName"
-            :label="field.label"
-            :align="field.align"
-            :width="field.width"
-            :show-overflow-tooltip="field.show"
-            :prop="field.fieldName"
-        >
-          <template #default="{row}">
-            <template v-if="field.fieldName === 'name'">
-              <el-button size="small"
-                         type="text"
-                         @click="onOpenSaveOrUpdate('update', row)">
-                {{ row[field.fieldName] }}
-              </el-button>
-            </template>
-
-            <template v-else-if="field.fieldName === 'status'">
-              <el-tag type="success" v-if="row.status === 10">启用</el-tag>
-              <el-tag type="info" v-else>禁用</el-tag>
-            </template>
-
-            <template v-else>
-              {{ row[field.fieldName] }}
-            </template>
-
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作" width="100" fixed="right">
-          <template #default="{row}">
-            <el-button size="small"
-                       type="text"
-                       @click="onOpenSaveOrUpdate('update', row)">修改
-            </el-button>
-            <el-button size="small"
-                       type="text"
-                       @click="deleted(row)"> 删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <pagination :total="total"
-                  :hidden="total === 0"
-                  v-model:page="listQuery.page"
-                  v-model:limit="listQuery.pageSize"
-                  @pagination="getList"/>
+          v-model:page-size="listQuery.pageSize"
+          v-model:page="listQuery.page"
+          :total="total"
+          @pagination-change="getList"
+      />
     </el-card>
     <save-or-update ref="saveOrUpdateRef" @getList="getList"/>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
-import {ElMessage, ElMessageBox} from 'element-plus';
+import {defineComponent, onMounted, reactive, ref, toRefs, h} from 'vue';
+import {ElButton, ElMessage, ElMessageBox, ElTag} from 'element-plus';
 import saveOrUpdate from '/@/views/system/role/components/saveOrUpdate.vue';
-import Pagination from '/@/components/Pagination/index.vue';
 import {useRolesApi} from "/@/api/useSystemApi/roles";
 
 
 export default defineComponent({
   name: 'systemRole',
-  components: {saveOrUpdate, Pagination},
+  components: {saveOrUpdate},
   setup() {
     const saveOrUpdateRef = ref();
     const state = reactive({
-      fieldData: [
-        {fieldName: 'name', label: '角色名称', width: '', align: 'center', show: true},
-        {fieldName: 'role_type', label: '权限类型', width: '', align: 'center', show: true},
-        {fieldName: 'status', label: '角色状态', width: '', align: 'center', show: true},
-        {fieldName: 'description', label: '角色描述', width: '', align: 'center', show: true},
-        {fieldName: 'description', label: '备注', width: '', align: 'center', show: true},
-        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
-        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
-        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
-        {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
+      columns: [
+        {
+          key: 'name', label: '角色名称', width: '', align: 'center', showTooltip: true,
+          render: (row: any) => h(ElButton, {
+            link: true,
+            type: "primary",
+            onClick: () => {
+              onOpenSaveOrUpdate("update", row)
+            }
+          }, row.name)
+        },
+        {key: 'role_type', label: '权限类型', width: '', align: 'center', showTooltip: true},
+        {
+          key: 'status', label: '角色状态', width: '', align: 'center', showTooltip: true,
+          render: (row: any) => h(ElTag, {
+            type: row.status == 10 ? "success" : "info",
+          }, row.status == 10 ? "启用" : "禁用",)
+        },
+        {key: 'description', label: '角色描述', width: '', align: 'center', showTooltip: true},
+        {key: 'description', label: '备注', width: '', align: 'center', showTooltip: true},
+        {key: 'updation_date', label: '更新时间', width: '150', align: 'center', showTooltip: true},
+        {key: 'updated_by_name', label: '更新人', width: '', align: 'center', showTooltip: true},
+        {key: 'creation_date', label: '创建时间', width: '150', align: 'center', showTooltip: true},
+        {key: 'created_by_name', label: '创建人', width: '', align: 'center', showTooltip: true},
+        {
+          label: '操作', fixed: 'right', width: '100',
+          render: (row: any) => h("div", null, [
+            h(ElButton, {
+              link: true,
+              type: "primary",
+              onClick: () => {
+                onOpenSaveOrUpdate("update", row)
+              }
+            }, '编辑'),
+
+            h(ElButton, {
+              link: true,
+              type: "primary",
+              onClick: () => {
+                deleted(row)
+              }
+            }, '删除')
+          ])
+        },
       ],
       // list
       listData: [],

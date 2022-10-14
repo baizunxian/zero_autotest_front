@@ -16,74 +16,14 @@
           新增用户
         </el-button>
       </div>
-      <el-table
-          border
+      <zero-table
+          :columns="columns"
           :data="listData"
-          v-loading="tableLoading"
-          style="width: 100%"
-      >
-        <el-table-column label="序号" width="50px" align="center">
-          <template #default="scope">
-            {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
-          </template>
-        </el-table-column>
-
-        <el-table-column
-            v-for="field in fieldData"
-            :key="field.fieldName"
-            :label="field.label"
-            :align="field.align"
-            :width="field.width"
-            :show-overflow-tooltip="field.show"
-            :prop="field.fieldName"
-        >
-          <template #default="{row}">
-            <template v-if="field.fieldName === 'username'">
-              <el-button size="small"
-                         type="text"
-                         @click="onOpenSaveOrUpdate('update', row)">
-                {{ row.username }}
-              </el-button>
-            </template>
-
-            <template v-else-if="field.fieldName === 'roles'">
-              <el-tag v-for="item in row.roles" :key="item" style="margin-right: 2px">{{handleRoles(item)}}</el-tag>
-            </template>
-
-            <template v-else-if="field.fieldName === 'status'">
-              <el-tag type="success" v-if="row.status">启用</el-tag>
-              <el-tag type="info" v-else>禁用</el-tag>
-            </template>
-
-            <template v-else>
-              {{ row[field.fieldName] }}
-            </template>
-
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作" width="100" fixed="right">
-          <template #default="scope">
-            <el-button
-                size="small"
-                type="text"
-                @click="onOpenSaveOrUpdate('update', scope.row)">修改
-            </el-button>
-            <el-button
-                :disabled="userInfos.user_type !== 10"
-                size="small"
-                type="text"
-                @click="deleted(scope.row)">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <pagination :total="total"
-                  :hidden="total === 0"
-                  v-model:page="listQuery.page"
-                  v-model:limit="listQuery.pageSize"
-                  @pagination="getList"/>
+          v-model:page-size="listQuery.pageSize"
+          v-model:page="listQuery.page"
+          :total="total"
+          @pagination-change="getList"
+      />
     </el-card>
     <save-or-update @getList="getList" :roleList="roleList" ref="saveOrUpdateRef"/>
   </div>
@@ -91,9 +31,8 @@
 
 <script lang="ts">
 import {defineComponent, h, onMounted, reactive, ref, toRefs} from 'vue';
-import {ElMessage, ElMessageBox} from 'element-plus';
+import {ElButton, ElMessage, ElMessageBox, ElTag} from 'element-plus';
 import saveOrUpdate from '/@/views/system/user/components/saveOrUpdate.vue';
-import Pagination from '/@/components/Pagination/index.vue';
 import {useUserApi} from '/@/api/useSystemApi/user';
 import {useStore} from "/@/store";
 import {useRolesApi} from "/@/api/useSystemApi/roles";
@@ -133,23 +72,38 @@ interface StateRow {
 
 export default defineComponent({
   name: 'systemUser',
-  components: {saveOrUpdate, Pagination},
+  components: {saveOrUpdate},
   setup() {
     const saveOrUpdateRef = ref();
     const store = useStore();
     const userInfos = store.state.userInfos.userInfos;
     const state = reactive<StateRow>({
-      fieldData: [
-        {fieldName: 'username', label: '账户名称', width: '', align: 'center', show: true},
-        {fieldName: 'nickname', label: '用户昵称', width: '', align: 'center', show: true},
-        {fieldName: 'roles', label: '关联角色', width: '', align: 'center', show: true},
-        {fieldName: 'email', label: '邮箱', width: '', align: 'center', show: true},
-        {fieldName: 'status', label: '用户状态', width: '', align: 'center', show: true},
-        {fieldName: 'remarks', label: '备注', width: '', align: 'center', show: true},
-        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
-        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
-        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
-        {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
+      columns: [
+        {
+          key: 'username', label: '账户名称', width: '', align: 'center', showTooltip: true,
+          render: (row: any) => h(ElButton, {
+            link: true,
+            type: "primary",
+            onClick: () => {
+              onOpenSaveOrUpdate("update", row)
+            }
+          }, row.username)
+        },
+        {key: 'nickname', label: '用户昵称', width: '', align: 'center', showTooltip: true},
+        {
+          key: 'roles', label: '关联角色', width: '', align: 'center', showTooltip: true,
+          render: (row: any) => handleRoles(row.roles)
+        },
+        {key: 'email', label: '邮箱', width: '', align: 'center', showTooltip: true},
+        {key: 'status', label: '用户状态', width: '', align: 'center', showTooltip: true,
+          render: (row: any) => h(ElTag, {
+            type: row.status ? "success" : "info",
+          }, row.status ? "启用" : "禁用",)},
+        {key: 'remarks', label: '备注', width: '', align: 'center', showTooltip: true},
+        // {key: 'updation_date', label: '更新时间', width: '150', align: 'center', showTooltip: true},
+        // {key: 'updated_by_name', label: '更新人', width: '', align: 'center', showTooltip: true},
+        {key: 'creation_date', label: '创建时间', width: '150', align: 'center', showTooltip: true},
+        // {key: 'created_by_name', label: '创建人', width: '', align: 'center', showTooltip: true},
       ],
       // list
       listData: [],
@@ -214,8 +168,14 @@ export default defineComponent({
           });
     };
 
-    const handleRoles = (role: number) => {
-      return state.roleList.find(e => e.id == role) ? state.roleList.find(e => e.id == role).name : ''
+    // 处理角色名称
+    const handleRoles = (roles: any) => {
+      let roleTagList: any[] = []
+      roles.forEach((role: any) => {
+        let roleName = state.roleList.find(e => e.id == role)?.name
+        roleTagList.push(h(ElTag, null, roleName))
+      })
+      return h('div', null, roleTagList)
     }
     // 页面加载时
     onMounted(() => {

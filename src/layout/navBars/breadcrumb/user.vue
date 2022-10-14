@@ -1,5 +1,22 @@
 <template>
   <div class="layout-navbars-breadcrumb-user" :style="{ flex: layoutUserFlexNum }">
+    <div class="layout-navbars-breadcrumb-user-icon">
+      <el-select size="default" v-model="env_id"
+                 placeholder="运行环境"
+                 filterable
+                 style="width: 100%;"
+                 @change="setEndId"
+      >
+        <el-option
+            v-for="env in envList"
+            :key="env.id + env.name"
+            :label="env.name"
+            :value="env.id">
+          <span style="float: left">{{ env.name }}</span>
+        </el-option>
+      </el-select>
+    </div>
+
     <el-dropdown :show-timeout="70" :hide-timeout="50" trigger="click" @command="onComponentSizeChange">
       <div class="layout-navbars-breadcrumb-user-icon">
         <i class="iconfont icon-ziti" title="组件大小"></i>
@@ -17,6 +34,7 @@
     <!--        <ele-Search/>-->
     <!--      </el-icon>-->
     <!--    </div>-->
+
     <div class="layout-navbars-breadcrumb-user-icon" @click="onLayoutSetingClick">
       <i class="icon-skin iconfont" title="布局配置"></i>
     </div>
@@ -70,7 +88,8 @@ import Search from '/@/layout/navBars/breadcrumb/search.vue';
 import {useUserApi} from '/@/api/useSystemApi/user'
 
 
-import {textToImg} from '/@/utils/textToImg'
+import {textToImg} from '/@/utils/textToImg.js'
+import {useEnvApi} from "/@/api/useAutoApi/env";
 
 console.log('test', textToImg('test'))
 
@@ -85,11 +104,20 @@ export default defineComponent({
     const state = reactive({
       isScreenfull: false,
       disabledSize: 'large',
+      // env
+      env_id: null,
+      envList: [],
     });
     // 获取用户信息 vuex
     const getUserInfos = computed(() => {
       return <any>store.state.userInfos.userInfos;
     });
+
+    // 设置env vuex
+    const setEndId = () => {
+      store.dispatch("env/setEnvId", state.env_id)
+    }
+
     // 获取布局配置信息
     const getThemeConfig = computed(() => {
       return store.state.themeConfig.themeConfig;
@@ -191,16 +219,30 @@ export default defineComponent({
       }
     };
 
-    const userTextToImg = (username) => {
+    const userTextToImg = (username: string) => {
       return textToImg(username)
     }
+
+    // env
+
+    // 初始化env
+    const getEnvList = () => {
+      useEnvApi().getList({page: 1, pageSize: 1000})
+          .then(res => {
+            state.envList = res.data.rows
+          })
+    };
+
     // 页面加载时
     onMounted(() => {
       if (Local.get('themeConfig')) {
         initComponentSize();
       }
+      getEnvList()
     });
+
     return {
+      setEndId,
       getUserInfos,
       userTextToImg,
       onLayoutSetingClick,
@@ -210,6 +252,7 @@ export default defineComponent({
       onComponentSizeChange,
       searchRef,
       layoutUserFlexNum,
+      getEnvList,
       ...toRefs(state),
     };
   },
@@ -268,5 +311,9 @@ export default defineComponent({
   ::v-deep(.el-badge__content.is-fixed) {
     top: 12px;
   }
+}
+
+:deep(.el-input__inner) {
+  font-family: PingFang SC, HarmonyOS_Medium, Helvetica Neue, Microsoft YaHei, sans-serif;
 }
 </style>

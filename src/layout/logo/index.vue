@@ -1,7 +1,8 @@
 <template>
   <div class="layout-logo" v-if="setShowLogo" @click="onThemeConfigChange">
-    <img :src="logoMini" class="layout-logo-medium-img"/>
-    <h1 class="logo_title">{{ getThemeConfig.globalTitle }}</h1>
+<!--    <img :src="logoMini" class="layout-logo-medium-img"/>-->
+    <svg-icon :name="logoMini" :size="400"></svg-icon>
+<!--    <h1 class="logo_title">{{ getThemeConfig.globalTitle }}</h1>-->
   </div>
   <div class="layout-logo-size" v-else @click="onThemeConfigChange">
     <img :src="logoMini" class="layout-logo-size-img"/>
@@ -11,10 +12,12 @@
 <script lang="ts">
 import {computed, defineComponent} from 'vue';
 import {useStore} from '/@/store';
-import logoMini from '/@/assets/logo.png';
+import logoMini from '/@/assets/whiteLogo.svg';
+import SvgIcon from "/@/components/svgIcon/index.vue";
 
 export default defineComponent({
   name: 'layoutLogo',
+  components: {SvgIcon},
   setup() {
     const store = useStore();
     // 获取布局配置信息
@@ -61,7 +64,7 @@ export default defineComponent({
   }
 
   &-medium-img {
-    width: 30px;
+    width: 100%;
     margin-right: 5px;
   }
 }

@@ -58,7 +58,7 @@ import VariablesParameters from '/@/views/api/configure/components/variablesPara
 import {ElMessage} from "element-plus"
 import {useStore} from "/@/store"
 import {useRoute, useRouter} from "vue-router"
-import {useTestCaseApi} from '/@/api/useAutoApi/testcase'
+import {useTestCaseApi} from '/@/api/useAutoApi/testCase'
 
 export default defineComponent({
   name: 'saveOrUpdateConfigure',

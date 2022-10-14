@@ -87,6 +87,16 @@ export interface RequestOldRoutesState {
   requestOldRoutes: object[];
 }
 
+// lookup
+export interface LookUpState {
+  lookup: object
+}
+
+// lookup
+export interface EnvState {
+  envId: number | null
+}
+
 // 主接口(顶级类型声明)
 export interface RootStateTypes {
   themeConfig: ThemeConfigState;
@@ -95,5 +105,6 @@ export interface RootStateTypes {
   tagsViewRoutes: TagsViewRoutesState;
   userInfos: UserInfosState;
   lookup: any;
+  envId: number | null;
   requestOldRoutes: RequestOldRoutesState;
 }

@@ -40,6 +40,7 @@ module.exports = {
 		'vue/no-v-model-argument': 'off',
 		'vue/no-arrow-functions-in-watch': 'off',
 		'vue/no-template-key': 'off',
+		'vue/no-v-for-template-key': 'off',
 		'vue/no-v-html': 'off',
 		'vue/comment-directive': 'off',
 		'vue/no-parsing-error': 'off',

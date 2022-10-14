@@ -45,6 +45,13 @@ export function useQueryDBApi() {
         data
       })
     },
+    deletedSource(data?: Object) {
+      return request({
+        url: '/dataSource/deletedSource',
+        method: 'POST',
+        data
+      })
+    },
     // 执行
     execute(data?: object) {
       return request({

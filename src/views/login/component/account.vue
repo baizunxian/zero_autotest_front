@@ -1,7 +1,7 @@
 <template>
   <el-form size="large" class="login-content-form">
     <el-form-item class="login-animation1">
-      <el-input type="text" placeholder="用户名 admin 或不输均为 common" v-model="ruleForm.userName" clearable
+      <el-input type="primary" link placeholder="用户名 admin 或不输均为 common" v-model="ruleForm.userName" clearable
                 autocomplete="off">
         <template #prefix>
           <el-icon class="el-input__icon">
@@ -33,7 +33,7 @@
     </el-form-item>
     <!--    <el-form-item class="login-animation3">-->
     <!--      <el-col :span="15">-->
-    <!--        <el-input type="text" maxlength="4" placeholder="请输入验证码" v-model="ruleForm.code" clearable autocomplete="off">-->
+    <!--        <el-input type="primary" link maxlength="4" placeholder="请输入验证码" v-model="ruleForm.code" clearable autocomplete="off">-->
     <!--          <template #prefix>-->
     <!--            <el-icon class="el-input__icon">-->
     <!--              <ele-Position/>-->

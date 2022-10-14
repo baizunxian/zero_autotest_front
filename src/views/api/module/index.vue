@@ -16,52 +16,15 @@
           新增
         </el-button>
       </div>
-      <el-table
-          border
-          v-loading="tableLoading"
+      <zero-table
+          :columns="columns"
           :data="listData"
-          style="width: 100%">
-        <el-table-column label="序号" width="50px" align="center">
-          <template #default="scope">
-            {{ scope.$index + (listQuery.page - 1) * listQuery.pageSize + 1 }}
-          </template>
-        </el-table-column>
-
-        <el-table-column
-            v-for="field in fieldData"
-            :key="field.fieldName"
-            :label="field.label"
-            :align="field.align"
-            :width="field.width"
-            :show-overflow-tooltip="field.show"
-            :prop="field.fieldName"
-        >
-          <template #default="{row}">
-            <template v-if="field.fieldName === 'name'">
-              <el-button size="small"
-                         type="text"
-                         @click="onOpenSaveOrUpdate('update', row)">
-                {{ row[field.fieldName] }}
-              </el-button>
-            </template>
-
-            <template v-else>
-              {{ row[field.fieldName] }}
-            </template>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作" width="100" align="center" fixed="right">
-          <template #default="scope">
-            <el-button size="small" type="text"
-                       @click="onOpenSaveOrUpdate('update', scope.row)">修改
-            </el-button>
-            <el-button size="small" type="text" @click="deleted(scope.row)">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+          v-model:page-size="listQuery.pageSize"
+          v-model:page="listQuery.page"
+          :total="total"
+          @pagination-change="getList"
+      >
+      </zero-table>
       <pagination :total="total"
                   :hidden="total === 0"
                   v-model:page="listQuery.page"
@@ -73,8 +36,8 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
-import {ElMessage, ElMessageBox} from 'element-plus';
+import {defineComponent, h, onMounted, reactive, ref, toRefs} from 'vue';
+import {ElButton, ElMessage, ElMessageBox} from 'element-plus';
 import saveOrUpdate from '/@/views/api/module/components/saveOrUpdate.vue';
 import Pagination from '/@/components/Pagination/index.vue';
 import {useModuleApi} from "/@/api/useAutoApi/module";
@@ -85,19 +48,49 @@ export default defineComponent({
   setup() {
     const saveOrUpdateRef = ref();
     const state = reactive({
-      fieldData: [
-        {fieldName: 'name', label: '模块名称', width: '', align: 'center', show: true},
-        {fieldName: 'project_name', label: '负责人', width: '', align: 'center', show: true},
-        {fieldName: 'test_user', label: '测试人员', width: '', align: 'center', show: true},
-        {fieldName: 'dev_user', label: '开发人员', width: '', align: 'center', show: true},
-        {fieldName: 'case_count', label: '用例数', width: '', align: 'center', show: true},
-        {fieldName: 'simple_desc', label: '描述', width: '', align: 'center', show: true},
-        {fieldName: 'remarks', label: '备注', width: '', align: 'center', show: true},
-        {fieldName: 'config_id', label: '关联配置', width: '', align: 'center', show: true},
-        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
-        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
-        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
-        {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
+      columns: [
+        {label: '序号', columnType: 'index', width: 'auto', showTooltip: true},
+        {
+          key: 'name', label: '模块名称', width: '', showTooltip: true,
+          render: (row: any) => h(ElButton, {
+            link: true,
+            type: "primary",
+            onClick: () => {
+              onOpenSaveOrUpdate("update", row)
+            }
+          }, row.name)
+        },
+        {key: 'project_name', label: '所属项目', width: '', showTooltip: true},
+        {key: 'test_user', label: '测试人员', width: '', showTooltip: true},
+        {key: 'dev_user', label: '开发人员', width: '', showTooltip: true},
+        {key: 'case_count', label: '用例数', width: '', showTooltip: true},
+        {key: 'simple_desc', label: '描述', width: '', showTooltip: true},
+        {key: 'remarks', label: '备注', width: '', showTooltip: true},
+        {key: 'config_id', label: '关联配置', width: '', showTooltip: true},
+        {key: 'updation_date', label: '更新时间', width: '150', showTooltip: true},
+        {key: 'updated_by_name', label: '更新人', width: '', showTooltip: true},
+        {key: 'creation_date', label: '创建时间', width: '150', showTooltip: true},
+        {key: 'created_by_name', label: '创建人', width: '', showTooltip: true},
+        {
+          label: '操作', fixed: 'right', width: '100',
+          render: (row: any) => h("div", null, [
+            h(ElButton, {
+              link: true,
+              type: "primary",
+              onClick: () => {
+                onOpenSaveOrUpdate("update", row)
+              }
+            }, '编辑'),
+
+            h(ElButton, {
+              link: true,
+              type: "primary",
+              onClick: () => {
+                deleted(row)
+              }
+            }, '删除')
+          ])
+        },
       ],
       listData: [],
       tableLoading: false,

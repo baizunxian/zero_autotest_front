@@ -16,83 +16,65 @@
           新增
         </el-button>
       </div>
-      <el-table
-          border
-          v-loading="tableLoading"
+
+      <zero-table
+          :columns="columns"
           :data="listData"
-          style="width: 100%">
-
-        <el-table-column
-            v-for="field in fieldData"
-            :key="field.fieldName"
-            :label="field.label"
-            :align="field.align"
-            :width="field.width"
-            :show-overflow-tooltip="field.show"
-            :prop="field.fieldName"
-        >
-          <template #default="{row}">
-            <template v-if="field.fieldName === 'name'">
-              <el-button size="small"
-                         type="text"
-                         @click="onOpenSaveOrUpdate('update', row)">
-                {{ row[field.fieldName] }}
-              </el-button>
-            </template>
-
-            <template v-else>
-              {{ row[field.fieldName] }}
-            </template>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作" width="100" align="center" fixed="right">
-          <template #default="scope">
-            <el-button  size="small"
-                        type="text"
-                       @click="onOpenSaveOrUpdate('update', scope.row)">
-              修改
-            </el-button>
-            <el-button size="small"
-                       type="text"
-                       @click="deleted(scope.row)">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <pagination :total="total"
-                  :hidden="total === 0"
-                  v-model:page="listQuery.page"
-                  v-model:limit="listQuery.pageSize"
-                  @pagination="getList"/>
+          v-model:page-size="listQuery.pageSize"
+          v-model:page="listQuery.page"
+          :total="total"
+          @pagination-change="getList"
+      />
     </el-card>
-    <save-or-update ref="saveOrUpdateRef"  @getList="getList"/>
+    <save-or-update ref="saveOrUpdateRef" @getList="getList"/>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
-import {ElMessage, ElMessageBox} from 'element-plus';
-import saveOrUpdate from '/@/views/api/env/components/saveOrUpdate.vue';
-import Pagination from '/@/components/Pagination/index.vue';
-import {useEnvApi} from "/@/api/useAutoApi/env";
+import {defineComponent, h, onMounted, reactive, ref, toRefs} from 'vue';
+import {ElButton, ElMessage, ElMessageBox} from 'element-plus';
+import {useQueryDBApi} from "/@/api/useTools/querDB";
+import saveOrUpdate from "/@/views/tools/dataSource/components/saveOrUpdate.vue";
 
 
 export default defineComponent({
   name: 'dataSource',
-  components: {saveOrUpdate, Pagination},
+  components: {saveOrUpdate},
   setup() {
     const saveOrUpdateRef = ref();
     const state = reactive({
-      fieldData: [
-        {fieldName: 'name', label: '环境名称', width: '', align: 'center', show: true},
-        {fieldName: 'url', label: 'URL', width: '', align: 'center', show: true},
-        {fieldName: 'remarks', label: '备注', width: '', align: 'center', show: true},
-        {fieldName: 'updation_date', label: '更新时间', width: '150', align: 'center', show: true},
-        {fieldName: 'updated_by_name', label: '更新人', width: '', align: 'center', show: true},
-        {fieldName: 'creation_date', label: '创建时间', width: '150', align: 'center', show: true},
-        {fieldName: 'created_by_name', label: '创建人', width: '', align: 'center', show: true},
+      columns: [
+        {label: '序号', columnType: 'index', width: 'auto', showTooltip: true},
+        {key: 'name', label: '数据源名称', width: '', align: 'center', showTooltip: true},
+        {key: 'env_name', label: '所属环境', width: '', align: 'center', showTooltip: true},
+        {key: 'type', label: '类型', width: '', align: 'center', showTooltip: true},
+        {key: 'host', label: '地址', width: '', align: 'center', showTooltip: true},
+        {key: 'port', label: '端口', width: '', align: 'center', showTooltip: true},
+        {key: 'user', label: '用户名', width: '', align: 'center', showTooltip: true},
+        {key: 'updation_date', label: '更新时间', width: '150', align: 'center', showTooltip: true},
+        {key: 'updated_by_name', label: '更新人', width: '', align: 'center', showTooltip: true},
+        {key: 'creation_date', label: '创建时间', width: '150', align: 'center', showTooltip: true},
+        {key: 'created_by_name', label: '创建人', width: '', align: 'center', showTooltip: true},
+        {
+          label: '操作', fixed: 'right', width: '100',
+          render: (row: any) => h("div", null, [
+            h(ElButton, {
+              link: true,
+              type: "primary",
+              onClick: () => {
+                onOpenSaveOrUpdate("update", row)
+              }
+            }, '编辑'),
+
+            h(ElButton, {
+              link: true,
+              type: "primary",
+              onClick: () => {
+                deleted(row)
+              }
+            }, '删除')
+          ])
+        },
       ],
       // list
       listData: [],
@@ -103,11 +85,12 @@ export default defineComponent({
         pageSize: 20,
         name: '',
       },
+
     });
     // 初始化表格数据
     const getList = () => {
       state.tableLoading = true
-      useEnvApi().getList(state.listQuery)
+      useQueryDBApi().getSourceList(state.listQuery)
           .then(res => {
             state.listData = res.data.rows
             state.total = res.data.rowTotal
@@ -115,7 +98,7 @@ export default defineComponent({
           })
     };
 
-     // 查询
+    // 查询
     const search = () => {
       state.listQuery.page = 1
       getList()
@@ -134,7 +117,7 @@ export default defineComponent({
         type: 'warning',
       })
           .then(() => {
-            useEnvApi().deleted({id: row.id})
+            useQueryDBApi().deletedSource({id: row.id})
                 .then(() => {
                   ElMessage.success('删除成功');
                   getList()
@@ -143,6 +126,7 @@ export default defineComponent({
           .catch(() => {
           });
     };
+
     // 页面加载时
     onMounted(() => {
       getList();
