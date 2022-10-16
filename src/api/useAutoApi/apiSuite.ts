@@ -21,6 +21,13 @@ export function useApiSuiteApi() {
         data
       })
     },
+    debugSuites(data?: object) {
+      return request({
+        url: '/apiSuites/debugSuites',
+        method: 'POST',
+        data
+      })
+    },
     deleted: (data?: object) => {
       return request({
         url: '/apiSuites/deleted',

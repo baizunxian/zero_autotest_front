@@ -1,29 +1,26 @@
 <template>
   <div class="step-details">
-    <step-controller step_type="post" :data="setup_hooks"></step-controller>
+    <step-controller step_type="post" :data="setup_hooks" :case_id="case_id"></step-controller>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, reactive, ref, toRefs} from 'vue';
-import {useRoute, useRouter} from "vue-router"
+import {defineComponent, reactive, toRefs} from 'vue';
 import {handleEmpty} from "/@/utils/other";
 
 
 export default defineComponent({
   name: 'postOperation',
-  components: {
-  },
-  setup(props, {emit}) {
-    const formRef = ref()
-    const route = useRoute()
-    const router = useRouter()
+  setup() {
     const state = reactive({
-      setup_hooks: []
+      setup_hooks: [],
+      case_id: 0,
     });
 
     //
-    const setData = (data: any) => {
+    const setData = (data: any, case_id: number) => {
+      state.case_id = case_id
+      console.log("preOperation--case_id--->", state.case_id)
       if (data) {
         state.setup_hooks = data
       }
@@ -37,9 +34,6 @@ export default defineComponent({
     return {
       setData,
       getData,
-      formRef,
-      route,
-      router,
       ...toRefs(state),
     };
   },

@@ -29,8 +29,12 @@
           @node-drop="handleDrop"
           @node-click="nodeClick"
           :data="data">
-        <template #default="{ node, data }">
-          <step-header v-model:data="node.data" :opt-type="optTypes"/>
+        <template #default="{ node }">
+          <step-header v-model:data="node.data"
+                       :opt-type="optTypes"
+                       @copy-node="copyNode"
+                       @deleted-node="deletedNode"
+          />
         </template>
       </el-tree>
     </div>
@@ -40,7 +44,7 @@
         title="用例引用"
         v-model="showCaseInfo"
         width="60%">
-      <select-case ref="caseInfoRef"></select-case>
+      <select-case ref="selectCaseRef"></select-case>
       <template #footer>
       <span class="dialog-footer">
         <el-button type="primary" @click="addCaseStep">引用</el-button>
@@ -52,10 +56,11 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, getCurrentInstance, onMounted, onUnmounted, reactive, toRefs, ref} from 'vue';
+import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue';
 import {useRoute, useRouter} from "vue-router"
 import stepHeader from "/@/components/StepController/stepHeader.vue";
 import selectCase from "/@/components/StepController/selectCase.vue";
+import {ElMessage} from "element-plus";
 
 export default defineComponent({
   name: 'stepController',
@@ -73,13 +78,18 @@ export default defineComponent({
     data: {
       type: Array,
       default: () => []
+    },
+    case_id: {
+      type: [Number, String, null],
+      default: () => {
+        return null
+      }
     }
   },
   setup(props: any) {
-    const {proxy} = <any>getCurrentInstance();
     const route = useRoute()
     const router = useRouter()
-    const caseInfoRef = ref()
+    const selectCaseRef = ref()
     const state = reactive({
       // data
       optType: "script",
@@ -96,6 +106,7 @@ export default defineComponent({
             script: "前置脚本",
             sql: "前置SQL",
             wait: "等待控制器",
+            case: "用例引用",
           }
           break
         case "post":
@@ -130,13 +141,13 @@ export default defineComponent({
       computeDataIndex()
     }
 
-    const nodeClick = (data) => {
+    const nodeClick = (data: any) => {
       data.showDetail = !data.showDetail
     }
 
     // 计算index，保持拖动后顺序
     const computeDataIndex = () => {
-      props.data.forEach((data, index) => {
+      props.data.forEach((data: any, index: number) => {
         data.index = index + 1
       })
     }
@@ -146,7 +157,14 @@ export default defineComponent({
       if (state.optType === "script") {
         data = {name: `script_${getRandomStr()}`, value: "", step_type: "script", enable: true}
       } else if (state.optType === "sql") {
-        data = {name: `sql_${getRandomStr()}`, value: "", step_type: "sql", timeout: null, variable_name: "", enable: true}
+        data = {
+          name: `sql_${getRandomStr()}`,
+          value: "",
+          step_type: "sql",
+          timeout: null,
+          variable_name: "",
+          enable: true
+        }
       } else if (state.optType === "wait") {
         data = {name: `wait_${getRandomStr()}`, value: null, step_type: "wait", enable: true}
       } else if (state.optType === "extract") {
@@ -160,40 +178,38 @@ export default defineComponent({
     }
 
     const addCaseStep = () => {
-      let selectCaseData = caseInfoRef.value.getSelectionData()
+      let selectCaseData = selectCaseRef.value.getSelectionData()
       if (selectCaseData) {
         selectCaseData.forEach((caseInfo: any) => {
-          let stepData = {name: caseInfo.name, value: caseInfo.id, step_type: "case", enable: true}
-          props.data.push(stepData)
+          if (state.optType === "case" && caseInfo.id === parseInt(props.case_id)) {
+            ElMessage.warning('不能引用用例自己！');
+          } else {
+            let stepData = {name: caseInfo.name, value: caseInfo.id, step_type: "case", enable: true}
+            props.data.push(stepData)
+          }
         })
       }
       state.showCaseInfo = false
       computeDataIndex()
     }
 
-    function getRandomStr() {
-        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
-      }
+    const getRandomStr = () => {
+      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
+    }
+
+    const deletedNode = (index: number) => {
+      props.data.splice(index, 1)
+      computeDataIndex()
+    }
+    const copyNode = (data: any) => {
+      props.data.push(JSON.parse(JSON.stringify(data)))
+      computeDataIndex()
+    }
+
 
     onMounted(() => {
-      // 删除数据
-      proxy.mittBus.on("deletedNode", (index: number) => {
-        props.data.splice(index, 1)
-        computeDataIndex()
-      })
-
-      // 复制数据
-      proxy.mittBus.on("copyNode", (data: any) => {
-        props.data.push(JSON.parse(JSON.stringify(data)))
-        computeDataIndex()
-      })
-
       initController()
     })
-
-    onUnmounted(() => {
-      proxy.mittBus.off('deletedNode');
-    });
 
 
     return {
@@ -204,8 +220,10 @@ export default defineComponent({
       route,
       router,
       addCaseStep,
-      caseInfoRef,
       getRandomStr,
+      deletedNode,
+      copyNode,
+      selectCaseRef,
       ...toRefs(state),
     };
   },

@@ -66,13 +66,13 @@ export const VAceEditor = defineComponent({
       maxLines: this.maxLines,
       ...this.options,
     }));
-    this._contentBackup = this.value;
-    this._isSettingContent = false;
+    this.contentBackup = this.value;
+    this.isSettingContent = false;
     editor.on('change', () => {
-      if (this._isSettingContent)
+      if (this.isSettingContent)
         return;
       const content = editor.getValue();
-      this._contentBackup = content;
+      this.contentBackup = content;
       this.$emit('update:value', content);
     });
     Events.forEach(x => {
@@ -103,14 +103,14 @@ export const VAceEditor = defineComponent({
   },
   watch: {
     value(val) {
-      if (this._contentBackup !== val) {
+      if (this.contentBackup !== val) {
         try {
-          this._isSettingContent = true;
+          this.isSettingContent = true;
           this._editor.setValue(val, 1);
         } finally {
-          this._isSettingContent = false;
+          this.isSettingContent = false;
         }
-        this._contentBackup = val;
+        this.contentBackup = val;
       }
     },
     theme(val) {

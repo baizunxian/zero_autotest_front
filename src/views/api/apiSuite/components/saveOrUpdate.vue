@@ -60,7 +60,7 @@
 
           </el-col>
           <el-col :span="6">
-            <el-button type="primary" @click="saveOrUpdate" class="title-button">调试</el-button>
+            <el-button type="primary" @click="debugSuite" class="title-button">调试</el-button>
             <el-button type="primary" @click="saveOrUpdate" class="title-button">保存</el-button>
           </el-col>
         </el-row>
@@ -178,6 +178,14 @@ export default defineComponent({
           })
     };
 
+    // debugSuite
+    const debugSuite = () => {
+       useApiSuiteApi().debugSuites(state.form)
+          .then((res:any) => {
+            ElMessage.success('操作成功');
+          })
+    }
+
 
     // goBack
     const goBack = () => {
@@ -192,6 +200,7 @@ export default defineComponent({
     return {
       initData,
       saveOrUpdate,
+      debugSuite,
       goBack,
       route,
       router,
@@ -218,4 +227,7 @@ export default defineComponent({
   justify-content: space-between;
 }
 
+:deep(.el-c) {
+
+}
 </style>

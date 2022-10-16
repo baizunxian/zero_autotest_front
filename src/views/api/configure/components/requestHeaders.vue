@@ -1,5 +1,5 @@
 <template>
-  <el-form inline ref="request-form" label-width="50px" size="mini" label-position="right">
+  <el-form inline ref="request-form" label-width="50px" size="small" label-position="right">
     <div class="block-title">
       <el-button size="small" type="primary" link @click="addHeaders" title="添加header">
         <el-icon><ele-CirclePlusFilled></ele-CirclePlusFilled></el-icon>add

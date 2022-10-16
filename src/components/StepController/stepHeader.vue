@@ -7,7 +7,8 @@
           <div class="el-step__icon-inner">{{ data.index }}</div>
         </div>
         <!--脚本类型-->
-        <svg-icon :name="data.showDetail ? 'ele-ArrowDown' : 'ele-ArrowRight'" style="height: 20px; width: 20px"></svg-icon>
+        <svg-icon :name="data.showDetail ? 'ele-ArrowDown' : 'ele-ArrowRight'"
+                  style="height: 20px; width: 20px"></svg-icon>
         <!--        <svg-icon v-else name="ele-ArrowDown" style="height: 20px; width: 20px"></svg-icon>-->
 
         <el-tag style="margin: 0 5px" size="small">{{ optType[data.step_type] }}</el-tag>
@@ -68,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, getCurrentInstance, nextTick} from 'vue';
+import {defineComponent, nextTick} from 'vue';
 import scriptController from "/@/components/StepController/scriptController.vue";
 import sqlController from "/@/components/StepController/sqlController.vue";
 import extractController from "/@/components/StepController/extractController.vue";
@@ -86,9 +87,8 @@ export default defineComponent({
     data: Object,
     optType: Object,
   },
-  emits: ['update:data'],
-  setup() {
-    const {proxy} = <any>getCurrentInstance();
+  emits: ['update:data', "copy-node", "deleted-node"],
+  setup(props, {emit}) {
 
     // 编辑脚本名称
     const editeName = (data: any) => {
@@ -104,19 +104,12 @@ export default defineComponent({
       data.edit = false
     }
 
-
     const copyNode = (data: any) => {
-      proxy.mittBus.emit("copyNode", data)
+      emit("copy-node", data)
     }
 
     const deletedNode = (index: number) => {
-      // ElMessageBox.confirm('是否删除步骤, 是否继续?', '提示', {
-      //   confirmButtonText: '确认',
-      //   cancelButtonText: '取消',
-      //   type: 'warning',
-      // }).then(() => {
-        proxy.mittBus.emit("deletedNode", index - 1)
-      // })
+      emit("deleted-node", index - 1)
     }
 
     return {

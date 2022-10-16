@@ -5,8 +5,7 @@
                placeholder="提取方式"
                filterable
                clearable
-               style="width: 200px"
-               @change="selectProject">
+               style="width: 200px">
       <el-option
           v-for="(value, index) in assertModes"
           :key="index"

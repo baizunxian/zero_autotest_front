@@ -67,8 +67,8 @@ export default {
     const modifiedEditor: any = ref(null)
     const state = reactive({
       sqlSnippets: null,
-      _contentBackup: null,
-      _isSettingContent: false,
+      contentBackup: null,
+      isSettingContent: false,
       options: {
         value: props.value,  // 值
         theme: props.theme,   // 主题
@@ -137,13 +137,13 @@ export default {
         editor.value = monaco.editor.create(monacoEditorRef.value, state.options)
 
       }
-      state._contentBackup = props.value;
-      state._isSettingContent = false;
+      state.contentBackup = props.value;
+      state.isSettingContent = false;
       editor.value.onDidChangeModelContent((val: any) => {
-        if (state._isSettingContent)
+        if (state.isSettingContent)
           return;
         const content = toRaw(editor.value).getValue();
-        state._contentBackup = content;
+        state.contentBackup = content;
         emit("update:value", content)
       })
     }
@@ -160,14 +160,14 @@ export default {
     watch(
         () => props.value,
         (newVal) => {
-          if (state._contentBackup !== newVal) {
+          if (state.contentBackup !== newVal) {
             try {
-              state._isSettingContent = true;
+              state.isSettingContent = true;
               toRaw(editor.value).setValue(newVal)
             } finally {
-              state._isSettingContent = false;
+              state.isSettingContent = false;
             }
-            state._contentBackup = newVal;
+            state.contentBackup = newVal;
           }
 
         },

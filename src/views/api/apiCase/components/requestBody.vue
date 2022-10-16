@@ -1,5 +1,5 @@
 <template>
-  <el-form inline ref="request-form" :model="requestForm" label-width="50px" size="mini" label-position="right">
+  <el-form inline ref="request-form" label-width="50px" size="small" label-position="right">
     <!-- data -->
     <div style="border-bottom: 1px solid #E6E6E6; display: flex; justify-content: space-between">
       <div>
@@ -17,7 +17,7 @@
 
           <el-popover
               v-if="mode === 'raw'"
-              hide-after="0"
+              :hide-after="0"
               placement="bottom"
               trigger="click"
               popper-class="popover-class"

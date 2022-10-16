@@ -1,126 +1,118 @@
 <template>
-  <div class="system-edit-menu-container h100">
-    <el-card class="save-update-card" shadow="hover">
-      <div>
-        <el-page-header
-            class="page-header"
-            :content="editType === 'create'? '新增用例':'更新用例'"
-            style="margin: 10px 0;"
-            @back="goBack"
-        >
-        </el-page-header>
+  <div class="save-update-card">
+    <div>
+      <el-page-header
+          class="page-header"
+          style="padding-bottom: 10px"
+          @back="goBack"
+      >
+        <template #content>
+          <span>{{editType === 'create'? '新增用例':'更新用例'}}</span>
+        </template>
+        <template #extra>
+          <el-button type="success" @click="saveOrUpdateOrDebug('debug')">调试</el-button>
+          <el-button type="primary" @click="saveOrUpdateOrDebug('save')" class="title-button">保存</el-button>
+        </template>
+      </el-page-header>
 
-        <h3 class="block-title">请求信息</h3>
+      <h3 class="block-title">请求信息</h3>
 
-        <url ref="urlRef" @saveOrUpdateOrDebug="saveOrUpdateOrDebug"/>
+      <url ref="urlRef" @saveOrUpdateOrDebug="saveOrUpdateOrDebug"/>
 
-        <h3 class="block-title">基本信息</h3>
+      <h3 class="block-title">基本信息</h3>
 
-        <messages ref="messagesRef"/>
+      <messages ref="messagesRef"/>
 
-        <h3 class="block-title">请求参数</h3>
-        <div style="min-height: 500px">
-          <el-tabs v-model="activeName">
-            <el-tab-pane name='requestBody'>
-              <template #label>
-                <div style="align-items: center; display: flex; justify-content: center">
-                  <strong>请求体</strong>
-                  <div v-show="getStatus('body')" class="request-editor-tabs-badge"></div>
-                </div>
-              </template>
-              <div class="case-tabs">
-                <request-body ref="requestBodyRef" @updateHeader="updateHeader"/>
+      <h3 class="block-title">请求参数</h3>
+      <div style="min-height: 500px">
+        <el-tabs v-model="activeName">
+          <el-tab-pane name='requestBody'>
+            <template #label>
+              <div style="align-items: center; display: flex; justify-content: center">
+                <strong>请求体</strong>
+                <div v-show="getStatus('body')" class="request-editor-tabs-badge"></div>
               </div>
-            </el-tab-pane>
+            </template>
+            <div class="case-tabs">
+              <request-body ref="requestBodyRef" @updateHeader="updateHeader"/>
+            </div>
+          </el-tab-pane>
 
-            <el-tab-pane name='requestHeaders'>
-              <template #label><strong>请求头
+          <el-tab-pane name='requestHeaders'>
+            <template #label><strong>请求头
 
-                <div class="el-step__icon is-text zh-header" v-show="getDataLength('header')">
-                  <div class="el-step__icon-inner">{{ getDataLength('header') }}</div>
-                </div>
-
-              </strong></template>
-              <div class="case-tabs">
-                <headers ref="headersRef"/>
+              <div class="el-step__icon is-text zh-header" v-show="getDataLength('header')">
+                <div class="el-step__icon-inner">{{ getDataLength('header') }}</div>
               </div>
-            </el-tab-pane>
 
-            <!--            <el-tab-pane name='extractValidate'>-->
-            <!--              <template #label>-->
-            <!--                <div style="align-items: center; display: flex; justify-content: center">-->
-            <!--                  <strong>提取/校验</strong>-->
-            <!--                  <div v-show="getStatus('ev')" class="request-editor-tabs-badge"></div>-->
-            <!--                </div>-->
-            <!--              </template>-->
-            <!--              <div class="apiCase-tabs">-->
-            <!--                <extract-validate ref="extractValidateRef"/>-->
-            <!--              </div>-->
-            <!--            </el-tab-pane>-->
+            </strong></template>
+            <div class="case-tabs">
+              <request-headers ref="headersRef"/>
+            </div>
+          </el-tab-pane>
 
-            <el-tab-pane name='variablesParameters'>
-              <template #label>
-                <div style="align-items: center; display: flex; justify-content: center">
-                  <strong>变量</strong>
-                  <div class="el-step__icon is-text zh-header" v-show="getDataLength('variables')">
-                    <div class="el-step__icon-inner">{{ getDataLength('variables') }}</div>
-                  </div>
+          <el-tab-pane name='variablesParameters'>
+            <template #label>
+              <div style="align-items: center; display: flex; justify-content: center">
+                <strong>变量</strong>
+                <div class="el-step__icon is-text zh-header" v-show="getDataLength('variables')">
+                  <div class="el-step__icon-inner">{{ getDataLength('variables') }}</div>
                 </div>
-              </template>
-              <div class="case-tabs">
-                <variables ref="variablesRef"/>
               </div>
-            </el-tab-pane>
+            </template>
+            <div class="case-tabs">
+              <variables ref="variablesRef"/>
+            </div>
+          </el-tab-pane>
 
-            <el-tab-pane name='preOperation' class="h100">
-              <template #label>
-                <div style="align-items: center; display: flex; justify-content: center">
-                  <strong>前置操作</strong>
-                  <div class="el-step__icon is-text zh-header" v-show="getDataLength('pre')">
-                    <div class="el-step__icon-inner">{{ getDataLength('pre') }}</div>
-                  </div>
+          <el-tab-pane name='preOperation' class="h100">
+            <template #label>
+              <div style="align-items: center; display: flex; justify-content: center">
+                <strong>前置操作</strong>
+                <div class="el-step__icon is-text zh-header" v-show="getDataLength('pre')">
+                  <div class="el-step__icon-inner">{{ getDataLength('pre') }}</div>
                 </div>
-              </template>
-              <div class="case-tabs">
-                <pre-operation ref="preOperationRef"/>
               </div>
-            </el-tab-pane>
+            </template>
+            <div class="case-tabs">
+              <pre-operation ref="preOperationRef"/>
+            </div>
+          </el-tab-pane>
 
-            <el-tab-pane name='postOperation' class="h100">
-              <template #label>
-                <div style="align-items: center; display: flex; justify-content: center">
-                  <strong>后置操作</strong>
-                  <div class="el-step__icon is-text zh-header" v-show="getDataLength('post')">
-                    <div class="el-step__icon-inner">{{ getDataLength('post') }}</div>
-                  </div>
+          <el-tab-pane name='postOperation' class="h100">
+            <template #label>
+              <div style="align-items: center; display: flex; justify-content: center">
+                <strong>后置操作</strong>
+                <div class="el-step__icon is-text zh-header" v-show="getDataLength('post')">
+                  <div class="el-step__icon-inner">{{ getDataLength('post') }}</div>
                 </div>
-              </template>
-              <div class="case-tabs">
-                <post-operation ref="postOperationRef"/>
               </div>
-            </el-tab-pane>
+            </template>
+            <div class="case-tabs">
+              <post-operation ref="postOperationRef"/>
+            </div>
+          </el-tab-pane>
 
 
-            <el-tab-pane name='assertController' class="h100">
-              <template #label>
-                <div style="align-items: center; display: flex; justify-content: center">
-                  <strong>断言规则</strong>
-                  <div class="el-step__icon is-text zh-header" v-show="getDataLength('validators')">
-                    <div class="el-step__icon-inner">{{ getDataLength('validators') }}</div>
-                  </div>
+          <el-tab-pane name='assertController' class="h100">
+            <template #label>
+              <div style="align-items: center; display: flex; justify-content: center">
+                <strong>断言规则</strong>
+                <div class="el-step__icon is-text zh-header" v-show="getDataLength('validators')">
+                  <div class="el-step__icon-inner">{{ getDataLength('validators') }}</div>
                 </div>
-              </template>
-              <div class="case-tabs">
-                <validators ref="validatorsRef"/>
               </div>
-            </el-tab-pane>
+            </template>
+            <div class="case-tabs">
+              <validators ref="validatorsRef"/>
+            </div>
+          </el-tab-pane>
 
-          </el-tabs>
-        </div>
-
-        <h3 class="block-title">响应内容</h3>
+        </el-tabs>
       </div>
-    </el-card>
+
+      <h3 class="block-title">响应内容</h3>
+    </div>
 
     <el-dialog
         draggable
@@ -140,7 +132,7 @@ import {defineComponent, onMounted, reactive, ref, toRefs} from 'vue'
 import Url from '/@/views/api/apiCase/components/url.vue'
 import Messages from '/@/views/api/apiCase/components/messages.vue'
 import RequestBody from '/@/views/api/apiCase/components/requestBody.vue'
-import Headers from '/@/views/api/apiCase/components/headers.vue'
+import requestHeaders from '/@/views/api/apiCase/components/headers.vue'
 import Variables from '/@/views/api/apiCase/components/variables.vue'
 import TestReport from '/@/views/api/Report/components/report.vue'
 import preOperation from "/@/views/api/apiCase/components/preOperation.vue"
@@ -158,7 +150,7 @@ export default defineComponent({
     Url,
     Messages,
     RequestBody,
-    Headers,
+    requestHeaders,
     Variables,
     TestReport,
     preOperation,
@@ -293,8 +285,8 @@ export default defineComponent({
               requestBodyRef.value.setData(apiCaseData.request_body)
               headersRef.value.setData(apiCaseData.headers)
               variablesRef.value.setData(apiCaseData.variables)
-              preOperationRef.value.setData(apiCaseData.setup_hooks)
-              postOperationRef.value.setData(apiCaseData.teardown_hooks)
+              preOperationRef.value.setData(apiCaseData.setup_hooks, state.case_id)
+              postOperationRef.value.setData(apiCaseData.teardown_hooks, state.case_id)
               validatorsRef.value.setData(apiCaseData.validators)
 
             })
@@ -397,9 +389,21 @@ export default defineComponent({
 :deep(.el-page-header .page-header) {
   margin-left: 0 !important;
 }
-
-:deep(.save-update-card .el-card__body) {
-  padding-top: 0;
+:deep(.el-page-header__breadcrumb) {
+  margin-bottom: 0;
+}
+//:deep(.save-update-card .el-card__body) {
+//  padding-top: 0;
+//}
+.save-update-card {
+  border-radius: 4px;
+  border: 1px solid #e4e7ed;
+  background-color: #ffffff;
+  overflow-x: hidden;
+  overflow-y: auto;
+  color: #303133;
+  transition: 0.3s;
+  padding: 10px;
 }
 
 :deep(.el-tabs__header) {

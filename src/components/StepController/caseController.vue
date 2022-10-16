@@ -10,9 +10,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, reactive, toRefs, markRaw, defineAsyncComponent} from 'vue';
-// import caseInfo from "/@/views/api/apiCase/components/saveOrUpdate.vue";
-
+import {defineAsyncComponent, defineComponent, reactive, toRefs} from 'vue';
 
 export default defineComponent({
   name: 'scriptController',
