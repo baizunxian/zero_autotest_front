@@ -1,7 +1,7 @@
 <template>
   <div class="system-edit-menu-container h100">
     <el-row :span="24" style="padding-left: 25px">
-      <el-col :span="8">
+      <el-col :span="3">
         <el-select size="small"
                    v-model="optType"
                    placeholder=""
